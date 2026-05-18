@@ -1,184 +1,4044 @@
-CREATE DATABASE IF NOT EXISTS `feng-ai-admin` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
-USE `feng-ai-admin`;
+/*
+ Navicat Premium Data Transfer
 
-DROP TABLE IF EXISTS `sys_role_menu`;
-DROP TABLE IF EXISTS `sys_user_role`;
-DROP TABLE IF EXISTS `sys_oper_log`;
-DROP TABLE IF EXISTS `sys_menu`;
-DROP TABLE IF EXISTS `sys_user`;
-DROP TABLE IF EXISTS `sys_role`;
-DROP TABLE IF EXISTS `sys_post`;
+ Source Server         : 本地
+ Source Server Type    : MySQL
+ Source Server Version : 80036
+ Source Host           : localhost:3306
+ Source Schema         : feng-ai-admin
+
+ Target Server Type    : MySQL
+ Target Server Version : 80036
+ File Encoding         : 65001
+
+ Date: 18/05/2026 16:07:50
+*/
+
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for sys_config
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_config`;
+CREATE TABLE `sys_config`  (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `config_key` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '配置键',
+  `config_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '配置名称',
+  `config_value` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '配置值',
+  `config_group` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '配置分组',
+  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
+  `create_time` datetime NOT NULL COMMENT '创建时间',
+  `update_time` datetime NOT NULL COMMENT '更新时间',
+  `create_user_id` bigint NULL DEFAULT NULL COMMENT '创建人ID',
+  `update_user_id` bigint NULL DEFAULT NULL COMMENT '更新人ID',
+  `deleted` tinyint NOT NULL DEFAULT 0 COMMENT '删除标识 0正常 1删除',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `uk_config_key`(`config_key` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 98 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '系统配置表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_config
+-- ----------------------------
+INSERT INTO `sys_config` VALUES (1, 'site.name', '网站名称', 'Feng AI Admin', 'site', '系统站点全称', '2026-03-20 07:17:30', '2026-03-20 07:17:30', NULL, NULL, 0);
+INSERT INTO `sys_config` VALUES (2, 'site.short-name', '网站简称', 'FA', 'site', '侧边栏和品牌简称', '2026-03-20 07:17:30', '2026-03-20 07:17:30', NULL, NULL, 0);
+INSERT INTO `sys_config` VALUES (3, 'site.copyright', '版权信息', '&amp;copy; 2026 Feng AI Admin. All rights reserved.', 'site', '登录页和系统版权', '2026-03-20 07:17:30', '2026-03-20 07:17:30', NULL, NULL, 0);
+INSERT INTO `sys_config` VALUES (4, 'security.default-password', '默认密码', 'admin123', 'security', '新建用户和重置密码时使用', '2026-03-20 07:17:30', '2026-03-20 07:17:30', NULL, NULL, 0);
+INSERT INTO `sys_config` VALUES (5, 'security.login-fail-max-attempts', '登录失败限制次数', '5', 'security', '超出后触发锁定', '2026-03-20 07:17:30', '2026-03-20 07:17:30', NULL, NULL, 0);
+INSERT INTO `sys_config` VALUES (6, 'security.login-fail-window-minutes', '登录失败统计时间', '5', 'security', '失败次数统计窗口', '2026-03-20 07:17:30', '2026-03-20 07:17:30', NULL, NULL, 0);
+INSERT INTO `sys_config` VALUES (7, 'security.login-fail-lock-minutes', '登录锁定时间', '5', 'security', '达到阈值后的锁定时长', '2026-03-20 07:17:30', '2026-03-20 07:17:30', NULL, NULL, 0);
+INSERT INTO `sys_config` VALUES (8, 'login.welcome-title', '登录页欢迎标题', '11111111111', 'login', '登录页大标题', '2026-03-20 07:17:30', '2026-03-20 07:17:30', NULL, NULL, 0);
+INSERT INTO `sys_config` VALUES (9, 'login.welcome-description', '登录页欢迎文案', '222222222222222', 'login', '登录页说明文案', '2026-03-20 07:17:30', '2026-03-20 07:17:30', NULL, NULL, 0);
+INSERT INTO `sys_config` VALUES (44, 'upload.provider', '上传存储方式', 'minio', 'upload', 'server/minio/aliyun-oss', '2026-03-20 08:25:57', '2026-03-20 08:25:57', NULL, NULL, 0);
+INSERT INTO `sys_config` VALUES (45, 'upload.server.base-path', '服务端存储目录', 'uploads', 'upload', '相对后端工作目录的存储路径', '2026-03-20 08:25:57', '2026-03-20 09:32:21', NULL, NULL, 0);
+INSERT INTO `sys_config` VALUES (46, 'upload.server.base-url', '服务端访问前缀', '', 'upload', '本地文件访问前缀', '2026-03-20 08:25:57', '2026-03-20 09:32:21', NULL, NULL, 0);
+INSERT INTO `sys_config` VALUES (47, 'upload.oss.endpoint', '阿里云 OSS Endpoint', '', 'upload', '例如 oss-cn-hangzhou.aliyuncs.com', '2026-03-20 08:25:57', '2026-03-20 09:32:21', NULL, NULL, 0);
+INSERT INTO `sys_config` VALUES (48, 'upload.oss.bucket', '阿里云 OSS Bucket', '', 'upload', '阿里云 OSS 桶名称', '2026-03-20 08:25:57', '2026-03-20 09:32:21', NULL, NULL, 0);
+INSERT INTO `sys_config` VALUES (49, 'upload.oss.access-key-id', '阿里云 OSS AccessKeyId', '', 'upload', '阿里云访问密钥 ID', '2026-03-20 08:25:57', '2026-03-20 09:32:21', NULL, NULL, 0);
+INSERT INTO `sys_config` VALUES (50, 'upload.oss.access-key-secret', '阿里云 OSS AccessKeySecret', '', 'upload', '阿里云访问密钥 Secret', '2026-03-20 08:25:57', '2026-03-20 09:32:21', NULL, NULL, 0);
+INSERT INTO `sys_config` VALUES (51, 'upload.oss.domain', '阿里云 OSS 自定义域名', '', 'upload', '可选', '2026-03-20 08:25:57', '2026-03-20 09:32:21', NULL, NULL, 0);
+INSERT INTO `sys_config` VALUES (52, 'upload.minio.endpoint', 'MinIO Endpoint', 'http://39.106.158.88:9000', 'upload', '例如 http://127.0.0.1:9000', '2026-03-20 08:25:57', '2026-03-20 08:25:57', NULL, NULL, 0);
+INSERT INTO `sys_config` VALUES (53, 'upload.minio.bucket', 'MinIO Bucket', 'ai-admin', 'upload', 'MinIO 桶名称', '2026-03-20 08:25:57', '2026-03-20 09:32:21', NULL, NULL, 0);
+INSERT INTO `sys_config` VALUES (54, 'upload.minio.access-key', 'MinIO AccessKey', 'minioadminqwerty', 'upload', 'MinIO 访问账号', '2026-03-20 08:25:57', '2026-03-20 09:32:21', NULL, NULL, 0);
+INSERT INTO `sys_config` VALUES (55, 'upload.minio.secret-key', 'MinIO SecretKey', 'minioadmin', 'upload', 'MinIO 访问密钥', '2026-03-20 08:25:57', '2026-03-20 09:32:21', NULL, NULL, 0);
+INSERT INTO `sys_config` VALUES (56, 'upload.minio.domain', 'MinIO 自定义域名', 'http://39.106.158.88:9000/ai-admin', 'upload', '可选', '2026-03-20 08:25:57', '2026-03-20 08:25:57', NULL, NULL, 0);
+
+-- ----------------------------
+-- Table structure for sys_dept
+-- ----------------------------
 DROP TABLE IF EXISTS `sys_dept`;
+CREATE TABLE `sys_dept`  (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `parent_id` bigint NOT NULL DEFAULT 0 COMMENT '父部门ID',
+  `dept_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '部门名称',
+  `dept_sort` int NOT NULL DEFAULT 0 COMMENT '排序',
+  `leader` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '负责人',
+  `phone` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '联系电话',
+  `email` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '邮箱',
+  `create_time` datetime NOT NULL COMMENT '创建时间',
+  `update_time` datetime NOT NULL COMMENT '更新时间',
+  `create_user_id` bigint NULL DEFAULT NULL COMMENT '创建人ID',
+  `update_user_id` bigint NULL DEFAULT NULL COMMENT '更新人ID',
+  `deleted` tinyint NOT NULL DEFAULT 0 COMMENT '删除标识 0正常 1删除',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '部门表' ROW_FORMAT = Dynamic;
 
-CREATE TABLE `sys_dept` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `parent_id` BIGINT NOT NULL DEFAULT 0,
-  `dept_name` VARCHAR(64) NOT NULL,
-  `dept_sort` INT NOT NULL DEFAULT 0,
-  `leader` VARCHAR(64) DEFAULT NULL,
-  `phone` VARCHAR(32) DEFAULT NULL,
-  `email` VARCHAR(128) DEFAULT NULL,
-  `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `create_user_id` BIGINT DEFAULT NULL,
-  `update_user_id` BIGINT DEFAULT NULL,
-  `deleted` TINYINT NOT NULL DEFAULT 0,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+-- ----------------------------
+-- Records of sys_dept
+-- ----------------------------
+INSERT INTO `sys_dept` VALUES (1, 0, '集团总部', 1, '管理员', '13800000000', 'admin@feng.com', '2026-03-19 03:13:04', '2026-03-19 03:13:04', NULL, NULL, 0);
+INSERT INTO `sys_dept` VALUES (2, 1, '研发中心2', 1, '冯帅', '15612509687', '15612509687@163.com', '2026-03-19 03:13:04', '2026-03-27 09:27:17', NULL, NULL, 0);
+INSERT INTO `sys_dept` VALUES (3, 1, '运营中心', 2, '运营负责人', '13800000002', 'ops@feng.com', '2026-03-19 03:13:04', '2026-03-19 03:13:04', NULL, NULL, 0);
 
-CREATE TABLE `sys_post` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `post_code` VARCHAR(64) NOT NULL,
-  `post_name` VARCHAR(64) NOT NULL,
-  `post_sort` INT NOT NULL DEFAULT 0,
-  `remark` VARCHAR(255) DEFAULT NULL,
-  `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `create_user_id` BIGINT DEFAULT NULL,
-  `update_user_id` BIGINT DEFAULT NULL,
-  `deleted` TINYINT NOT NULL DEFAULT 0,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+-- ----------------------------
+-- Table structure for sys_dict_data
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_dict_data`;
+CREATE TABLE `sys_dict_data`  (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `type_id` bigint NOT NULL COMMENT '字典类型ID',
+  `dict_label` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字典标签',
+  `dict_value` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字典值',
+  `dict_sort` int NOT NULL DEFAULT 0 COMMENT '排序',
+  `tag_type` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '标签样式',
+  `css_class` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '样式类名',
+  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
+  `create_time` datetime NOT NULL COMMENT '创建时间',
+  `update_time` datetime NOT NULL COMMENT '更新时间',
+  `create_user_id` bigint NULL DEFAULT NULL COMMENT '创建人ID',
+  `update_user_id` bigint NULL DEFAULT NULL COMMENT '更新人ID',
+  `deleted` tinyint NOT NULL DEFAULT 0 COMMENT '删除标识 0正常 1删除',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `uk_dict_type_value_deleted`(`type_id` ASC, `dict_value` ASC, `deleted` ASC) USING BTREE,
+  INDEX `idx_dict_type_sort`(`type_id` ASC, `dict_sort` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '字典数据表' ROW_FORMAT = Dynamic;
 
-CREATE TABLE `sys_role` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `role_name` VARCHAR(64) NOT NULL,
-  `role_key` VARCHAR(64) NOT NULL,
-  `role_sort` INT NOT NULL DEFAULT 0,
-  `remark` VARCHAR(255) DEFAULT NULL,
-  `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `create_user_id` BIGINT DEFAULT NULL,
-  `update_user_id` BIGINT DEFAULT NULL,
-  `deleted` TINYINT NOT NULL DEFAULT 0,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_role_key` (`role_key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+-- ----------------------------
+-- Records of sys_dict_data
+-- ----------------------------
+INSERT INTO `sys_dict_data` VALUES (1, 1, '启用', '1', 1, 'success', NULL, '启用状态', '2026-03-24 03:02:10', '2026-03-24 03:02:10', NULL, NULL, 0);
+INSERT INTO `sys_dict_data` VALUES (2, 1, '停用', '0', 2, 'info', NULL, '停用状态', '2026-03-24 03:02:10', '2026-03-24 03:02:10', NULL, NULL, 0);
+INSERT INTO `sys_dict_data` VALUES (3, 2, '男', '1', 1, 'primary', NULL, '男性', '2026-03-24 03:02:10', '2026-03-24 03:02:10', NULL, NULL, 0);
+INSERT INTO `sys_dict_data` VALUES (4, 2, '女', '2', 2, 'danger', NULL, '女性', '2026-03-24 03:02:10', '2026-03-24 03:02:10', NULL, NULL, 0);
+INSERT INTO `sys_dict_data` VALUES (5, 2, '未知', '0', 0, 'info', '', '', '2026-03-27 13:24:43', '2026-03-27 13:24:43', 1, 1, 0);
 
-CREATE TABLE `sys_user` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `username` VARCHAR(64) NOT NULL,
-  `password` VARCHAR(255) NOT NULL,
-  `nickname` VARCHAR(64) NOT NULL,
-  `phone` VARCHAR(32) DEFAULT NULL,
-  `email` VARCHAR(128) DEFAULT NULL,
-  `dept_id` BIGINT NOT NULL,
-  `post_id` BIGINT NOT NULL,
-  `status` TINYINT NOT NULL DEFAULT 1,
-  `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `create_user_id` BIGINT DEFAULT NULL,
-  `update_user_id` BIGINT DEFAULT NULL,
-  `deleted` TINYINT NOT NULL DEFAULT 0,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_username` (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+-- ----------------------------
+-- Table structure for sys_dict_type
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_dict_type`;
+CREATE TABLE `sys_dict_type`  (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `type_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字典名称',
+  `type_code` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '字典编码',
+  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
+  `create_time` datetime NOT NULL COMMENT '创建时间',
+  `update_time` datetime NOT NULL COMMENT '更新时间',
+  `create_user_id` bigint NULL DEFAULT NULL COMMENT '创建人ID',
+  `update_user_id` bigint NULL DEFAULT NULL COMMENT '更新人ID',
+  `deleted` tinyint NOT NULL DEFAULT 0 COMMENT '删除标识 0正常 1删除',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `uk_dict_type_code_deleted`(`type_code` ASC, `deleted` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '字典类型表' ROW_FORMAT = Dynamic;
 
-CREATE TABLE `sys_menu` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `parent_id` BIGINT NOT NULL DEFAULT 0,
-  `menu_name` VARCHAR(64) NOT NULL,
-  `menu_type` TINYINT NOT NULL,
-  `path` VARCHAR(128) DEFAULT NULL,
-  `component` VARCHAR(128) DEFAULT NULL,
-  `permission` VARCHAR(128) DEFAULT NULL,
-  `icon` VARCHAR(64) DEFAULT NULL,
-  `menu_sort` INT NOT NULL DEFAULT 0,
-  `visible` TINYINT NOT NULL DEFAULT 1,
-  `create_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `create_user_id` BIGINT DEFAULT NULL,
-  `update_user_id` BIGINT DEFAULT NULL,
-  `deleted` TINYINT NOT NULL DEFAULT 0,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+-- ----------------------------
+-- Records of sys_dict_type
+-- ----------------------------
+INSERT INTO `sys_dict_type` VALUES (1, '通用状态', 'sys_common_status', '系统内通用的启停状态', '2026-03-24 03:02:10', '2026-03-24 03:02:10', NULL, NULL, 0);
+INSERT INTO `sys_dict_type` VALUES (2, '用户性别', 'sys_user_gender', '用户资料中的性别字典', '2026-03-24 03:02:10', '2026-03-24 03:02:10', NULL, NULL, 0);
 
-CREATE TABLE `sys_user_role` (
-  `user_id` BIGINT NOT NULL,
-  `role_id` BIGINT NOT NULL,
-  PRIMARY KEY (`user_id`, `role_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+-- ----------------------------
+-- Table structure for sys_district
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_district`;
+CREATE TABLE `sys_district`  (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '行政区划编码',
+  `name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '名称',
+  `parent_code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '父级编码',
+  `level` tinyint NOT NULL DEFAULT 1 COMMENT '层级: 1=省 2=市 3=区',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `uk_district_code`(`code` ASC) USING BTREE,
+  INDEX `idx_district_parent`(`parent_code` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 10350 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '行政区划表' ROW_FORMAT = Dynamic;
 
-CREATE TABLE `sys_role_menu` (
-  `role_id` BIGINT NOT NULL,
-  `menu_id` BIGINT NOT NULL,
-  PRIMARY KEY (`role_id`, `menu_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+-- ----------------------------
+-- Records of sys_district
+-- ----------------------------
+INSERT INTO `sys_district` VALUES (6921, '11', '北京市', NULL, 1, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6922, '1101', '市辖区', '11', 2, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6923, '110101', '东城区', '1101', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6924, '110102', '西城区', '1101', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6925, '110105', '朝阳区', '1101', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6926, '110106', '丰台区', '1101', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6927, '110107', '石景山区', '1101', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6928, '110108', '海淀区', '1101', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6929, '110109', '门头沟区', '1101', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6930, '110111', '房山区', '1101', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6931, '110112', '通州区', '1101', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6932, '110113', '顺义区', '1101', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6933, '110114', '昌平区', '1101', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6934, '110115', '大兴区', '1101', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6935, '110116', '怀柔区', '1101', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6936, '110117', '平谷区', '1101', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6937, '110118', '密云区', '1101', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6938, '110119', '延庆区', '1101', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6939, '12', '天津市', NULL, 1, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6940, '1201', '市辖区', '12', 2, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6941, '120101', '和平区', '1201', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6942, '120102', '河东区', '1201', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6943, '120103', '河西区', '1201', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6944, '120104', '南开区', '1201', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6945, '120105', '河北区', '1201', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6946, '120106', '红桥区', '1201', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6947, '120110', '东丽区', '1201', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6948, '120111', '西青区', '1201', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6949, '120112', '津南区', '1201', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6950, '120113', '北辰区', '1201', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6951, '120114', '武清区', '1201', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6952, '120115', '宝坻区', '1201', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6953, '120116', '滨海新区', '1201', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6954, '120117', '宁河区', '1201', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6955, '120118', '静海区', '1201', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6956, '120119', '蓟州区', '1201', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6957, '13', '河北省', NULL, 1, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6958, '1301', '石家庄市', '13', 2, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6959, '130102', '长安区', '1301', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6960, '130104', '桥西区', '1301', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6961, '130105', '新华区', '1301', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6962, '130107', '井陉矿区', '1301', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6963, '130108', '裕华区', '1301', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6964, '130109', '藁城区', '1301', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6965, '130110', '鹿泉区', '1301', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6966, '130111', '栾城区', '1301', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6967, '130121', '井陉县', '1301', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6968, '130123', '正定县', '1301', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6969, '130125', '行唐县', '1301', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6970, '130126', '灵寿县', '1301', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6971, '130127', '高邑县', '1301', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6972, '130128', '深泽县', '1301', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6973, '130129', '赞皇县', '1301', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6974, '130130', '无极县', '1301', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6975, '130131', '平山县', '1301', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6976, '130132', '元氏县', '1301', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6977, '130133', '赵县', '1301', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6978, '130171', '石家庄高新技术产业开发区', '1301', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6979, '130172', '石家庄循环化工园区', '1301', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6980, '130181', '辛集市', '1301', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6981, '130183', '晋州市', '1301', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6982, '130184', '新乐市', '1301', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6983, '1302', '唐山市', '13', 2, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6984, '130202', '路南区', '1302', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6985, '130203', '路北区', '1302', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6986, '130204', '古冶区', '1302', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6987, '130205', '开平区', '1302', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6988, '130207', '丰南区', '1302', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6989, '130208', '丰润区', '1302', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6990, '130209', '曹妃甸区', '1302', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6991, '130224', '滦南县', '1302', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6992, '130225', '乐亭县', '1302', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6993, '130227', '迁西县', '1302', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6994, '130229', '玉田县', '1302', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6995, '130271', '河北唐山芦台经济开发区', '1302', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6996, '130272', '唐山市汉沽管理区', '1302', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6997, '130273', '唐山高新技术产业开发区', '1302', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6998, '130274', '河北唐山海港经济开发区', '1302', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (6999, '130281', '遵化市', '1302', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7000, '130283', '迁安市', '1302', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7001, '130284', '滦州市', '1302', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7002, '1303', '秦皇岛市', '13', 2, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7003, '130302', '海港区', '1303', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7004, '130303', '山海关区', '1303', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7005, '130304', '北戴河区', '1303', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7006, '130306', '抚宁区', '1303', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7007, '130321', '青龙满族自治县', '1303', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7008, '130322', '昌黎县', '1303', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7009, '130324', '卢龙县', '1303', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7010, '130371', '秦皇岛市经济技术开发区', '1303', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7011, '130372', '北戴河新区', '1303', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7012, '1304', '邯郸市', '13', 2, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7013, '130402', '邯山区', '1304', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7014, '130403', '丛台区', '1304', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7015, '130404', '复兴区', '1304', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7016, '130406', '峰峰矿区', '1304', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7017, '130407', '肥乡区', '1304', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7018, '130408', '永年区', '1304', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7019, '130423', '临漳县', '1304', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7020, '130424', '成安县', '1304', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7021, '130425', '大名县', '1304', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7022, '130426', '涉县', '1304', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7023, '130427', '磁县', '1304', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7024, '130430', '邱县', '1304', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7025, '130431', '鸡泽县', '1304', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7026, '130432', '广平县', '1304', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7027, '130433', '馆陶县', '1304', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7028, '130434', '魏县', '1304', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7029, '130435', '曲周县', '1304', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7030, '130471', '邯郸经济技术开发区', '1304', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7031, '130473', '邯郸冀南新区', '1304', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7032, '130481', '武安市', '1304', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7033, '1305', '邢台市', '13', 2, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7034, '130502', '襄都区', '1305', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7035, '130503', '信都区', '1305', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7036, '130505', '任泽区', '1305', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7037, '130506', '南和区', '1305', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7038, '130522', '临城县', '1305', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7039, '130523', '内丘县', '1305', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7040, '130524', '柏乡县', '1305', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7041, '130525', '隆尧县', '1305', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7042, '130528', '宁晋县', '1305', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7043, '130529', '巨鹿县', '1305', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7044, '130530', '新河县', '1305', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7045, '130531', '广宗县', '1305', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7046, '130532', '平乡县', '1305', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7047, '130533', '威县', '1305', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7048, '130534', '清河县', '1305', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7049, '130535', '临西县', '1305', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7050, '130571', '河北邢台经济开发区', '1305', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7051, '130581', '南宫市', '1305', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7052, '130582', '沙河市', '1305', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7053, '1306', '保定市', '13', 2, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7054, '130602', '竞秀区', '1306', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7055, '130606', '莲池区', '1306', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7056, '130607', '满城区', '1306', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7057, '130608', '清苑区', '1306', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7058, '130609', '徐水区', '1306', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7059, '130623', '涞水县', '1306', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7060, '130624', '阜平县', '1306', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7061, '130626', '定兴县', '1306', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7062, '130627', '唐县', '1306', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7063, '130628', '高阳县', '1306', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7064, '130629', '容城县', '1306', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7065, '130630', '涞源县', '1306', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7066, '130631', '望都县', '1306', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7067, '130632', '安新县', '1306', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7068, '130633', '易县', '1306', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7069, '130634', '曲阳县', '1306', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7070, '130635', '蠡县', '1306', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7071, '130636', '顺平县', '1306', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7072, '130637', '博野县', '1306', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7073, '130638', '雄县', '1306', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7074, '130671', '保定高新技术产业开发区', '1306', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7075, '130672', '保定白沟新城', '1306', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7076, '130681', '涿州市', '1306', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7077, '130682', '定州市', '1306', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7078, '130683', '安国市', '1306', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7079, '130684', '高碑店市', '1306', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7080, '1307', '张家口市', '13', 2, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7081, '130702', '桥东区', '1307', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7082, '130703', '桥西区', '1307', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7083, '130705', '宣化区', '1307', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7084, '130706', '下花园区', '1307', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7085, '130708', '万全区', '1307', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7086, '130709', '崇礼区', '1307', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7087, '130722', '张北县', '1307', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7088, '130723', '康保县', '1307', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7089, '130724', '沽源县', '1307', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7090, '130725', '尚义县', '1307', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7091, '130726', '蔚县', '1307', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7092, '130727', '阳原县', '1307', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7093, '130728', '怀安县', '1307', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7094, '130730', '怀来县', '1307', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7095, '130731', '涿鹿县', '1307', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7096, '130732', '赤城县', '1307', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7097, '130771', '张家口经济开发区', '1307', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7098, '130772', '张家口市察北管理区', '1307', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7099, '130773', '张家口市塞北管理区', '1307', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7100, '1308', '承德市', '13', 2, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7101, '130802', '双桥区', '1308', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7102, '130803', '双滦区', '1308', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7103, '130804', '鹰手营子矿区', '1308', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7104, '130821', '承德县', '1308', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7105, '130822', '兴隆县', '1308', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7106, '130824', '滦平县', '1308', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7107, '130825', '隆化县', '1308', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7108, '130826', '丰宁满族自治县', '1308', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7109, '130827', '宽城满族自治县', '1308', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7110, '130828', '围场满族蒙古族自治县', '1308', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7111, '130871', '承德高新技术产业开发区', '1308', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7112, '130881', '平泉市', '1308', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7113, '1309', '沧州市', '13', 2, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7114, '130902', '新华区', '1309', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7115, '130903', '运河区', '1309', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7116, '130921', '沧县', '1309', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7117, '130922', '青县', '1309', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7118, '130923', '东光县', '1309', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7119, '130924', '海兴县', '1309', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7120, '130925', '盐山县', '1309', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7121, '130926', '肃宁县', '1309', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7122, '130927', '南皮县', '1309', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7123, '130928', '吴桥县', '1309', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7124, '130929', '献县', '1309', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7125, '130930', '孟村回族自治县', '1309', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7126, '130971', '河北沧州经济开发区', '1309', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7127, '130972', '沧州高新技术产业开发区', '1309', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7128, '130973', '沧州渤海新区', '1309', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7129, '130981', '泊头市', '1309', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7130, '130982', '任丘市', '1309', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7131, '130983', '黄骅市', '1309', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7132, '130984', '河间市', '1309', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7133, '1310', '廊坊市', '13', 2, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7134, '131002', '安次区', '1310', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7135, '131003', '广阳区', '1310', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7136, '131022', '固安县', '1310', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7137, '131023', '永清县', '1310', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7138, '131024', '香河县', '1310', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7139, '131025', '大城县', '1310', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7140, '131026', '文安县', '1310', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7141, '131028', '大厂回族自治县', '1310', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7142, '131071', '廊坊经济技术开发区', '1310', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7143, '131081', '霸州市', '1310', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7144, '131082', '三河市', '1310', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7145, '1311', '衡水市', '13', 2, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7146, '131102', '桃城区', '1311', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7147, '131103', '冀州区', '1311', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7148, '131121', '枣强县', '1311', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7149, '131122', '武邑县', '1311', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7150, '131123', '武强县', '1311', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7151, '131124', '饶阳县', '1311', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7152, '131125', '安平县', '1311', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7153, '131126', '故城县', '1311', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7154, '131127', '景县', '1311', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7155, '131128', '阜城县', '1311', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7156, '131171', '河北衡水高新技术产业开发区', '1311', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7157, '131172', '衡水滨湖新区', '1311', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7158, '131182', '深州市', '1311', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7159, '14', '山西省', NULL, 1, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7160, '1401', '太原市', '14', 2, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7161, '140105', '小店区', '1401', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7162, '140106', '迎泽区', '1401', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7163, '140107', '杏花岭区', '1401', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7164, '140108', '尖草坪区', '1401', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7165, '140109', '万柏林区', '1401', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7166, '140110', '晋源区', '1401', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7167, '140121', '清徐县', '1401', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7168, '140122', '阳曲县', '1401', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7169, '140123', '娄烦县', '1401', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7170, '140171', '山西转型综合改革示范区', '1401', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7171, '140181', '古交市', '1401', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7172, '1402', '大同市', '14', 2, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7173, '140212', '新荣区', '1402', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7174, '140213', '平城区', '1402', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7175, '140214', '云冈区', '1402', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7176, '140215', '云州区', '1402', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7177, '140221', '阳高县', '1402', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7178, '140222', '天镇县', '1402', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7179, '140223', '广灵县', '1402', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7180, '140224', '灵丘县', '1402', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7181, '140225', '浑源县', '1402', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7182, '140226', '左云县', '1402', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7183, '140271', '山西大同经济开发区', '1402', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7184, '1403', '阳泉市', '14', 2, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7185, '140302', '城区', '1403', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7186, '140303', '矿区', '1403', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7187, '140311', '郊区', '1403', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7188, '140321', '平定县', '1403', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7189, '140322', '盂县', '1403', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7190, '1404', '长治市', '14', 2, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7191, '140403', '潞州区', '1404', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7192, '140404', '上党区', '1404', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7193, '140405', '屯留区', '1404', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7194, '140406', '潞城区', '1404', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7195, '140423', '襄垣县', '1404', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7196, '140425', '平顺县', '1404', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7197, '140426', '黎城县', '1404', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7198, '140427', '壶关县', '1404', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7199, '140428', '长子县', '1404', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7200, '140429', '武乡县', '1404', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7201, '140430', '沁县', '1404', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7202, '140431', '沁源县', '1404', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7203, '1405', '晋城市', '14', 2, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7204, '140502', '城区', '1405', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7205, '140521', '沁水县', '1405', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7206, '140522', '阳城县', '1405', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7207, '140524', '陵川县', '1405', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7208, '140525', '泽州县', '1405', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7209, '140581', '高平市', '1405', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7210, '1406', '朔州市', '14', 2, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7211, '140602', '朔城区', '1406', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7212, '140603', '平鲁区', '1406', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7213, '140621', '山阴县', '1406', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7214, '140622', '应县', '1406', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7215, '140623', '右玉县', '1406', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7216, '140671', '山西朔州经济开发区', '1406', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7217, '140681', '怀仁市', '1406', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7218, '1407', '晋中市', '14', 2, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7219, '140702', '榆次区', '1407', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7220, '140703', '太谷区', '1407', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7221, '140721', '榆社县', '1407', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7222, '140722', '左权县', '1407', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7223, '140723', '和顺县', '1407', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7224, '140724', '昔阳县', '1407', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7225, '140725', '寿阳县', '1407', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7226, '140727', '祁县', '1407', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7227, '140728', '平遥县', '1407', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7228, '140729', '灵石县', '1407', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7229, '140781', '介休市', '1407', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7230, '1408', '运城市', '14', 2, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7231, '140802', '盐湖区', '1408', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7232, '140821', '临猗县', '1408', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7233, '140822', '万荣县', '1408', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7234, '140823', '闻喜县', '1408', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7235, '140824', '稷山县', '1408', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7236, '140825', '新绛县', '1408', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7237, '140826', '绛县', '1408', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7238, '140827', '垣曲县', '1408', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7239, '140828', '夏县', '1408', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7240, '140829', '平陆县', '1408', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7241, '140830', '芮城县', '1408', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7242, '140881', '永济市', '1408', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7243, '140882', '河津市', '1408', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7244, '1409', '忻州市', '14', 2, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7245, '140902', '忻府区', '1409', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7246, '140921', '定襄县', '1409', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7247, '140922', '五台县', '1409', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7248, '140923', '代县', '1409', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7249, '140924', '繁峙县', '1409', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7250, '140925', '宁武县', '1409', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7251, '140926', '静乐县', '1409', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7252, '140927', '神池县', '1409', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7253, '140928', '五寨县', '1409', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7254, '140929', '岢岚县', '1409', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7255, '140930', '河曲县', '1409', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7256, '140931', '保德县', '1409', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7257, '140932', '偏关县', '1409', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7258, '140971', '五台山风景名胜区', '1409', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7259, '140981', '原平市', '1409', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7260, '1410', '临汾市', '14', 2, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7261, '141002', '尧都区', '1410', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7262, '141021', '曲沃县', '1410', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7263, '141022', '翼城县', '1410', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7264, '141023', '襄汾县', '1410', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7265, '141024', '洪洞县', '1410', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7266, '141025', '古县', '1410', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7267, '141026', '安泽县', '1410', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7268, '141027', '浮山县', '1410', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7269, '141028', '吉县', '1410', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7270, '141029', '乡宁县', '1410', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7271, '141030', '大宁县', '1410', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7272, '141031', '隰县', '1410', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7273, '141032', '永和县', '1410', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7274, '141033', '蒲县', '1410', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7275, '141034', '汾西县', '1410', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7276, '141081', '侯马市', '1410', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7277, '141082', '霍州市', '1410', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7278, '1411', '吕梁市', '14', 2, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7279, '141102', '离石区', '1411', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7280, '141121', '文水县', '1411', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7281, '141122', '交城县', '1411', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7282, '141123', '兴县', '1411', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7283, '141124', '临县', '1411', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7284, '141125', '柳林县', '1411', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7285, '141126', '石楼县', '1411', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7286, '141127', '岚县', '1411', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7287, '141128', '方山县', '1411', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7288, '141129', '中阳县', '1411', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7289, '141130', '交口县', '1411', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7290, '141181', '孝义市', '1411', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7291, '141182', '汾阳市', '1411', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7292, '15', '内蒙古自治区', NULL, 1, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7293, '1501', '呼和浩特市', '15', 2, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7294, '150102', '新城区', '1501', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7295, '150103', '回民区', '1501', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7296, '150104', '玉泉区', '1501', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7297, '150105', '赛罕区', '1501', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7298, '150121', '土默特左旗', '1501', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7299, '150122', '托克托县', '1501', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7300, '150123', '和林格尔县', '1501', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7301, '150124', '清水河县', '1501', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7302, '150125', '武川县', '1501', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7303, '150172', '呼和浩特经济技术开发区', '1501', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7304, '1502', '包头市', '15', 2, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7305, '150202', '东河区', '1502', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7306, '150203', '昆都仑区', '1502', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7307, '150204', '青山区', '1502', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7308, '150205', '石拐区', '1502', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7309, '150206', '白云鄂博矿区', '1502', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7310, '150207', '九原区', '1502', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7311, '150221', '土默特右旗', '1502', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7312, '150222', '固阳县', '1502', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7313, '150223', '达尔罕茂明安联合旗', '1502', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7314, '150271', '包头稀土高新技术产业开发区', '1502', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7315, '1503', '乌海市', '15', 2, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7316, '150302', '海勃湾区', '1503', 3, '2026-05-18 13:10:25', '2026-05-18 13:10:25');
+INSERT INTO `sys_district` VALUES (7317, '150303', '海南区', '1503', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7318, '150304', '乌达区', '1503', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7319, '1504', '赤峰市', '15', 2, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7320, '150402', '红山区', '1504', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7321, '150403', '元宝山区', '1504', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7322, '150404', '松山区', '1504', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7323, '150421', '阿鲁科尔沁旗', '1504', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7324, '150422', '巴林左旗', '1504', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7325, '150423', '巴林右旗', '1504', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7326, '150424', '林西县', '1504', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7327, '150425', '克什克腾旗', '1504', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7328, '150426', '翁牛特旗', '1504', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7329, '150428', '喀喇沁旗', '1504', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7330, '150429', '宁城县', '1504', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7331, '150430', '敖汉旗', '1504', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7332, '1505', '通辽市', '15', 2, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7333, '150502', '科尔沁区', '1505', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7334, '150521', '科尔沁左翼中旗', '1505', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7335, '150522', '科尔沁左翼后旗', '1505', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7336, '150523', '开鲁县', '1505', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7337, '150524', '库伦旗', '1505', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7338, '150525', '奈曼旗', '1505', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7339, '150526', '扎鲁特旗', '1505', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7340, '150571', '通辽经济技术开发区', '1505', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7341, '150581', '霍林郭勒市', '1505', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7342, '1506', '鄂尔多斯市', '15', 2, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7343, '150602', '东胜区', '1506', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7344, '150603', '康巴什区', '1506', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7345, '150621', '达拉特旗', '1506', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7346, '150622', '准格尔旗', '1506', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7347, '150623', '鄂托克前旗', '1506', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7348, '150624', '鄂托克旗', '1506', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7349, '150625', '杭锦旗', '1506', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7350, '150626', '乌审旗', '1506', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7351, '150627', '伊金霍洛旗', '1506', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7352, '1507', '呼伦贝尔市', '15', 2, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7353, '150702', '海拉尔区', '1507', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7354, '150703', '扎赉诺尔区', '1507', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7355, '150721', '阿荣旗', '1507', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7356, '150722', '莫力达瓦达斡尔族自治旗', '1507', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7357, '150723', '鄂伦春自治旗', '1507', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7358, '150724', '鄂温克族自治旗', '1507', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7359, '150725', '陈巴尔虎旗', '1507', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7360, '150726', '新巴尔虎左旗', '1507', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7361, '150727', '新巴尔虎右旗', '1507', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7362, '150781', '满洲里市', '1507', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7363, '150782', '牙克石市', '1507', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7364, '150783', '扎兰屯市', '1507', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7365, '150784', '额尔古纳市', '1507', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7366, '150785', '根河市', '1507', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7367, '1508', '巴彦淖尔市', '15', 2, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7368, '150802', '临河区', '1508', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7369, '150821', '五原县', '1508', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7370, '150822', '磴口县', '1508', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7371, '150823', '乌拉特前旗', '1508', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7372, '150824', '乌拉特中旗', '1508', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7373, '150825', '乌拉特后旗', '1508', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7374, '150826', '杭锦后旗', '1508', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7375, '1509', '乌兰察布市', '15', 2, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7376, '150902', '集宁区', '1509', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7377, '150921', '卓资县', '1509', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7378, '150922', '化德县', '1509', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7379, '150923', '商都县', '1509', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7380, '150924', '兴和县', '1509', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7381, '150925', '凉城县', '1509', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7382, '150926', '察哈尔右翼前旗', '1509', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7383, '150927', '察哈尔右翼中旗', '1509', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7384, '150928', '察哈尔右翼后旗', '1509', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7385, '150929', '四子王旗', '1509', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7386, '150981', '丰镇市', '1509', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7387, '1522', '兴安盟', '15', 2, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7388, '152201', '乌兰浩特市', '1522', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7389, '152202', '阿尔山市', '1522', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7390, '152221', '科尔沁右翼前旗', '1522', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7391, '152222', '科尔沁右翼中旗', '1522', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7392, '152223', '扎赉特旗', '1522', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7393, '152224', '突泉县', '1522', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7394, '1525', '锡林郭勒盟', '15', 2, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7395, '152501', '二连浩特市', '1525', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7396, '152502', '锡林浩特市', '1525', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7397, '152522', '阿巴嘎旗', '1525', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7398, '152523', '苏尼特左旗', '1525', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7399, '152524', '苏尼特右旗', '1525', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7400, '152525', '东乌珠穆沁旗', '1525', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7401, '152526', '西乌珠穆沁旗', '1525', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7402, '152527', '太仆寺旗', '1525', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7403, '152528', '镶黄旗', '1525', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7404, '152529', '正镶白旗', '1525', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7405, '152530', '正蓝旗', '1525', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7406, '152531', '多伦县', '1525', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7407, '152571', '乌拉盖管理区管委会', '1525', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7408, '1529', '阿拉善盟', '15', 2, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7409, '152921', '阿拉善左旗', '1529', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7410, '152922', '阿拉善右旗', '1529', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7411, '152923', '额济纳旗', '1529', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7412, '152971', '内蒙古阿拉善高新技术产业开发区', '1529', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7413, '21', '辽宁省', NULL, 1, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7414, '2101', '沈阳市', '21', 2, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7415, '210102', '和平区', '2101', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7416, '210103', '沈河区', '2101', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7417, '210104', '大东区', '2101', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7418, '210105', '皇姑区', '2101', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7419, '210106', '铁西区', '2101', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7420, '210111', '苏家屯区', '2101', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7421, '210112', '浑南区', '2101', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7422, '210113', '沈北新区', '2101', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7423, '210114', '于洪区', '2101', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7424, '210115', '辽中区', '2101', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7425, '210123', '康平县', '2101', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7426, '210124', '法库县', '2101', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7427, '210181', '新民市', '2101', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7428, '2102', '大连市', '21', 2, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7429, '210202', '中山区', '2102', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7430, '210203', '西岗区', '2102', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7431, '210204', '沙河口区', '2102', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7432, '210211', '甘井子区', '2102', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7433, '210212', '旅顺口区', '2102', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7434, '210213', '金州区', '2102', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7435, '210214', '普兰店区', '2102', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7436, '210224', '长海县', '2102', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7437, '210281', '瓦房店市', '2102', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7438, '210283', '庄河市', '2102', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7439, '2103', '鞍山市', '21', 2, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7440, '210302', '铁东区', '2103', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7441, '210303', '铁西区', '2103', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7442, '210304', '立山区', '2103', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7443, '210311', '千山区', '2103', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7444, '210321', '台安县', '2103', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7445, '210323', '岫岩满族自治县', '2103', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7446, '210381', '海城市', '2103', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7447, '2104', '抚顺市', '21', 2, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7448, '210402', '新抚区', '2104', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7449, '210403', '东洲区', '2104', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7450, '210404', '望花区', '2104', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7451, '210411', '顺城区', '2104', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7452, '210421', '抚顺县', '2104', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7453, '210422', '新宾满族自治县', '2104', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7454, '210423', '清原满族自治县', '2104', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7455, '2105', '本溪市', '21', 2, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7456, '210502', '平山区', '2105', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7457, '210503', '溪湖区', '2105', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7458, '210504', '明山区', '2105', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7459, '210505', '南芬区', '2105', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7460, '210521', '本溪满族自治县', '2105', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7461, '210522', '桓仁满族自治县', '2105', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7462, '2106', '丹东市', '21', 2, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7463, '210602', '元宝区', '2106', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7464, '210603', '振兴区', '2106', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7465, '210604', '振安区', '2106', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7466, '210624', '宽甸满族自治县', '2106', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7467, '210681', '东港市', '2106', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7468, '210682', '凤城市', '2106', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7469, '2107', '锦州市', '21', 2, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7470, '210702', '古塔区', '2107', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7471, '210703', '凌河区', '2107', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7472, '210711', '太和区', '2107', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7473, '210726', '黑山县', '2107', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7474, '210727', '义县', '2107', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7475, '210781', '凌海市', '2107', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7476, '210782', '北镇市', '2107', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7477, '2108', '营口市', '21', 2, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7478, '210802', '站前区', '2108', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7479, '210803', '西市区', '2108', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7480, '210804', '鲅鱼圈区', '2108', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7481, '210811', '老边区', '2108', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7482, '210881', '盖州市', '2108', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7483, '210882', '大石桥市', '2108', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7484, '2109', '阜新市', '21', 2, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7485, '210902', '海州区', '2109', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7486, '210903', '新邱区', '2109', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7487, '210904', '太平区', '2109', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7488, '210905', '清河门区', '2109', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7489, '210911', '细河区', '2109', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7490, '210921', '阜新蒙古族自治县', '2109', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7491, '210922', '彰武县', '2109', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7492, '2110', '辽阳市', '21', 2, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7493, '211002', '白塔区', '2110', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7494, '211003', '文圣区', '2110', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7495, '211004', '宏伟区', '2110', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7496, '211005', '弓长岭区', '2110', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7497, '211011', '太子河区', '2110', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7498, '211021', '辽阳县', '2110', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7499, '211081', '灯塔市', '2110', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7500, '2111', '盘锦市', '21', 2, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7501, '211102', '双台子区', '2111', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7502, '211103', '兴隆台区', '2111', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7503, '211104', '大洼区', '2111', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7504, '211122', '盘山县', '2111', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7505, '2112', '铁岭市', '21', 2, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7506, '211202', '银州区', '2112', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7507, '211204', '清河区', '2112', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7508, '211221', '铁岭县', '2112', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7509, '211223', '西丰县', '2112', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7510, '211224', '昌图县', '2112', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7511, '211281', '调兵山市', '2112', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7512, '211282', '开原市', '2112', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7513, '2113', '朝阳市', '21', 2, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7514, '211302', '双塔区', '2113', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7515, '211303', '龙城区', '2113', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7516, '211321', '朝阳县', '2113', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7517, '211322', '建平县', '2113', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7518, '211324', '喀喇沁左翼蒙古族自治县', '2113', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7519, '211381', '北票市', '2113', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7520, '211382', '凌源市', '2113', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7521, '2114', '葫芦岛市', '21', 2, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7522, '211402', '连山区', '2114', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7523, '211403', '龙港区', '2114', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7524, '211404', '南票区', '2114', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7525, '211421', '绥中县', '2114', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7526, '211422', '建昌县', '2114', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7527, '211481', '兴城市', '2114', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7528, '22', '吉林省', NULL, 1, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7529, '2201', '长春市', '22', 2, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7530, '220102', '南关区', '2201', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7531, '220103', '宽城区', '2201', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7532, '220104', '朝阳区', '2201', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7533, '220105', '二道区', '2201', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7534, '220106', '绿园区', '2201', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7535, '220112', '双阳区', '2201', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7536, '220113', '九台区', '2201', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7537, '220122', '农安县', '2201', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7538, '220171', '长春经济技术开发区', '2201', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7539, '220172', '长春净月高新技术产业开发区', '2201', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7540, '220173', '长春高新技术产业开发区', '2201', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7541, '220174', '长春汽车经济技术开发区', '2201', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7542, '220182', '榆树市', '2201', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7543, '220183', '德惠市', '2201', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7544, '220184', '公主岭市', '2201', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7545, '2202', '吉林市', '22', 2, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7546, '220202', '昌邑区', '2202', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7547, '220203', '龙潭区', '2202', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7548, '220204', '船营区', '2202', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7549, '220211', '丰满区', '2202', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7550, '220221', '永吉县', '2202', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7551, '220271', '吉林经济开发区', '2202', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7552, '220272', '吉林高新技术产业开发区', '2202', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7553, '220273', '吉林中国新加坡食品区', '2202', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7554, '220281', '蛟河市', '2202', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7555, '220282', '桦甸市', '2202', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7556, '220283', '舒兰市', '2202', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7557, '220284', '磐石市', '2202', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7558, '2203', '四平市', '22', 2, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7559, '220302', '铁西区', '2203', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7560, '220303', '铁东区', '2203', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7561, '220322', '梨树县', '2203', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7562, '220323', '伊通满族自治县', '2203', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7563, '220382', '双辽市', '2203', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7564, '2204', '辽源市', '22', 2, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7565, '220402', '龙山区', '2204', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7566, '220403', '西安区', '2204', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7567, '220421', '东丰县', '2204', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7568, '220422', '东辽县', '2204', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7569, '2205', '通化市', '22', 2, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7570, '220502', '东昌区', '2205', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7571, '220503', '二道江区', '2205', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7572, '220521', '通化县', '2205', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7573, '220523', '辉南县', '2205', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7574, '220524', '柳河县', '2205', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7575, '220581', '梅河口市', '2205', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7576, '220582', '集安市', '2205', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7577, '2206', '白山市', '22', 2, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7578, '220602', '浑江区', '2206', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7579, '220605', '江源区', '2206', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7580, '220621', '抚松县', '2206', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7581, '220622', '靖宇县', '2206', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7582, '220623', '长白朝鲜族自治县', '2206', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7583, '220681', '临江市', '2206', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7584, '2207', '松原市', '22', 2, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7585, '220702', '宁江区', '2207', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7586, '220721', '前郭尔罗斯蒙古族自治县', '2207', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7587, '220722', '长岭县', '2207', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7588, '220723', '乾安县', '2207', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7589, '220771', '吉林松原经济开发区', '2207', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7590, '220781', '扶余市', '2207', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7591, '2208', '白城市', '22', 2, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7592, '220802', '洮北区', '2208', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7593, '220821', '镇赉县', '2208', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7594, '220822', '通榆县', '2208', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7595, '220871', '吉林白城经济开发区', '2208', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7596, '220881', '洮南市', '2208', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7597, '220882', '大安市', '2208', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7598, '2224', '延边朝鲜族自治州', '22', 2, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7599, '222401', '延吉市', '2224', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7600, '222402', '图们市', '2224', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7601, '222403', '敦化市', '2224', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7602, '222404', '珲春市', '2224', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7603, '222405', '龙井市', '2224', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7604, '222406', '和龙市', '2224', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7605, '222424', '汪清县', '2224', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7606, '222426', '安图县', '2224', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7607, '23', '黑龙江省', NULL, 1, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7608, '2301', '哈尔滨市', '23', 2, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7609, '230102', '道里区', '2301', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7610, '230103', '南岗区', '2301', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7611, '230104', '道外区', '2301', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7612, '230108', '平房区', '2301', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7613, '230109', '松北区', '2301', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7614, '230110', '香坊区', '2301', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7615, '230111', '呼兰区', '2301', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7616, '230112', '阿城区', '2301', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7617, '230113', '双城区', '2301', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7618, '230123', '依兰县', '2301', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7619, '230124', '方正县', '2301', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7620, '230125', '宾县', '2301', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7621, '230126', '巴彦县', '2301', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7622, '230127', '木兰县', '2301', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7623, '230128', '通河县', '2301', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7624, '230129', '延寿县', '2301', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7625, '230183', '尚志市', '2301', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7626, '230184', '五常市', '2301', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7627, '2302', '齐齐哈尔市', '23', 2, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7628, '230202', '龙沙区', '2302', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7629, '230203', '建华区', '2302', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7630, '230204', '铁锋区', '2302', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7631, '230205', '昂昂溪区', '2302', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7632, '230206', '富拉尔基区', '2302', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7633, '230207', '碾子山区', '2302', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7634, '230208', '梅里斯达斡尔族区', '2302', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7635, '230221', '龙江县', '2302', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7636, '230223', '依安县', '2302', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7637, '230224', '泰来县', '2302', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7638, '230225', '甘南县', '2302', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7639, '230227', '富裕县', '2302', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7640, '230229', '克山县', '2302', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7641, '230230', '克东县', '2302', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7642, '230231', '拜泉县', '2302', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7643, '230281', '讷河市', '2302', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7644, '2303', '鸡西市', '23', 2, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7645, '230302', '鸡冠区', '2303', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7646, '230303', '恒山区', '2303', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7647, '230304', '滴道区', '2303', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7648, '230305', '梨树区', '2303', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7649, '230306', '城子河区', '2303', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7650, '230307', '麻山区', '2303', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7651, '230321', '鸡东县', '2303', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7652, '230381', '虎林市', '2303', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7653, '230382', '密山市', '2303', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7654, '2304', '鹤岗市', '23', 2, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7655, '230402', '向阳区', '2304', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7656, '230403', '工农区', '2304', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7657, '230404', '南山区', '2304', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7658, '230405', '兴安区', '2304', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7659, '230406', '东山区', '2304', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7660, '230407', '兴山区', '2304', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7661, '230421', '萝北县', '2304', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7662, '230422', '绥滨县', '2304', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7663, '2305', '双鸭山市', '23', 2, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7664, '230502', '尖山区', '2305', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7665, '230503', '岭东区', '2305', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7666, '230505', '四方台区', '2305', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7667, '230506', '宝山区', '2305', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7668, '230521', '集贤县', '2305', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7669, '230522', '友谊县', '2305', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7670, '230523', '宝清县', '2305', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7671, '230524', '饶河县', '2305', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7672, '2306', '大庆市', '23', 2, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7673, '230602', '萨尔图区', '2306', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7674, '230603', '龙凤区', '2306', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7675, '230604', '让胡路区', '2306', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7676, '230605', '红岗区', '2306', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7677, '230606', '大同区', '2306', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7678, '230621', '肇州县', '2306', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7679, '230622', '肇源县', '2306', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7680, '230623', '林甸县', '2306', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7681, '230624', '杜尔伯特蒙古族自治县', '2306', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7682, '230671', '大庆高新技术产业开发区', '2306', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7683, '2307', '伊春市', '23', 2, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7684, '230717', '伊美区', '2307', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7685, '230718', '乌翠区', '2307', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7686, '230719', '友好区', '2307', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7687, '230722', '嘉荫县', '2307', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7688, '230723', '汤旺县', '2307', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7689, '230724', '丰林县', '2307', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7690, '230725', '大箐山县', '2307', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7691, '230726', '南岔县', '2307', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7692, '230751', '金林区', '2307', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7693, '230781', '铁力市', '2307', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7694, '2308', '佳木斯市', '23', 2, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7695, '230803', '向阳区', '2308', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7696, '230804', '前进区', '2308', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7697, '230805', '东风区', '2308', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7698, '230811', '郊区', '2308', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7699, '230822', '桦南县', '2308', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7700, '230826', '桦川县', '2308', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7701, '230828', '汤原县', '2308', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7702, '230881', '同江市', '2308', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7703, '230882', '富锦市', '2308', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7704, '230883', '抚远市', '2308', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7705, '2309', '七台河市', '23', 2, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7706, '230902', '新兴区', '2309', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7707, '230903', '桃山区', '2309', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7708, '230904', '茄子河区', '2309', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7709, '230921', '勃利县', '2309', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7710, '2310', '牡丹江市', '23', 2, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7711, '231002', '东安区', '2310', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7712, '231003', '阳明区', '2310', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7713, '231004', '爱民区', '2310', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7714, '231005', '西安区', '2310', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7715, '231025', '林口县', '2310', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7716, '231081', '绥芬河市', '2310', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7717, '231083', '海林市', '2310', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7718, '231084', '宁安市', '2310', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7719, '231085', '穆棱市', '2310', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7720, '231086', '东宁市', '2310', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7721, '2311', '黑河市', '23', 2, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7722, '231102', '爱辉区', '2311', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7723, '231123', '逊克县', '2311', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7724, '231124', '孙吴县', '2311', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7725, '231181', '北安市', '2311', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7726, '231182', '五大连池市', '2311', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7727, '231183', '嫩江市', '2311', 3, '2026-05-18 13:10:26', '2026-05-18 13:10:26');
+INSERT INTO `sys_district` VALUES (7728, '2312', '绥化市', '23', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7729, '231202', '北林区', '2312', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7730, '231221', '望奎县', '2312', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7731, '231222', '兰西县', '2312', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7732, '231223', '青冈县', '2312', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7733, '231224', '庆安县', '2312', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7734, '231225', '明水县', '2312', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7735, '231226', '绥棱县', '2312', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7736, '231281', '安达市', '2312', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7737, '231282', '肇东市', '2312', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7738, '231283', '海伦市', '2312', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7739, '2327', '大兴安岭地区', '23', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7740, '232701', '漠河市', '2327', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7741, '232721', '呼玛县', '2327', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7742, '232722', '塔河县', '2327', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7743, '232761', '加格达奇区', '2327', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7744, '232762', '松岭区', '2327', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7745, '232763', '新林区', '2327', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7746, '232764', '呼中区', '2327', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7747, '31', '上海市', NULL, 1, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7748, '3101', '市辖区', '31', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7749, '310101', '黄浦区', '3101', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7750, '310104', '徐汇区', '3101', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7751, '310105', '长宁区', '3101', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7752, '310106', '静安区', '3101', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7753, '310107', '普陀区', '3101', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7754, '310109', '虹口区', '3101', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7755, '310110', '杨浦区', '3101', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7756, '310112', '闵行区', '3101', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7757, '310113', '宝山区', '3101', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7758, '310114', '嘉定区', '3101', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7759, '310115', '浦东新区', '3101', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7760, '310116', '金山区', '3101', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7761, '310117', '松江区', '3101', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7762, '310118', '青浦区', '3101', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7763, '310120', '奉贤区', '3101', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7764, '310151', '崇明区', '3101', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7765, '32', '江苏省', NULL, 1, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7766, '3201', '南京市', '32', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7767, '320102', '玄武区', '3201', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7768, '320104', '秦淮区', '3201', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7769, '320105', '建邺区', '3201', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7770, '320106', '鼓楼区', '3201', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7771, '320111', '浦口区', '3201', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7772, '320113', '栖霞区', '3201', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7773, '320114', '雨花台区', '3201', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7774, '320115', '江宁区', '3201', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7775, '320116', '六合区', '3201', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7776, '320117', '溧水区', '3201', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7777, '320118', '高淳区', '3201', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7778, '3202', '无锡市', '32', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7779, '320205', '锡山区', '3202', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7780, '320206', '惠山区', '3202', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7781, '320211', '滨湖区', '3202', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7782, '320213', '梁溪区', '3202', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7783, '320214', '新吴区', '3202', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7784, '320281', '江阴市', '3202', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7785, '320282', '宜兴市', '3202', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7786, '3203', '徐州市', '32', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7787, '320302', '鼓楼区', '3203', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7788, '320303', '云龙区', '3203', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7789, '320305', '贾汪区', '3203', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7790, '320311', '泉山区', '3203', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7791, '320312', '铜山区', '3203', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7792, '320321', '丰县', '3203', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7793, '320322', '沛县', '3203', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7794, '320324', '睢宁县', '3203', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7795, '320371', '徐州经济技术开发区', '3203', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7796, '320381', '新沂市', '3203', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7797, '320382', '邳州市', '3203', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7798, '3204', '常州市', '32', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7799, '320402', '天宁区', '3204', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7800, '320404', '钟楼区', '3204', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7801, '320411', '新北区', '3204', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7802, '320412', '武进区', '3204', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7803, '320413', '金坛区', '3204', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7804, '320481', '溧阳市', '3204', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7805, '3205', '苏州市', '32', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7806, '320505', '虎丘区', '3205', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7807, '320506', '吴中区', '3205', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7808, '320507', '相城区', '3205', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7809, '320508', '姑苏区', '3205', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7810, '320509', '吴江区', '3205', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7811, '320576', '苏州工业园区', '3205', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7812, '320581', '常熟市', '3205', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7813, '320582', '张家港市', '3205', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7814, '320583', '昆山市', '3205', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7815, '320585', '太仓市', '3205', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7816, '3206', '南通市', '32', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7817, '320612', '通州区', '3206', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7818, '320613', '崇川区', '3206', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7819, '320614', '海门区', '3206', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7820, '320623', '如东县', '3206', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7821, '320671', '南通经济技术开发区', '3206', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7822, '320681', '启东市', '3206', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7823, '320682', '如皋市', '3206', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7824, '320685', '海安市', '3206', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7825, '3207', '连云港市', '32', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7826, '320703', '连云区', '3207', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7827, '320706', '海州区', '3207', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7828, '320707', '赣榆区', '3207', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7829, '320722', '东海县', '3207', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7830, '320723', '灌云县', '3207', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7831, '320724', '灌南县', '3207', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7832, '320771', '连云港经济技术开发区', '3207', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7833, '3208', '淮安市', '32', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7834, '320803', '淮安区', '3208', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7835, '320804', '淮阴区', '3208', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7836, '320812', '清江浦区', '3208', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7837, '320813', '洪泽区', '3208', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7838, '320826', '涟水县', '3208', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7839, '320830', '盱眙县', '3208', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7840, '320831', '金湖县', '3208', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7841, '320871', '淮安经济技术开发区', '3208', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7842, '3209', '盐城市', '32', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7843, '320902', '亭湖区', '3209', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7844, '320903', '盐都区', '3209', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7845, '320904', '大丰区', '3209', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7846, '320921', '响水县', '3209', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7847, '320922', '滨海县', '3209', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7848, '320923', '阜宁县', '3209', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7849, '320924', '射阳县', '3209', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7850, '320925', '建湖县', '3209', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7851, '320971', '盐城经济技术开发区', '3209', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7852, '320981', '东台市', '3209', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7853, '3210', '扬州市', '32', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7854, '321002', '广陵区', '3210', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7855, '321003', '邗江区', '3210', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7856, '321012', '江都区', '3210', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7857, '321023', '宝应县', '3210', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7858, '321071', '扬州经济技术开发区', '3210', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7859, '321081', '仪征市', '3210', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7860, '321084', '高邮市', '3210', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7861, '3211', '镇江市', '32', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7862, '321102', '京口区', '3211', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7863, '321111', '润州区', '3211', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7864, '321112', '丹徒区', '3211', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7865, '321171', '镇江新区', '3211', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7866, '321181', '丹阳市', '3211', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7867, '321182', '扬中市', '3211', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7868, '321183', '句容市', '3211', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7869, '3212', '泰州市', '32', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7870, '321202', '海陵区', '3212', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7871, '321203', '高港区', '3212', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7872, '321204', '姜堰区', '3212', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7873, '321281', '兴化市', '3212', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7874, '321282', '靖江市', '3212', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7875, '321283', '泰兴市', '3212', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7876, '3213', '宿迁市', '32', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7877, '321302', '宿城区', '3213', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7878, '321311', '宿豫区', '3213', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7879, '321322', '沭阳县', '3213', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7880, '321323', '泗阳县', '3213', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7881, '321324', '泗洪县', '3213', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7882, '321371', '宿迁经济技术开发区', '3213', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7883, '33', '浙江省', NULL, 1, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7884, '3301', '杭州市', '33', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7885, '330102', '上城区', '3301', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7886, '330105', '拱墅区', '3301', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7887, '330106', '西湖区', '3301', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7888, '330108', '滨江区', '3301', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7889, '330109', '萧山区', '3301', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7890, '330110', '余杭区', '3301', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7891, '330111', '富阳区', '3301', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7892, '330112', '临安区', '3301', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7893, '330113', '临平区', '3301', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7894, '330114', '钱塘区', '3301', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7895, '330122', '桐庐县', '3301', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7896, '330127', '淳安县', '3301', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7897, '330182', '建德市', '3301', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7898, '3302', '宁波市', '33', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7899, '330203', '海曙区', '3302', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7900, '330205', '江北区', '3302', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7901, '330206', '北仑区', '3302', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7902, '330211', '镇海区', '3302', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7903, '330212', '鄞州区', '3302', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7904, '330213', '奉化区', '3302', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7905, '330225', '象山县', '3302', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7906, '330226', '宁海县', '3302', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7907, '330281', '余姚市', '3302', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7908, '330282', '慈溪市', '3302', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7909, '3303', '温州市', '33', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7910, '330302', '鹿城区', '3303', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7911, '330303', '龙湾区', '3303', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7912, '330304', '瓯海区', '3303', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7913, '330305', '洞头区', '3303', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7914, '330324', '永嘉县', '3303', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7915, '330326', '平阳县', '3303', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7916, '330327', '苍南县', '3303', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7917, '330328', '文成县', '3303', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7918, '330329', '泰顺县', '3303', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7919, '330381', '瑞安市', '3303', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7920, '330382', '乐清市', '3303', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7921, '330383', '龙港市', '3303', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7922, '3304', '嘉兴市', '33', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7923, '330402', '南湖区', '3304', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7924, '330411', '秀洲区', '3304', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7925, '330421', '嘉善县', '3304', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7926, '330424', '海盐县', '3304', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7927, '330481', '海宁市', '3304', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7928, '330482', '平湖市', '3304', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7929, '330483', '桐乡市', '3304', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7930, '3305', '湖州市', '33', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7931, '330502', '吴兴区', '3305', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7932, '330503', '南浔区', '3305', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7933, '330521', '德清县', '3305', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7934, '330522', '长兴县', '3305', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7935, '330523', '安吉县', '3305', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7936, '3306', '绍兴市', '33', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7937, '330602', '越城区', '3306', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7938, '330603', '柯桥区', '3306', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7939, '330604', '上虞区', '3306', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7940, '330624', '新昌县', '3306', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7941, '330681', '诸暨市', '3306', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7942, '330683', '嵊州市', '3306', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7943, '3307', '金华市', '33', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7944, '330702', '婺城区', '3307', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7945, '330703', '金东区', '3307', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7946, '330723', '武义县', '3307', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7947, '330726', '浦江县', '3307', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7948, '330727', '磐安县', '3307', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7949, '330781', '兰溪市', '3307', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7950, '330782', '义乌市', '3307', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7951, '330783', '东阳市', '3307', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7952, '330784', '永康市', '3307', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7953, '3308', '衢州市', '33', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7954, '330802', '柯城区', '3308', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7955, '330803', '衢江区', '3308', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7956, '330822', '常山县', '3308', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7957, '330824', '开化县', '3308', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7958, '330825', '龙游县', '3308', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7959, '330881', '江山市', '3308', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7960, '3309', '舟山市', '33', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7961, '330902', '定海区', '3309', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7962, '330903', '普陀区', '3309', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7963, '330921', '岱山县', '3309', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7964, '330922', '嵊泗县', '3309', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7965, '3310', '台州市', '33', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7966, '331002', '椒江区', '3310', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7967, '331003', '黄岩区', '3310', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7968, '331004', '路桥区', '3310', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7969, '331022', '三门县', '3310', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7970, '331023', '天台县', '3310', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7971, '331024', '仙居县', '3310', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7972, '331081', '温岭市', '3310', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7973, '331082', '临海市', '3310', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7974, '331083', '玉环市', '3310', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7975, '3311', '丽水市', '33', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7976, '331102', '莲都区', '3311', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7977, '331121', '青田县', '3311', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7978, '331122', '缙云县', '3311', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7979, '331123', '遂昌县', '3311', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7980, '331124', '松阳县', '3311', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7981, '331125', '云和县', '3311', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7982, '331126', '庆元县', '3311', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7983, '331127', '景宁畲族自治县', '3311', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7984, '331181', '龙泉市', '3311', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7985, '34', '安徽省', NULL, 1, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7986, '3401', '合肥市', '34', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7987, '340102', '瑶海区', '3401', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7988, '340103', '庐阳区', '3401', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7989, '340104', '蜀山区', '3401', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7990, '340111', '包河区', '3401', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7991, '340121', '长丰县', '3401', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7992, '340122', '肥东县', '3401', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7993, '340123', '肥西县', '3401', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7994, '340124', '庐江县', '3401', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7995, '340176', '合肥高新技术产业开发区', '3401', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7996, '340177', '合肥经济技术开发区', '3401', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7997, '340178', '合肥新站高新技术产业开发区', '3401', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7998, '340181', '巢湖市', '3401', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (7999, '3402', '芜湖市', '34', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8000, '340202', '镜湖区', '3402', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8001, '340207', '鸠江区', '3402', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8002, '340209', '弋江区', '3402', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8003, '340210', '湾沚区', '3402', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8004, '340212', '繁昌区', '3402', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8005, '340223', '南陵县', '3402', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8006, '340271', '芜湖经济技术开发区', '3402', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8007, '340272', '安徽芜湖三山经济开发区', '3402', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8008, '340281', '无为市', '3402', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8009, '3403', '蚌埠市', '34', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8010, '340302', '龙子湖区', '3403', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8011, '340303', '蚌山区', '3403', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8012, '340304', '禹会区', '3403', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8013, '340311', '淮上区', '3403', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8014, '340321', '怀远县', '3403', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8015, '340322', '五河县', '3403', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8016, '340323', '固镇县', '3403', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8017, '340371', '蚌埠市高新技术开发区', '3403', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8018, '340372', '蚌埠市经济开发区', '3403', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8019, '3404', '淮南市', '34', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8020, '340402', '大通区', '3404', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8021, '340403', '田家庵区', '3404', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8022, '340404', '谢家集区', '3404', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8023, '340405', '八公山区', '3404', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8024, '340406', '潘集区', '3404', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8025, '340421', '凤台县', '3404', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8026, '340422', '寿县', '3404', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8027, '3405', '马鞍山市', '34', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8028, '340503', '花山区', '3405', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8029, '340504', '雨山区', '3405', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8030, '340506', '博望区', '3405', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8031, '340521', '当涂县', '3405', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8032, '340522', '含山县', '3405', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8033, '340523', '和县', '3405', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8034, '3406', '淮北市', '34', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8035, '340602', '杜集区', '3406', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8036, '340603', '相山区', '3406', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8037, '340604', '烈山区', '3406', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8038, '340621', '濉溪县', '3406', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8039, '3407', '铜陵市', '34', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8040, '340705', '铜官区', '3407', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8041, '340706', '义安区', '3407', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8042, '340711', '郊区', '3407', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8043, '340722', '枞阳县', '3407', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8044, '3408', '安庆市', '34', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8045, '340802', '迎江区', '3408', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8046, '340803', '大观区', '3408', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8047, '340811', '宜秀区', '3408', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8048, '340822', '怀宁县', '3408', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8049, '340825', '太湖县', '3408', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8050, '340826', '宿松县', '3408', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8051, '340827', '望江县', '3408', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8052, '340828', '岳西县', '3408', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8053, '340871', '安徽安庆经济开发区', '3408', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8054, '340881', '桐城市', '3408', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8055, '340882', '潜山市', '3408', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8056, '3410', '黄山市', '34', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8057, '341002', '屯溪区', '3410', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8058, '341003', '黄山区', '3410', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8059, '341004', '徽州区', '3410', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8060, '341021', '歙县', '3410', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8061, '341022', '休宁县', '3410', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8062, '341023', '黟县', '3410', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8063, '341024', '祁门县', '3410', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8064, '3411', '滁州市', '34', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8065, '341102', '琅琊区', '3411', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8066, '341103', '南谯区', '3411', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8067, '341122', '来安县', '3411', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8068, '341124', '全椒县', '3411', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8069, '341125', '定远县', '3411', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8070, '341126', '凤阳县', '3411', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8071, '341171', '中新苏滁高新技术产业开发区', '3411', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8072, '341172', '滁州经济技术开发区', '3411', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8073, '341181', '天长市', '3411', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8074, '341182', '明光市', '3411', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8075, '3412', '阜阳市', '34', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8076, '341202', '颍州区', '3412', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8077, '341203', '颍东区', '3412', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8078, '341204', '颍泉区', '3412', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8079, '341221', '临泉县', '3412', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8080, '341222', '太和县', '3412', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8081, '341225', '阜南县', '3412', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8082, '341226', '颍上县', '3412', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8083, '341271', '阜阳合肥现代产业园区', '3412', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8084, '341272', '阜阳经济技术开发区', '3412', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8085, '341282', '界首市', '3412', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8086, '3413', '宿州市', '34', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8087, '341302', '埇桥区', '3413', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8088, '341321', '砀山县', '3413', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8089, '341322', '萧县', '3413', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8090, '341323', '灵璧县', '3413', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8091, '341324', '泗县', '3413', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8092, '341371', '宿州马鞍山现代产业园区', '3413', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8093, '341372', '宿州经济技术开发区', '3413', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8094, '3415', '六安市', '34', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8095, '341502', '金安区', '3415', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8096, '341503', '裕安区', '3415', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8097, '341504', '叶集区', '3415', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8098, '341522', '霍邱县', '3415', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8099, '341523', '舒城县', '3415', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8100, '341524', '金寨县', '3415', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8101, '341525', '霍山县', '3415', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8102, '3416', '亳州市', '34', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8103, '341602', '谯城区', '3416', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8104, '341621', '涡阳县', '3416', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8105, '341622', '蒙城县', '3416', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8106, '341623', '利辛县', '3416', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8107, '3417', '池州市', '34', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8108, '341702', '贵池区', '3417', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8109, '341721', '东至县', '3417', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8110, '341722', '石台县', '3417', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8111, '341723', '青阳县', '3417', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8112, '3418', '宣城市', '34', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8113, '341802', '宣州区', '3418', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8114, '341821', '郎溪县', '3418', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8115, '341823', '泾县', '3418', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8116, '341824', '绩溪县', '3418', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8117, '341825', '旌德县', '3418', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8118, '341871', '宣城市经济开发区', '3418', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8119, '341881', '宁国市', '3418', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8120, '341882', '广德市', '3418', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8121, '35', '福建省', NULL, 1, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8122, '3501', '福州市', '35', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8123, '350102', '鼓楼区', '3501', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8124, '350103', '台江区', '3501', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8125, '350104', '仓山区', '3501', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8126, '350105', '马尾区', '3501', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8127, '350111', '晋安区', '3501', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8128, '350112', '长乐区', '3501', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8129, '350121', '闽侯县', '3501', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8130, '350122', '连江县', '3501', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8131, '350123', '罗源县', '3501', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8132, '350124', '闽清县', '3501', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8133, '350125', '永泰县', '3501', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8134, '350128', '平潭县', '3501', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8135, '350181', '福清市', '3501', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8136, '3502', '厦门市', '35', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8137, '350203', '思明区', '3502', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8138, '350205', '海沧区', '3502', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8139, '350206', '湖里区', '3502', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8140, '350211', '集美区', '3502', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8141, '350212', '同安区', '3502', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8142, '350213', '翔安区', '3502', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8143, '3503', '莆田市', '35', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8144, '350302', '城厢区', '3503', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8145, '350303', '涵江区', '3503', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8146, '350304', '荔城区', '3503', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8147, '350305', '秀屿区', '3503', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8148, '350322', '仙游县', '3503', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8149, '3504', '三明市', '35', 2, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8150, '350404', '三元区', '3504', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8151, '350405', '沙县区', '3504', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8152, '350421', '明溪县', '3504', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8153, '350423', '清流县', '3504', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8154, '350424', '宁化县', '3504', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8155, '350425', '大田县', '3504', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8156, '350426', '尤溪县', '3504', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8157, '350428', '将乐县', '3504', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8158, '350429', '泰宁县', '3504', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8159, '350430', '建宁县', '3504', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8160, '350481', '永安市', '3504', 3, '2026-05-18 13:10:27', '2026-05-18 13:10:27');
+INSERT INTO `sys_district` VALUES (8161, '3505', '泉州市', '35', 2, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8162, '350502', '鲤城区', '3505', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8163, '350503', '丰泽区', '3505', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8164, '350504', '洛江区', '3505', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8165, '350505', '泉港区', '3505', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8166, '350521', '惠安县', '3505', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8167, '350524', '安溪县', '3505', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8168, '350525', '永春县', '3505', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8169, '350526', '德化县', '3505', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8170, '350527', '金门县', '3505', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8171, '350581', '石狮市', '3505', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8172, '350582', '晋江市', '3505', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8173, '350583', '南安市', '3505', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8174, '3506', '漳州市', '35', 2, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8175, '350602', '芗城区', '3506', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8176, '350603', '龙文区', '3506', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8177, '350604', '龙海区', '3506', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8178, '350605', '长泰区', '3506', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8179, '350622', '云霄县', '3506', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8180, '350623', '漳浦县', '3506', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8181, '350624', '诏安县', '3506', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8182, '350626', '东山县', '3506', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8183, '350627', '南靖县', '3506', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8184, '350628', '平和县', '3506', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8185, '350629', '华安县', '3506', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8186, '3507', '南平市', '35', 2, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8187, '350702', '延平区', '3507', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8188, '350703', '建阳区', '3507', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8189, '350721', '顺昌县', '3507', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8190, '350722', '浦城县', '3507', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8191, '350723', '光泽县', '3507', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8192, '350724', '松溪县', '3507', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8193, '350725', '政和县', '3507', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8194, '350781', '邵武市', '3507', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8195, '350782', '武夷山市', '3507', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8196, '350783', '建瓯市', '3507', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8197, '3508', '龙岩市', '35', 2, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8198, '350802', '新罗区', '3508', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8199, '350803', '永定区', '3508', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8200, '350821', '长汀县', '3508', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8201, '350823', '上杭县', '3508', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8202, '350824', '武平县', '3508', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8203, '350825', '连城县', '3508', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8204, '350881', '漳平市', '3508', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8205, '3509', '宁德市', '35', 2, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8206, '350902', '蕉城区', '3509', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8207, '350921', '霞浦县', '3509', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8208, '350922', '古田县', '3509', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8209, '350923', '屏南县', '3509', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8210, '350924', '寿宁县', '3509', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8211, '350925', '周宁县', '3509', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8212, '350926', '柘荣县', '3509', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8213, '350981', '福安市', '3509', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8214, '350982', '福鼎市', '3509', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8215, '36', '江西省', NULL, 1, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8216, '3601', '南昌市', '36', 2, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8217, '360102', '东湖区', '3601', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8218, '360103', '西湖区', '3601', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8219, '360104', '青云谱区', '3601', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8220, '360111', '青山湖区', '3601', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8221, '360112', '新建区', '3601', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8222, '360113', '红谷滩区', '3601', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8223, '360121', '南昌县', '3601', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8224, '360123', '安义县', '3601', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8225, '360124', '进贤县', '3601', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8226, '3602', '景德镇市', '36', 2, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8227, '360202', '昌江区', '3602', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8228, '360203', '珠山区', '3602', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8229, '360222', '浮梁县', '3602', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8230, '360281', '乐平市', '3602', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8231, '3603', '萍乡市', '36', 2, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8232, '360302', '安源区', '3603', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8233, '360313', '湘东区', '3603', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8234, '360321', '莲花县', '3603', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8235, '360322', '上栗县', '3603', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8236, '360323', '芦溪县', '3603', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8237, '3604', '九江市', '36', 2, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8238, '360402', '濂溪区', '3604', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8239, '360403', '浔阳区', '3604', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8240, '360404', '柴桑区', '3604', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8241, '360423', '武宁县', '3604', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8242, '360424', '修水县', '3604', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8243, '360425', '永修县', '3604', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8244, '360426', '德安县', '3604', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8245, '360428', '都昌县', '3604', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8246, '360429', '湖口县', '3604', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8247, '360430', '彭泽县', '3604', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8248, '360481', '瑞昌市', '3604', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8249, '360482', '共青城市', '3604', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8250, '360483', '庐山市', '3604', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8251, '3605', '新余市', '36', 2, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8252, '360502', '渝水区', '3605', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8253, '360521', '分宜县', '3605', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8254, '3606', '鹰潭市', '36', 2, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8255, '360602', '月湖区', '3606', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8256, '360603', '余江区', '3606', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8257, '360681', '贵溪市', '3606', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8258, '3607', '赣州市', '36', 2, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8259, '360702', '章贡区', '3607', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8260, '360703', '南康区', '3607', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8261, '360704', '赣县区', '3607', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8262, '360722', '信丰县', '3607', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8263, '360723', '大余县', '3607', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8264, '360724', '上犹县', '3607', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8265, '360725', '崇义县', '3607', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8266, '360726', '安远县', '3607', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8267, '360728', '定南县', '3607', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8268, '360729', '全南县', '3607', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8269, '360730', '宁都县', '3607', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8270, '360731', '于都县', '3607', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8271, '360732', '兴国县', '3607', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8272, '360733', '会昌县', '3607', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8273, '360734', '寻乌县', '3607', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8274, '360735', '石城县', '3607', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8275, '360781', '瑞金市', '3607', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8276, '360783', '龙南市', '3607', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8277, '3608', '吉安市', '36', 2, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8278, '360802', '吉州区', '3608', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8279, '360803', '青原区', '3608', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8280, '360821', '吉安县', '3608', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8281, '360822', '吉水县', '3608', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8282, '360823', '峡江县', '3608', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8283, '360824', '新干县', '3608', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8284, '360825', '永丰县', '3608', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8285, '360826', '泰和县', '3608', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8286, '360827', '遂川县', '3608', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8287, '360828', '万安县', '3608', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8288, '360829', '安福县', '3608', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8289, '360830', '永新县', '3608', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8290, '360881', '井冈山市', '3608', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8291, '3609', '宜春市', '36', 2, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8292, '360902', '袁州区', '3609', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8293, '360921', '奉新县', '3609', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8294, '360922', '万载县', '3609', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8295, '360923', '上高县', '3609', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8296, '360924', '宜丰县', '3609', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8297, '360925', '靖安县', '3609', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8298, '360926', '铜鼓县', '3609', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8299, '360981', '丰城市', '3609', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8300, '360982', '樟树市', '3609', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8301, '360983', '高安市', '3609', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8302, '3610', '抚州市', '36', 2, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8303, '361002', '临川区', '3610', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8304, '361003', '东乡区', '3610', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8305, '361021', '南城县', '3610', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8306, '361022', '黎川县', '3610', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8307, '361023', '南丰县', '3610', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8308, '361024', '崇仁县', '3610', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8309, '361025', '乐安县', '3610', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8310, '361026', '宜黄县', '3610', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8311, '361027', '金溪县', '3610', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8312, '361028', '资溪县', '3610', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8313, '361030', '广昌县', '3610', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8314, '3611', '上饶市', '36', 2, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8315, '361102', '信州区', '3611', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8316, '361103', '广丰区', '3611', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8317, '361104', '广信区', '3611', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8318, '361123', '玉山县', '3611', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8319, '361124', '铅山县', '3611', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8320, '361125', '横峰县', '3611', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8321, '361126', '弋阳县', '3611', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8322, '361127', '余干县', '3611', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8323, '361128', '鄱阳县', '3611', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8324, '361129', '万年县', '3611', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8325, '361130', '婺源县', '3611', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8326, '361181', '德兴市', '3611', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8327, '37', '山东省', NULL, 1, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8328, '3701', '济南市', '37', 2, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8329, '370102', '历下区', '3701', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8330, '370103', '市中区', '3701', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8331, '370104', '槐荫区', '3701', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8332, '370105', '天桥区', '3701', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8333, '370112', '历城区', '3701', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8334, '370113', '长清区', '3701', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8335, '370114', '章丘区', '3701', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8336, '370115', '济阳区', '3701', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8337, '370116', '莱芜区', '3701', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8338, '370117', '钢城区', '3701', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8339, '370124', '平阴县', '3701', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8340, '370126', '商河县', '3701', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8341, '370176', '济南高新技术产业开发区', '3701', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8342, '3702', '青岛市', '37', 2, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8343, '370202', '市南区', '3702', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8344, '370203', '市北区', '3702', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8345, '370211', '黄岛区', '3702', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8346, '370212', '崂山区', '3702', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8347, '370213', '李沧区', '3702', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8348, '370214', '城阳区', '3702', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8349, '370215', '即墨区', '3702', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8350, '370281', '胶州市', '3702', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8351, '370283', '平度市', '3702', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8352, '370285', '莱西市', '3702', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8353, '3703', '淄博市', '37', 2, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8354, '370302', '淄川区', '3703', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8355, '370303', '张店区', '3703', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8356, '370304', '博山区', '3703', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8357, '370305', '临淄区', '3703', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8358, '370306', '周村区', '3703', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8359, '370321', '桓台县', '3703', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8360, '370322', '高青县', '3703', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8361, '370323', '沂源县', '3703', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8362, '3704', '枣庄市', '37', 2, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8363, '370402', '市中区', '3704', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8364, '370403', '薛城区', '3704', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8365, '370404', '峄城区', '3704', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8366, '370405', '台儿庄区', '3704', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8367, '370406', '山亭区', '3704', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8368, '370481', '滕州市', '3704', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8369, '3705', '东营市', '37', 2, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8370, '370502', '东营区', '3705', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8371, '370503', '河口区', '3705', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8372, '370505', '垦利区', '3705', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8373, '370522', '利津县', '3705', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8374, '370523', '广饶县', '3705', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8375, '370571', '东营经济技术开发区', '3705', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8376, '370572', '东营港经济开发区', '3705', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8377, '3706', '烟台市', '37', 2, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8378, '370602', '芝罘区', '3706', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8379, '370611', '福山区', '3706', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8380, '370612', '牟平区', '3706', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8381, '370613', '莱山区', '3706', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8382, '370614', '蓬莱区', '3706', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8383, '370671', '烟台高新技术产业开发区', '3706', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8384, '370676', '烟台经济技术开发区', '3706', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8385, '370681', '龙口市', '3706', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8386, '370682', '莱阳市', '3706', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8387, '370683', '莱州市', '3706', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8388, '370685', '招远市', '3706', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8389, '370686', '栖霞市', '3706', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8390, '370687', '海阳市', '3706', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8391, '3707', '潍坊市', '37', 2, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8392, '370702', '潍城区', '3707', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8393, '370703', '寒亭区', '3707', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8394, '370704', '坊子区', '3707', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8395, '370705', '奎文区', '3707', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8396, '370724', '临朐县', '3707', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8397, '370725', '昌乐县', '3707', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8398, '370772', '潍坊滨海经济技术开发区', '3707', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8399, '370781', '青州市', '3707', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8400, '370782', '诸城市', '3707', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8401, '370783', '寿光市', '3707', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8402, '370784', '安丘市', '3707', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8403, '370785', '高密市', '3707', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8404, '370786', '昌邑市', '3707', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8405, '3708', '济宁市', '37', 2, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8406, '370811', '任城区', '3708', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8407, '370812', '兖州区', '3708', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8408, '370826', '微山县', '3708', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8409, '370827', '鱼台县', '3708', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8410, '370828', '金乡县', '3708', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8411, '370829', '嘉祥县', '3708', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8412, '370830', '汶上县', '3708', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8413, '370831', '泗水县', '3708', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8414, '370832', '梁山县', '3708', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8415, '370871', '济宁高新技术产业开发区', '3708', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8416, '370881', '曲阜市', '3708', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8417, '370883', '邹城市', '3708', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8418, '3709', '泰安市', '37', 2, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8419, '370902', '泰山区', '3709', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8420, '370911', '岱岳区', '3709', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8421, '370921', '宁阳县', '3709', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8422, '370923', '东平县', '3709', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8423, '370982', '新泰市', '3709', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8424, '370983', '肥城市', '3709', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8425, '3710', '威海市', '37', 2, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8426, '371002', '环翠区', '3710', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8427, '371003', '文登区', '3710', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8428, '371071', '威海火炬高技术产业开发区', '3710', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8429, '371072', '威海经济技术开发区', '3710', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8430, '371073', '威海临港经济技术开发区', '3710', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8431, '371082', '荣成市', '3710', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8432, '371083', '乳山市', '3710', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8433, '3711', '日照市', '37', 2, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8434, '371102', '东港区', '3711', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8435, '371103', '岚山区', '3711', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8436, '371121', '五莲县', '3711', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8437, '371122', '莒县', '3711', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8438, '371171', '日照经济技术开发区', '3711', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8439, '3713', '临沂市', '37', 2, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8440, '371302', '兰山区', '3713', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8441, '371311', '罗庄区', '3713', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8442, '371312', '河东区', '3713', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8443, '371321', '沂南县', '3713', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8444, '371322', '郯城县', '3713', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8445, '371323', '沂水县', '3713', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8446, '371324', '兰陵县', '3713', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8447, '371325', '费县', '3713', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8448, '371326', '平邑县', '3713', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8449, '371327', '莒南县', '3713', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8450, '371328', '蒙阴县', '3713', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8451, '371329', '临沭县', '3713', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8452, '371371', '临沂高新技术产业开发区', '3713', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8453, '3714', '德州市', '37', 2, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8454, '371402', '德城区', '3714', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8455, '371403', '陵城区', '3714', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8456, '371422', '宁津县', '3714', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8457, '371423', '庆云县', '3714', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8458, '371424', '临邑县', '3714', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8459, '371425', '齐河县', '3714', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8460, '371426', '平原县', '3714', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8461, '371427', '夏津县', '3714', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8462, '371428', '武城县', '3714', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8463, '371471', '德州天衢新区', '3714', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8464, '371481', '乐陵市', '3714', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8465, '371482', '禹城市', '3714', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8466, '3715', '聊城市', '37', 2, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8467, '371502', '东昌府区', '3715', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8468, '371503', '茌平区', '3715', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8469, '371521', '阳谷县', '3715', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8470, '371522', '莘县', '3715', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8471, '371524', '东阿县', '3715', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8472, '371525', '冠县', '3715', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8473, '371526', '高唐县', '3715', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8474, '371581', '临清市', '3715', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8475, '3716', '滨州市', '37', 2, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8476, '371602', '滨城区', '3716', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8477, '371603', '沾化区', '3716', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8478, '371621', '惠民县', '3716', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8479, '371622', '阳信县', '3716', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8480, '371623', '无棣县', '3716', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8481, '371625', '博兴县', '3716', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8482, '371681', '邹平市', '3716', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8483, '3717', '菏泽市', '37', 2, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8484, '371702', '牡丹区', '3717', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8485, '371703', '定陶区', '3717', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8486, '371721', '曹县', '3717', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8487, '371722', '单县', '3717', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8488, '371723', '成武县', '3717', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8489, '371724', '巨野县', '3717', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8490, '371725', '郓城县', '3717', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8491, '371726', '鄄城县', '3717', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8492, '371728', '东明县', '3717', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8493, '371771', '菏泽经济技术开发区', '3717', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8494, '371772', '菏泽高新技术开发区', '3717', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8495, '41', '河南省', NULL, 1, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8496, '4101', '郑州市', '41', 2, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8497, '410102', '中原区', '4101', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8498, '410103', '二七区', '4101', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8499, '410104', '管城回族区', '4101', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8500, '410105', '金水区', '4101', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8501, '410106', '上街区', '4101', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8502, '410108', '惠济区', '4101', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8503, '410122', '中牟县', '4101', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8504, '410171', '郑州经济技术开发区', '4101', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8505, '410172', '郑州高新技术产业开发区', '4101', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8506, '410173', '郑州航空港经济综合实验区', '4101', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8507, '410181', '巩义市', '4101', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8508, '410182', '荥阳市', '4101', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8509, '410183', '新密市', '4101', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8510, '410184', '新郑市', '4101', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8511, '410185', '登封市', '4101', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8512, '4102', '开封市', '41', 2, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8513, '410202', '龙亭区', '4102', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8514, '410203', '顺河回族区', '4102', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8515, '410204', '鼓楼区', '4102', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8516, '410205', '禹王台区', '4102', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8517, '410212', '祥符区', '4102', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8518, '410221', '杞县', '4102', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8519, '410222', '通许县', '4102', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8520, '410223', '尉氏县', '4102', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8521, '410225', '兰考县', '4102', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8522, '4103', '洛阳市', '41', 2, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8523, '410302', '老城区', '4103', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8524, '410303', '西工区', '4103', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8525, '410304', '瀍河回族区', '4103', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8526, '410305', '涧西区', '4103', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8527, '410307', '偃师区', '4103', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8528, '410308', '孟津区', '4103', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8529, '410311', '洛龙区', '4103', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8530, '410323', '新安县', '4103', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8531, '410324', '栾川县', '4103', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8532, '410325', '嵩县', '4103', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8533, '410326', '汝阳县', '4103', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8534, '410327', '宜阳县', '4103', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8535, '410328', '洛宁县', '4103', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8536, '410329', '伊川县', '4103', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8537, '410371', '洛阳高新技术产业开发区', '4103', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8538, '4104', '平顶山市', '41', 2, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8539, '410402', '新华区', '4104', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8540, '410403', '卫东区', '4104', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8541, '410404', '石龙区', '4104', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8542, '410411', '湛河区', '4104', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8543, '410421', '宝丰县', '4104', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8544, '410422', '叶县', '4104', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8545, '410423', '鲁山县', '4104', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8546, '410425', '郏县', '4104', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8547, '410471', '平顶山高新技术产业开发区', '4104', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8548, '410472', '平顶山市城乡一体化示范区', '4104', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8549, '410481', '舞钢市', '4104', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8550, '410482', '汝州市', '4104', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8551, '4105', '安阳市', '41', 2, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8552, '410502', '文峰区', '4105', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8553, '410503', '北关区', '4105', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8554, '410505', '殷都区', '4105', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8555, '410506', '龙安区', '4105', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8556, '410522', '安阳县', '4105', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8557, '410523', '汤阴县', '4105', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8558, '410526', '滑县', '4105', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8559, '410527', '内黄县', '4105', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8560, '410571', '安阳高新技术产业开发区', '4105', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8561, '410581', '林州市', '4105', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8562, '4106', '鹤壁市', '41', 2, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8563, '410602', '鹤山区', '4106', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8564, '410603', '山城区', '4106', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8565, '410611', '淇滨区', '4106', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8566, '410621', '浚县', '4106', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8567, '410622', '淇县', '4106', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8568, '410671', '鹤壁经济技术开发区', '4106', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8569, '4107', '新乡市', '41', 2, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8570, '410702', '红旗区', '4107', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8571, '410703', '卫滨区', '4107', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8572, '410704', '凤泉区', '4107', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8573, '410711', '牧野区', '4107', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8574, '410721', '新乡县', '4107', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8575, '410724', '获嘉县', '4107', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8576, '410725', '原阳县', '4107', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8577, '410726', '延津县', '4107', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8578, '410727', '封丘县', '4107', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8579, '410771', '新乡高新技术产业开发区', '4107', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8580, '410772', '新乡经济技术开发区', '4107', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8581, '410773', '新乡市平原城乡一体化示范区', '4107', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8582, '410781', '卫辉市', '4107', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8583, '410782', '辉县市', '4107', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8584, '410783', '长垣市', '4107', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8585, '4108', '焦作市', '41', 2, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8586, '410802', '解放区', '4108', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8587, '410803', '中站区', '4108', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8588, '410804', '马村区', '4108', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8589, '410811', '山阳区', '4108', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8590, '410821', '修武县', '4108', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8591, '410822', '博爱县', '4108', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8592, '410823', '武陟县', '4108', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8593, '410825', '温县', '4108', 3, '2026-05-18 13:10:28', '2026-05-18 13:10:28');
+INSERT INTO `sys_district` VALUES (8594, '410871', '焦作城乡一体化示范区', '4108', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8595, '410882', '沁阳市', '4108', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8596, '410883', '孟州市', '4108', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8597, '4109', '濮阳市', '41', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8598, '410902', '华龙区', '4109', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8599, '410922', '清丰县', '4109', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8600, '410923', '南乐县', '4109', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8601, '410926', '范县', '4109', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8602, '410927', '台前县', '4109', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8603, '410928', '濮阳县', '4109', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8604, '410971', '河南濮阳工业园区', '4109', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8605, '410972', '濮阳经济技术开发区', '4109', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8606, '4110', '许昌市', '41', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8607, '411002', '魏都区', '4110', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8608, '411003', '建安区', '4110', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8609, '411024', '鄢陵县', '4110', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8610, '411025', '襄城县', '4110', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8611, '411071', '许昌经济技术开发区', '4110', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8612, '411081', '禹州市', '4110', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8613, '411082', '长葛市', '4110', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8614, '4111', '漯河市', '41', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8615, '411102', '源汇区', '4111', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8616, '411103', '郾城区', '4111', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8617, '411104', '召陵区', '4111', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8618, '411121', '舞阳县', '4111', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8619, '411122', '临颍县', '4111', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8620, '411171', '漯河经济技术开发区', '4111', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8621, '4112', '三门峡市', '41', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8622, '411202', '湖滨区', '4112', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8623, '411203', '陕州区', '4112', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8624, '411221', '渑池县', '4112', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8625, '411224', '卢氏县', '4112', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8626, '411271', '河南三门峡经济开发区', '4112', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8627, '411281', '义马市', '4112', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8628, '411282', '灵宝市', '4112', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8629, '4113', '南阳市', '41', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8630, '411302', '宛城区', '4113', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8631, '411303', '卧龙区', '4113', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8632, '411321', '南召县', '4113', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8633, '411322', '方城县', '4113', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8634, '411323', '西峡县', '4113', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8635, '411324', '镇平县', '4113', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8636, '411325', '内乡县', '4113', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8637, '411326', '淅川县', '4113', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8638, '411327', '社旗县', '4113', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8639, '411328', '唐河县', '4113', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8640, '411329', '新野县', '4113', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8641, '411330', '桐柏县', '4113', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8642, '411371', '南阳高新技术产业开发区', '4113', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8643, '411372', '南阳市城乡一体化示范区', '4113', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8644, '411381', '邓州市', '4113', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8645, '4114', '商丘市', '41', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8646, '411402', '梁园区', '4114', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8647, '411403', '睢阳区', '4114', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8648, '411421', '民权县', '4114', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8649, '411422', '睢县', '4114', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8650, '411423', '宁陵县', '4114', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8651, '411424', '柘城县', '4114', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8652, '411425', '虞城县', '4114', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8653, '411426', '夏邑县', '4114', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8654, '411471', '豫东综合物流产业聚集区', '4114', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8655, '411472', '河南商丘经济开发区', '4114', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8656, '411481', '永城市', '4114', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8657, '4115', '信阳市', '41', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8658, '411502', '浉河区', '4115', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8659, '411503', '平桥区', '4115', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8660, '411521', '罗山县', '4115', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8661, '411522', '光山县', '4115', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8662, '411523', '新县', '4115', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8663, '411524', '商城县', '4115', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8664, '411525', '固始县', '4115', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8665, '411526', '潢川县', '4115', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8666, '411527', '淮滨县', '4115', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8667, '411528', '息县', '4115', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8668, '411571', '信阳高新技术产业开发区', '4115', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8669, '4116', '周口市', '41', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8670, '411602', '川汇区', '4116', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8671, '411603', '淮阳区', '4116', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8672, '411621', '扶沟县', '4116', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8673, '411622', '西华县', '4116', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8674, '411623', '商水县', '4116', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8675, '411624', '沈丘县', '4116', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8676, '411625', '郸城县', '4116', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8677, '411627', '太康县', '4116', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8678, '411628', '鹿邑县', '4116', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8679, '411671', '周口临港开发区', '4116', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8680, '411681', '项城市', '4116', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8681, '4117', '驻马店市', '41', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8682, '411702', '驿城区', '4117', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8683, '411721', '西平县', '4117', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8684, '411722', '上蔡县', '4117', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8685, '411723', '平舆县', '4117', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8686, '411724', '正阳县', '4117', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8687, '411725', '确山县', '4117', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8688, '411726', '泌阳县', '4117', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8689, '411727', '汝南县', '4117', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8690, '411728', '遂平县', '4117', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8691, '411729', '新蔡县', '4117', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8692, '411771', '河南驻马店经济开发区', '4117', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8693, '4190', '省直辖县级行政区划', '41', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8694, '419001', '济源市', '4190', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8695, '42', '湖北省', NULL, 1, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8696, '4201', '武汉市', '42', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8697, '420102', '江岸区', '4201', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8698, '420103', '江汉区', '4201', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8699, '420104', '硚口区', '4201', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8700, '420105', '汉阳区', '4201', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8701, '420106', '武昌区', '4201', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8702, '420107', '青山区', '4201', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8703, '420111', '洪山区', '4201', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8704, '420112', '东西湖区', '4201', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8705, '420113', '汉南区', '4201', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8706, '420114', '蔡甸区', '4201', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8707, '420115', '江夏区', '4201', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8708, '420116', '黄陂区', '4201', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8709, '420117', '新洲区', '4201', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8710, '4202', '黄石市', '42', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8711, '420202', '黄石港区', '4202', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8712, '420203', '西塞山区', '4202', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8713, '420204', '下陆区', '4202', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8714, '420205', '铁山区', '4202', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8715, '420222', '阳新县', '4202', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8716, '420281', '大冶市', '4202', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8717, '4203', '十堰市', '42', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8718, '420302', '茅箭区', '4203', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8719, '420303', '张湾区', '4203', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8720, '420304', '郧阳区', '4203', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8721, '420322', '郧西县', '4203', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8722, '420323', '竹山县', '4203', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8723, '420324', '竹溪县', '4203', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8724, '420325', '房县', '4203', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8725, '420381', '丹江口市', '4203', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8726, '4205', '宜昌市', '42', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8727, '420502', '西陵区', '4205', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8728, '420503', '伍家岗区', '4205', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8729, '420504', '点军区', '4205', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8730, '420505', '猇亭区', '4205', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8731, '420506', '夷陵区', '4205', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8732, '420525', '远安县', '4205', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8733, '420526', '兴山县', '4205', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8734, '420527', '秭归县', '4205', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8735, '420528', '长阳土家族自治县', '4205', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8736, '420529', '五峰土家族自治县', '4205', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8737, '420581', '宜都市', '4205', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8738, '420582', '当阳市', '4205', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8739, '420583', '枝江市', '4205', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8740, '4206', '襄阳市', '42', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8741, '420602', '襄城区', '4206', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8742, '420606', '樊城区', '4206', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8743, '420607', '襄州区', '4206', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8744, '420624', '南漳县', '4206', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8745, '420625', '谷城县', '4206', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8746, '420626', '保康县', '4206', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8747, '420682', '老河口市', '4206', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8748, '420683', '枣阳市', '4206', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8749, '420684', '宜城市', '4206', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8750, '4207', '鄂州市', '42', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8751, '420702', '梁子湖区', '4207', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8752, '420703', '华容区', '4207', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8753, '420704', '鄂城区', '4207', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8754, '4208', '荆门市', '42', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8755, '420802', '东宝区', '4208', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8756, '420804', '掇刀区', '4208', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8757, '420822', '沙洋县', '4208', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8758, '420881', '钟祥市', '4208', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8759, '420882', '京山市', '4208', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8760, '4209', '孝感市', '42', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8761, '420902', '孝南区', '4209', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8762, '420921', '孝昌县', '4209', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8763, '420922', '大悟县', '4209', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8764, '420923', '云梦县', '4209', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8765, '420981', '应城市', '4209', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8766, '420982', '安陆市', '4209', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8767, '420984', '汉川市', '4209', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8768, '4210', '荆州市', '42', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8769, '421002', '沙市区', '4210', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8770, '421003', '荆州区', '4210', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8771, '421022', '公安县', '4210', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8772, '421024', '江陵县', '4210', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8773, '421071', '荆州经济技术开发区', '4210', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8774, '421081', '石首市', '4210', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8775, '421083', '洪湖市', '4210', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8776, '421087', '松滋市', '4210', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8777, '421088', '监利市', '4210', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8778, '4211', '黄冈市', '42', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8779, '421102', '黄州区', '4211', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8780, '421121', '团风县', '4211', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8781, '421122', '红安县', '4211', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8782, '421123', '罗田县', '4211', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8783, '421124', '英山县', '4211', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8784, '421125', '浠水县', '4211', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8785, '421126', '蕲春县', '4211', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8786, '421127', '黄梅县', '4211', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8787, '421171', '龙感湖管理区', '4211', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8788, '421181', '麻城市', '4211', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8789, '421182', '武穴市', '4211', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8790, '4212', '咸宁市', '42', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8791, '421202', '咸安区', '4212', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8792, '421221', '嘉鱼县', '4212', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8793, '421222', '通城县', '4212', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8794, '421223', '崇阳县', '4212', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8795, '421224', '通山县', '4212', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8796, '421281', '赤壁市', '4212', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8797, '4213', '随州市', '42', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8798, '421303', '曾都区', '4213', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8799, '421321', '随县', '4213', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8800, '421381', '广水市', '4213', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8801, '4228', '恩施土家族苗族自治州', '42', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8802, '422801', '恩施市', '4228', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8803, '422802', '利川市', '4228', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8804, '422822', '建始县', '4228', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8805, '422823', '巴东县', '4228', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8806, '422825', '宣恩县', '4228', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8807, '422826', '咸丰县', '4228', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8808, '422827', '来凤县', '4228', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8809, '422828', '鹤峰县', '4228', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8810, '4290', '省直辖县级行政区划', '42', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8811, '429004', '仙桃市', '4290', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8812, '429005', '潜江市', '4290', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8813, '429006', '天门市', '4290', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8814, '429021', '神农架林区', '4290', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8815, '43', '湖南省', NULL, 1, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8816, '4301', '长沙市', '43', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8817, '430102', '芙蓉区', '4301', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8818, '430103', '天心区', '4301', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8819, '430104', '岳麓区', '4301', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8820, '430105', '开福区', '4301', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8821, '430111', '雨花区', '4301', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8822, '430112', '望城区', '4301', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8823, '430121', '长沙县', '4301', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8824, '430181', '浏阳市', '4301', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8825, '430182', '宁乡市', '4301', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8826, '4302', '株洲市', '43', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8827, '430202', '荷塘区', '4302', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8828, '430203', '芦淞区', '4302', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8829, '430204', '石峰区', '4302', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8830, '430211', '天元区', '4302', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8831, '430212', '渌口区', '4302', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8832, '430223', '攸县', '4302', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8833, '430224', '茶陵县', '4302', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8834, '430225', '炎陵县', '4302', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8835, '430281', '醴陵市', '4302', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8836, '4303', '湘潭市', '43', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8837, '430302', '雨湖区', '4303', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8838, '430304', '岳塘区', '4303', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8839, '430321', '湘潭县', '4303', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8840, '430371', '湖南湘潭高新技术产业园区', '4303', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8841, '430372', '湘潭昭山示范区', '4303', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8842, '430373', '湘潭九华示范区', '4303', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8843, '430381', '湘乡市', '4303', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8844, '430382', '韶山市', '4303', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8845, '4304', '衡阳市', '43', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8846, '430405', '珠晖区', '4304', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8847, '430406', '雁峰区', '4304', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8848, '430407', '石鼓区', '4304', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8849, '430408', '蒸湘区', '4304', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8850, '430412', '南岳区', '4304', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8851, '430421', '衡阳县', '4304', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8852, '430422', '衡南县', '4304', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8853, '430423', '衡山县', '4304', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8854, '430424', '衡东县', '4304', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8855, '430426', '祁东县', '4304', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8856, '430473', '湖南衡阳松木经济开发区', '4304', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8857, '430476', '湖南衡阳高新技术产业园区', '4304', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8858, '430481', '耒阳市', '4304', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8859, '430482', '常宁市', '4304', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8860, '4305', '邵阳市', '43', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8861, '430502', '双清区', '4305', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8862, '430503', '大祥区', '4305', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8863, '430511', '北塔区', '4305', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8864, '430522', '新邵县', '4305', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8865, '430523', '邵阳县', '4305', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8866, '430524', '隆回县', '4305', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8867, '430525', '洞口县', '4305', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8868, '430527', '绥宁县', '4305', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8869, '430528', '新宁县', '4305', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8870, '430529', '城步苗族自治县', '4305', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8871, '430581', '武冈市', '4305', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8872, '430582', '邵东市', '4305', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8873, '4306', '岳阳市', '43', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8874, '430602', '岳阳楼区', '4306', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8875, '430603', '云溪区', '4306', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8876, '430611', '君山区', '4306', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8877, '430621', '岳阳县', '4306', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8878, '430623', '华容县', '4306', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8879, '430624', '湘阴县', '4306', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8880, '430626', '平江县', '4306', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8881, '430671', '岳阳市屈原管理区', '4306', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8882, '430681', '汨罗市', '4306', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8883, '430682', '临湘市', '4306', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8884, '4307', '常德市', '43', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8885, '430702', '武陵区', '4307', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8886, '430703', '鼎城区', '4307', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8887, '430721', '安乡县', '4307', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8888, '430722', '汉寿县', '4307', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8889, '430723', '澧县', '4307', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8890, '430724', '临澧县', '4307', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8891, '430725', '桃源县', '4307', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8892, '430726', '石门县', '4307', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8893, '430771', '常德市西洞庭管理区', '4307', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8894, '430781', '津市市', '4307', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8895, '4308', '张家界市', '43', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8896, '430802', '永定区', '4308', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8897, '430811', '武陵源区', '4308', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8898, '430821', '慈利县', '4308', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8899, '430822', '桑植县', '4308', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8900, '4309', '益阳市', '43', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8901, '430902', '资阳区', '4309', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8902, '430903', '赫山区', '4309', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8903, '430921', '南县', '4309', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8904, '430922', '桃江县', '4309', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8905, '430923', '安化县', '4309', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8906, '430971', '益阳市大通湖管理区', '4309', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8907, '430972', '湖南益阳高新技术产业园区', '4309', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8908, '430981', '沅江市', '4309', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8909, '4310', '郴州市', '43', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8910, '431002', '北湖区', '4310', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8911, '431003', '苏仙区', '4310', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8912, '431021', '桂阳县', '4310', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8913, '431022', '宜章县', '4310', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8914, '431023', '永兴县', '4310', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8915, '431024', '嘉禾县', '4310', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8916, '431025', '临武县', '4310', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8917, '431026', '汝城县', '4310', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8918, '431027', '桂东县', '4310', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8919, '431028', '安仁县', '4310', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8920, '431081', '资兴市', '4310', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8921, '4311', '永州市', '43', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8922, '431102', '零陵区', '4311', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8923, '431103', '冷水滩区', '4311', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8924, '431122', '东安县', '4311', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8925, '431123', '双牌县', '4311', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8926, '431124', '道县', '4311', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8927, '431125', '江永县', '4311', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8928, '431126', '宁远县', '4311', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8929, '431127', '蓝山县', '4311', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8930, '431128', '新田县', '4311', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8931, '431129', '江华瑶族自治县', '4311', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8932, '431171', '永州经济技术开发区', '4311', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8933, '431173', '永州市回龙圩管理区', '4311', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8934, '431181', '祁阳市', '4311', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8935, '4312', '怀化市', '43', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8936, '431202', '鹤城区', '4312', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8937, '431221', '中方县', '4312', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8938, '431222', '沅陵县', '4312', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8939, '431223', '辰溪县', '4312', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8940, '431224', '溆浦县', '4312', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8941, '431225', '会同县', '4312', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8942, '431226', '麻阳苗族自治县', '4312', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8943, '431227', '新晃侗族自治县', '4312', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8944, '431228', '芷江侗族自治县', '4312', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8945, '431229', '靖州苗族侗族自治县', '4312', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8946, '431230', '通道侗族自治县', '4312', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8947, '431271', '怀化市洪江管理区', '4312', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8948, '431281', '洪江市', '4312', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8949, '4313', '娄底市', '43', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8950, '431302', '娄星区', '4313', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8951, '431321', '双峰县', '4313', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8952, '431322', '新化县', '4313', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8953, '431381', '冷水江市', '4313', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8954, '431382', '涟源市', '4313', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8955, '4331', '湘西土家族苗族自治州', '43', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8956, '433101', '吉首市', '4331', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8957, '433122', '泸溪县', '4331', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8958, '433123', '凤凰县', '4331', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8959, '433124', '花垣县', '4331', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8960, '433125', '保靖县', '4331', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8961, '433126', '古丈县', '4331', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8962, '433127', '永顺县', '4331', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8963, '433130', '龙山县', '4331', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8964, '44', '广东省', NULL, 1, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8965, '4401', '广州市', '44', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8966, '440103', '荔湾区', '4401', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8967, '440104', '越秀区', '4401', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8968, '440105', '海珠区', '4401', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8969, '440106', '天河区', '4401', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8970, '440111', '白云区', '4401', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8971, '440112', '黄埔区', '4401', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8972, '440113', '番禺区', '4401', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8973, '440114', '花都区', '4401', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8974, '440115', '南沙区', '4401', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8975, '440117', '从化区', '4401', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8976, '440118', '增城区', '4401', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8977, '4402', '韶关市', '44', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8978, '440203', '武江区', '4402', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8979, '440204', '浈江区', '4402', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8980, '440205', '曲江区', '4402', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8981, '440222', '始兴县', '4402', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8982, '440224', '仁化县', '4402', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8983, '440229', '翁源县', '4402', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8984, '440232', '乳源瑶族自治县', '4402', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8985, '440233', '新丰县', '4402', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8986, '440281', '乐昌市', '4402', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8987, '440282', '南雄市', '4402', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8988, '4403', '深圳市', '44', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8989, '440303', '罗湖区', '4403', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8990, '440304', '福田区', '4403', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8991, '440305', '南山区', '4403', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8992, '440306', '宝安区', '4403', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8993, '440307', '龙岗区', '4403', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8994, '440308', '盐田区', '4403', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8995, '440309', '龙华区', '4403', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8996, '440310', '坪山区', '4403', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8997, '440311', '光明区', '4403', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8998, '4404', '珠海市', '44', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (8999, '440402', '香洲区', '4404', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9000, '440403', '斗门区', '4404', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9001, '440404', '金湾区', '4404', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9002, '4405', '汕头市', '44', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9003, '440507', '龙湖区', '4405', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9004, '440511', '金平区', '4405', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9005, '440512', '濠江区', '4405', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9006, '440513', '潮阳区', '4405', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9007, '440514', '潮南区', '4405', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9008, '440515', '澄海区', '4405', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9009, '440523', '南澳县', '4405', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9010, '4406', '佛山市', '44', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9011, '440604', '禅城区', '4406', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9012, '440605', '南海区', '4406', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9013, '440606', '顺德区', '4406', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9014, '440607', '三水区', '4406', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9015, '440608', '高明区', '4406', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9016, '4407', '江门市', '44', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9017, '440703', '蓬江区', '4407', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9018, '440704', '江海区', '4407', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9019, '440705', '新会区', '4407', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9020, '440781', '台山市', '4407', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9021, '440783', '开平市', '4407', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9022, '440784', '鹤山市', '4407', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9023, '440785', '恩平市', '4407', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9024, '4408', '湛江市', '44', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9025, '440802', '赤坎区', '4408', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9026, '440803', '霞山区', '4408', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9027, '440804', '坡头区', '4408', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9028, '440811', '麻章区', '4408', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9029, '440823', '遂溪县', '4408', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9030, '440825', '徐闻县', '4408', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9031, '440881', '廉江市', '4408', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9032, '440882', '雷州市', '4408', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9033, '440883', '吴川市', '4408', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9034, '4409', '茂名市', '44', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9035, '440902', '茂南区', '4409', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9036, '440904', '电白区', '4409', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9037, '440981', '高州市', '4409', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9038, '440982', '化州市', '4409', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9039, '440983', '信宜市', '4409', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9040, '4412', '肇庆市', '44', 2, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9041, '441202', '端州区', '4412', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9042, '441203', '鼎湖区', '4412', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9043, '441204', '高要区', '4412', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9044, '441223', '广宁县', '4412', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9045, '441224', '怀集县', '4412', 3, '2026-05-18 13:10:29', '2026-05-18 13:10:29');
+INSERT INTO `sys_district` VALUES (9046, '441225', '封开县', '4412', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9047, '441226', '德庆县', '4412', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9048, '441284', '四会市', '4412', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9049, '4413', '惠州市', '44', 2, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9050, '441302', '惠城区', '4413', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9051, '441303', '惠阳区', '4413', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9052, '441322', '博罗县', '4413', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9053, '441323', '惠东县', '4413', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9054, '441324', '龙门县', '4413', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9055, '4414', '梅州市', '44', 2, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9056, '441402', '梅江区', '4414', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9057, '441403', '梅县区', '4414', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9058, '441422', '大埔县', '4414', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9059, '441423', '丰顺县', '4414', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9060, '441424', '五华县', '4414', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9061, '441426', '平远县', '4414', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9062, '441427', '蕉岭县', '4414', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9063, '441481', '兴宁市', '4414', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9064, '4415', '汕尾市', '44', 2, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9065, '441502', '城区', '4415', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9066, '441521', '海丰县', '4415', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9067, '441523', '陆河县', '4415', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9068, '441581', '陆丰市', '4415', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9069, '4416', '河源市', '44', 2, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9070, '441602', '源城区', '4416', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9071, '441621', '紫金县', '4416', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9072, '441622', '龙川县', '4416', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9073, '441623', '连平县', '4416', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9074, '441624', '和平县', '4416', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9075, '441625', '东源县', '4416', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9076, '4417', '阳江市', '44', 2, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9077, '441702', '江城区', '4417', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9078, '441704', '阳东区', '4417', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9079, '441721', '阳西县', '4417', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9080, '441781', '阳春市', '4417', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9081, '4418', '清远市', '44', 2, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9082, '441802', '清城区', '4418', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9083, '441803', '清新区', '4418', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9084, '441821', '佛冈县', '4418', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9085, '441823', '阳山县', '4418', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9086, '441825', '连山壮族瑶族自治县', '4418', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9087, '441826', '连南瑶族自治县', '4418', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9088, '441881', '英德市', '4418', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9089, '441882', '连州市', '4418', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9090, '4419', '东莞市', '44', 2, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9091, '441900003', '东城街道', '4419', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9092, '441900004', '南城街道', '4419', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9093, '441900005', '万江街道', '4419', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9094, '441900006', '莞城街道', '4419', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9095, '441900101', '石碣镇', '4419', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9096, '441900102', '石龙镇', '4419', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9097, '441900103', '茶山镇', '4419', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9098, '441900104', '石排镇', '4419', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9099, '441900105', '企石镇', '4419', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9100, '441900106', '横沥镇', '4419', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9101, '441900107', '桥头镇', '4419', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9102, '441900108', '谢岗镇', '4419', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9103, '441900109', '东坑镇', '4419', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9104, '441900110', '常平镇', '4419', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9105, '441900111', '寮步镇', '4419', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9106, '441900112', '樟木头镇', '4419', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9107, '441900113', '大朗镇', '4419', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9108, '441900114', '黄江镇', '4419', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9109, '441900115', '清溪镇', '4419', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9110, '441900116', '塘厦镇', '4419', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9111, '441900117', '凤岗镇', '4419', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9112, '441900118', '大岭山镇', '4419', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9113, '441900119', '长安镇', '4419', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9114, '441900121', '虎门镇', '4419', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9115, '441900122', '厚街镇', '4419', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9116, '441900123', '沙田镇', '4419', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9117, '441900124', '道滘镇', '4419', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9118, '441900125', '洪梅镇', '4419', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9119, '441900126', '麻涌镇', '4419', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9120, '441900127', '望牛墩镇', '4419', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9121, '441900128', '中堂镇', '4419', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9122, '441900129', '高埗镇', '4419', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9123, '441900401', '松山湖', '4419', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9124, '441900402', '东莞港', '4419', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9125, '441900403', '东莞生态园', '4419', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9126, '441900404', '东莞滨海湾新区', '4419', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9127, '4420', '中山市', '44', 2, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9128, '442000001', '石岐街道', '4420', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9129, '442000002', '东区街道', '4420', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9130, '442000003', '中山港街道', '4420', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9131, '442000004', '西区街道', '4420', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9132, '442000005', '南区街道', '4420', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9133, '442000006', '五桂山街道', '4420', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9134, '442000007', '民众街道', '4420', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9135, '442000008', '南朗街道', '4420', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9136, '442000101', '黄圃镇', '4420', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9137, '442000103', '东凤镇', '4420', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9138, '442000105', '古镇镇', '4420', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9139, '442000106', '沙溪镇', '4420', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9140, '442000107', '坦洲镇', '4420', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9141, '442000108', '港口镇', '4420', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9142, '442000109', '三角镇', '4420', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9143, '442000110', '横栏镇', '4420', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9144, '442000111', '南头镇', '4420', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9145, '442000112', '阜沙镇', '4420', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9146, '442000114', '三乡镇', '4420', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9147, '442000115', '板芙镇', '4420', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9148, '442000116', '大涌镇', '4420', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9149, '442000117', '神湾镇', '4420', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9150, '442000118', '小榄镇', '4420', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9151, '4451', '潮州市', '44', 2, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9152, '445102', '湘桥区', '4451', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9153, '445103', '潮安区', '4451', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9154, '445122', '饶平县', '4451', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9155, '4452', '揭阳市', '44', 2, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9156, '445202', '榕城区', '4452', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9157, '445203', '揭东区', '4452', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9158, '445222', '揭西县', '4452', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9159, '445224', '惠来县', '4452', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9160, '445281', '普宁市', '4452', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9161, '4453', '云浮市', '44', 2, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9162, '445302', '云城区', '4453', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9163, '445303', '云安区', '4453', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9164, '445321', '新兴县', '4453', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9165, '445322', '郁南县', '4453', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9166, '445381', '罗定市', '4453', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9167, '45', '广西壮族自治区', NULL, 1, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9168, '4501', '南宁市', '45', 2, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9169, '450102', '兴宁区', '4501', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9170, '450103', '青秀区', '4501', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9171, '450105', '江南区', '4501', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9172, '450107', '西乡塘区', '4501', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9173, '450108', '良庆区', '4501', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9174, '450109', '邕宁区', '4501', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9175, '450110', '武鸣区', '4501', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9176, '450123', '隆安县', '4501', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9177, '450124', '马山县', '4501', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9178, '450125', '上林县', '4501', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9179, '450126', '宾阳县', '4501', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9180, '450181', '横州市', '4501', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9181, '4502', '柳州市', '45', 2, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9182, '450202', '城中区', '4502', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9183, '450203', '鱼峰区', '4502', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9184, '450204', '柳南区', '4502', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9185, '450205', '柳北区', '4502', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9186, '450206', '柳江区', '4502', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9187, '450222', '柳城县', '4502', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9188, '450223', '鹿寨县', '4502', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9189, '450224', '融安县', '4502', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9190, '450225', '融水苗族自治县', '4502', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9191, '450226', '三江侗族自治县', '4502', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9192, '4503', '桂林市', '45', 2, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9193, '450302', '秀峰区', '4503', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9194, '450303', '叠彩区', '4503', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9195, '450304', '象山区', '4503', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9196, '450305', '七星区', '4503', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9197, '450311', '雁山区', '4503', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9198, '450312', '临桂区', '4503', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9199, '450321', '阳朔县', '4503', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9200, '450323', '灵川县', '4503', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9201, '450324', '全州县', '4503', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9202, '450325', '兴安县', '4503', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9203, '450326', '永福县', '4503', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9204, '450327', '灌阳县', '4503', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9205, '450328', '龙胜各族自治县', '4503', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9206, '450329', '资源县', '4503', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9207, '450330', '平乐县', '4503', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9208, '450332', '恭城瑶族自治县', '4503', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9209, '450381', '荔浦市', '4503', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9210, '4504', '梧州市', '45', 2, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9211, '450403', '万秀区', '4504', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9212, '450405', '长洲区', '4504', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9213, '450406', '龙圩区', '4504', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9214, '450421', '苍梧县', '4504', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9215, '450422', '藤县', '4504', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9216, '450423', '蒙山县', '4504', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9217, '450481', '岑溪市', '4504', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9218, '4505', '北海市', '45', 2, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9219, '450502', '海城区', '4505', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9220, '450503', '银海区', '4505', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9221, '450512', '铁山港区', '4505', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9222, '450521', '合浦县', '4505', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9223, '4506', '防城港市', '45', 2, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9224, '450602', '港口区', '4506', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9225, '450603', '防城区', '4506', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9226, '450621', '上思县', '4506', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9227, '450681', '东兴市', '4506', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9228, '4507', '钦州市', '45', 2, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9229, '450702', '钦南区', '4507', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9230, '450703', '钦北区', '4507', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9231, '450721', '灵山县', '4507', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9232, '450722', '浦北县', '4507', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9233, '4508', '贵港市', '45', 2, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9234, '450802', '港北区', '4508', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9235, '450803', '港南区', '4508', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9236, '450804', '覃塘区', '4508', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9237, '450821', '平南县', '4508', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9238, '450881', '桂平市', '4508', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9239, '4509', '玉林市', '45', 2, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9240, '450902', '玉州区', '4509', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9241, '450903', '福绵区', '4509', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9242, '450921', '容县', '4509', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9243, '450922', '陆川县', '4509', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9244, '450923', '博白县', '4509', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9245, '450924', '兴业县', '4509', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9246, '450981', '北流市', '4509', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9247, '4510', '百色市', '45', 2, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9248, '451002', '右江区', '4510', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9249, '451003', '田阳区', '4510', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9250, '451022', '田东县', '4510', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9251, '451024', '德保县', '4510', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9252, '451026', '那坡县', '4510', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9253, '451027', '凌云县', '4510', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9254, '451028', '乐业县', '4510', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9255, '451029', '田林县', '4510', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9256, '451030', '西林县', '4510', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9257, '451031', '隆林各族自治县', '4510', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9258, '451081', '靖西市', '4510', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9259, '451082', '平果市', '4510', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9260, '4511', '贺州市', '45', 2, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9261, '451102', '八步区', '4511', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9262, '451103', '平桂区', '4511', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9263, '451121', '昭平县', '4511', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9264, '451122', '钟山县', '4511', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9265, '451123', '富川瑶族自治县', '4511', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9266, '4512', '河池市', '45', 2, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9267, '451202', '金城江区', '4512', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9268, '451203', '宜州区', '4512', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9269, '451221', '南丹县', '4512', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9270, '451222', '天峨县', '4512', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9271, '451223', '凤山县', '4512', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9272, '451224', '东兰县', '4512', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9273, '451225', '罗城仫佬族自治县', '4512', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9274, '451226', '环江毛南族自治县', '4512', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9275, '451227', '巴马瑶族自治县', '4512', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9276, '451228', '都安瑶族自治县', '4512', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9277, '451229', '大化瑶族自治县', '4512', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9278, '4513', '来宾市', '45', 2, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9279, '451302', '兴宾区', '4513', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9280, '451321', '忻城县', '4513', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9281, '451322', '象州县', '4513', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9282, '451323', '武宣县', '4513', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9283, '451324', '金秀瑶族自治县', '4513', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9284, '451381', '合山市', '4513', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9285, '4514', '崇左市', '45', 2, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9286, '451402', '江州区', '4514', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9287, '451421', '扶绥县', '4514', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9288, '451422', '宁明县', '4514', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9289, '451423', '龙州县', '4514', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9290, '451424', '大新县', '4514', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9291, '451425', '天等县', '4514', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9292, '451481', '凭祥市', '4514', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9293, '46', '海南省', NULL, 1, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9294, '4601', '海口市', '46', 2, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9295, '460105', '秀英区', '4601', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9296, '460106', '龙华区', '4601', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9297, '460107', '琼山区', '4601', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9298, '460108', '美兰区', '4601', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9299, '4602', '三亚市', '46', 2, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9300, '460202', '海棠区', '4602', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9301, '460203', '吉阳区', '4602', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9302, '460204', '天涯区', '4602', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9303, '460205', '崖州区', '4602', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9304, '4603', '三沙市', '46', 2, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9305, '460321', '西沙群岛', '4603', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9306, '460322', '南沙群岛', '4603', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9307, '460323', '中沙群岛的岛礁及其海域', '4603', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9308, '4604', '儋州市', '46', 2, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9309, '460400100', '那大镇', '4604', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9310, '460400101', '和庆镇', '4604', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9311, '460400102', '南丰镇', '4604', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9312, '460400103', '大成镇', '4604', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9313, '460400104', '雅星镇', '4604', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9314, '460400105', '兰洋镇', '4604', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9315, '460400106', '光村镇', '4604', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9316, '460400107', '木棠镇', '4604', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9317, '460400108', '海头镇', '4604', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9318, '460400109', '峨蔓镇', '4604', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9319, '460400111', '王五镇', '4604', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9320, '460400112', '白马井镇', '4604', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9321, '460400113', '中和镇', '4604', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9322, '460400114', '排浦镇', '4604', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9323, '460400115', '东成镇', '4604', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9324, '460400116', '新州镇', '4604', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9325, '460400499', '洋浦经济开发区', '4604', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9326, '460400500', '华南热作学院', '4604', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9327, '4690', '省直辖县级行政区划', '46', 2, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9328, '469001', '五指山市', '4690', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9329, '469002', '琼海市', '4690', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9330, '469005', '文昌市', '4690', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9331, '469006', '万宁市', '4690', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9332, '469007', '东方市', '4690', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9333, '469021', '定安县', '4690', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9334, '469022', '屯昌县', '4690', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9335, '469023', '澄迈县', '4690', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9336, '469024', '临高县', '4690', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9337, '469025', '白沙黎族自治县', '4690', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9338, '469026', '昌江黎族自治县', '4690', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9339, '469027', '乐东黎族自治县', '4690', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9340, '469028', '陵水黎族自治县', '4690', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9341, '469029', '保亭黎族苗族自治县', '4690', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9342, '469030', '琼中黎族苗族自治县', '4690', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9343, '50', '重庆市', NULL, 1, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9344, '5001', '市辖区', '50', 2, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9345, '500101', '万州区', '5001', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9346, '500102', '涪陵区', '5001', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9347, '500103', '渝中区', '5001', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9348, '500104', '大渡口区', '5001', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9349, '500105', '江北区', '5001', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9350, '500106', '沙坪坝区', '5001', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9351, '500107', '九龙坡区', '5001', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9352, '500108', '南岸区', '5001', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9353, '500109', '北碚区', '5001', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9354, '500110', '綦江区', '5001', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9355, '500111', '大足区', '5001', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9356, '500112', '渝北区', '5001', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9357, '500113', '巴南区', '5001', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9358, '500114', '黔江区', '5001', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9359, '500115', '长寿区', '5001', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9360, '500116', '江津区', '5001', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9361, '500117', '合川区', '5001', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9362, '500118', '永川区', '5001', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9363, '500119', '南川区', '5001', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9364, '500120', '璧山区', '5001', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9365, '500151', '铜梁区', '5001', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9366, '500152', '潼南区', '5001', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9367, '500153', '荣昌区', '5001', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9368, '500154', '开州区', '5001', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9369, '500155', '梁平区', '5001', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9370, '500156', '武隆区', '5001', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9371, '5002', '县', '50', 2, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9372, '500229', '城口县', '5002', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9373, '500230', '丰都县', '5002', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9374, '500231', '垫江县', '5002', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9375, '500233', '忠县', '5002', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9376, '500235', '云阳县', '5002', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9377, '500236', '奉节县', '5002', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9378, '500237', '巫山县', '5002', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9379, '500238', '巫溪县', '5002', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9380, '500240', '石柱土家族自治县', '5002', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9381, '500241', '秀山土家族苗族自治县', '5002', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9382, '500242', '酉阳土家族苗族自治县', '5002', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9383, '500243', '彭水苗族土家族自治县', '5002', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9384, '51', '四川省', NULL, 1, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9385, '5101', '成都市', '51', 2, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9386, '510104', '锦江区', '5101', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9387, '510105', '青羊区', '5101', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9388, '510106', '金牛区', '5101', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9389, '510107', '武侯区', '5101', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9390, '510108', '成华区', '5101', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9391, '510112', '龙泉驿区', '5101', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9392, '510113', '青白江区', '5101', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9393, '510114', '新都区', '5101', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9394, '510115', '温江区', '5101', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9395, '510116', '双流区', '5101', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9396, '510117', '郫都区', '5101', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9397, '510118', '新津区', '5101', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9398, '510121', '金堂县', '5101', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9399, '510129', '大邑县', '5101', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9400, '510131', '蒲江县', '5101', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9401, '510181', '都江堰市', '5101', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9402, '510182', '彭州市', '5101', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9403, '510183', '邛崃市', '5101', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9404, '510184', '崇州市', '5101', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9405, '510185', '简阳市', '5101', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9406, '5103', '自贡市', '51', 2, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9407, '510302', '自流井区', '5103', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9408, '510303', '贡井区', '5103', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9409, '510304', '大安区', '5103', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9410, '510311', '沿滩区', '5103', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9411, '510321', '荣县', '5103', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9412, '510322', '富顺县', '5103', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9413, '5104', '攀枝花市', '51', 2, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9414, '510402', '东区', '5104', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9415, '510403', '西区', '5104', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9416, '510411', '仁和区', '5104', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9417, '510421', '米易县', '5104', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9418, '510422', '盐边县', '5104', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9419, '5105', '泸州市', '51', 2, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9420, '510502', '江阳区', '5105', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9421, '510503', '纳溪区', '5105', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9422, '510504', '龙马潭区', '5105', 3, '2026-05-18 13:10:30', '2026-05-18 13:10:30');
+INSERT INTO `sys_district` VALUES (9423, '510521', '泸县', '5105', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9424, '510522', '合江县', '5105', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9425, '510524', '叙永县', '5105', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9426, '510525', '古蔺县', '5105', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9427, '5106', '德阳市', '51', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9428, '510603', '旌阳区', '5106', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9429, '510604', '罗江区', '5106', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9430, '510623', '中江县', '5106', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9431, '510681', '广汉市', '5106', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9432, '510682', '什邡市', '5106', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9433, '510683', '绵竹市', '5106', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9434, '5107', '绵阳市', '51', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9435, '510703', '涪城区', '5107', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9436, '510704', '游仙区', '5107', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9437, '510705', '安州区', '5107', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9438, '510722', '三台县', '5107', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9439, '510723', '盐亭县', '5107', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9440, '510725', '梓潼县', '5107', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9441, '510726', '北川羌族自治县', '5107', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9442, '510727', '平武县', '5107', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9443, '510781', '江油市', '5107', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9444, '5108', '广元市', '51', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9445, '510802', '利州区', '5108', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9446, '510811', '昭化区', '5108', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9447, '510812', '朝天区', '5108', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9448, '510821', '旺苍县', '5108', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9449, '510822', '青川县', '5108', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9450, '510823', '剑阁县', '5108', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9451, '510824', '苍溪县', '5108', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9452, '5109', '遂宁市', '51', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9453, '510903', '船山区', '5109', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9454, '510904', '安居区', '5109', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9455, '510921', '蓬溪县', '5109', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9456, '510923', '大英县', '5109', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9457, '510981', '射洪市', '5109', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9458, '5110', '内江市', '51', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9459, '511002', '市中区', '5110', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9460, '511011', '东兴区', '5110', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9461, '511024', '威远县', '5110', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9462, '511025', '资中县', '5110', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9463, '511083', '隆昌市', '5110', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9464, '5111', '乐山市', '51', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9465, '511102', '市中区', '5111', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9466, '511111', '沙湾区', '5111', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9467, '511112', '五通桥区', '5111', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9468, '511113', '金口河区', '5111', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9469, '511123', '犍为县', '5111', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9470, '511124', '井研县', '5111', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9471, '511126', '夹江县', '5111', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9472, '511129', '沐川县', '5111', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9473, '511132', '峨边彝族自治县', '5111', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9474, '511133', '马边彝族自治县', '5111', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9475, '511181', '峨眉山市', '5111', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9476, '5113', '南充市', '51', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9477, '511302', '顺庆区', '5113', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9478, '511303', '高坪区', '5113', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9479, '511304', '嘉陵区', '5113', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9480, '511321', '南部县', '5113', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9481, '511322', '营山县', '5113', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9482, '511323', '蓬安县', '5113', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9483, '511324', '仪陇县', '5113', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9484, '511325', '西充县', '5113', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9485, '511381', '阆中市', '5113', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9486, '5114', '眉山市', '51', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9487, '511402', '东坡区', '5114', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9488, '511403', '彭山区', '5114', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9489, '511421', '仁寿县', '5114', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9490, '511423', '洪雅县', '5114', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9491, '511424', '丹棱县', '5114', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9492, '511425', '青神县', '5114', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9493, '5115', '宜宾市', '51', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9494, '511502', '翠屏区', '5115', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9495, '511503', '南溪区', '5115', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9496, '511504', '叙州区', '5115', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9497, '511523', '江安县', '5115', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9498, '511524', '长宁县', '5115', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9499, '511525', '高县', '5115', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9500, '511526', '珙县', '5115', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9501, '511527', '筠连县', '5115', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9502, '511528', '兴文县', '5115', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9503, '511529', '屏山县', '5115', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9504, '5116', '广安市', '51', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9505, '511602', '广安区', '5116', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9506, '511603', '前锋区', '5116', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9507, '511621', '岳池县', '5116', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9508, '511622', '武胜县', '5116', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9509, '511623', '邻水县', '5116', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9510, '511681', '华蓥市', '5116', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9511, '5117', '达州市', '51', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9512, '511702', '通川区', '5117', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9513, '511703', '达川区', '5117', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9514, '511722', '宣汉县', '5117', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9515, '511723', '开江县', '5117', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9516, '511724', '大竹县', '5117', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9517, '511725', '渠县', '5117', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9518, '511781', '万源市', '5117', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9519, '5118', '雅安市', '51', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9520, '511802', '雨城区', '5118', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9521, '511803', '名山区', '5118', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9522, '511822', '荥经县', '5118', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9523, '511823', '汉源县', '5118', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9524, '511824', '石棉县', '5118', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9525, '511825', '天全县', '5118', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9526, '511826', '芦山县', '5118', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9527, '511827', '宝兴县', '5118', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9528, '5119', '巴中市', '51', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9529, '511902', '巴州区', '5119', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9530, '511903', '恩阳区', '5119', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9531, '511921', '通江县', '5119', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9532, '511922', '南江县', '5119', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9533, '511923', '平昌县', '5119', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9534, '5120', '资阳市', '51', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9535, '512002', '雁江区', '5120', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9536, '512021', '安岳县', '5120', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9537, '512022', '乐至县', '5120', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9538, '5132', '阿坝藏族羌族自治州', '51', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9539, '513201', '马尔康市', '5132', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9540, '513221', '汶川县', '5132', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9541, '513222', '理县', '5132', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9542, '513223', '茂县', '5132', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9543, '513224', '松潘县', '5132', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9544, '513225', '九寨沟县', '5132', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9545, '513226', '金川县', '5132', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9546, '513227', '小金县', '5132', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9547, '513228', '黑水县', '5132', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9548, '513230', '壤塘县', '5132', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9549, '513231', '阿坝县', '5132', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9550, '513232', '若尔盖县', '5132', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9551, '513233', '红原县', '5132', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9552, '5133', '甘孜藏族自治州', '51', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9553, '513301', '康定市', '5133', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9554, '513322', '泸定县', '5133', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9555, '513323', '丹巴县', '5133', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9556, '513324', '九龙县', '5133', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9557, '513325', '雅江县', '5133', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9558, '513326', '道孚县', '5133', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9559, '513327', '炉霍县', '5133', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9560, '513328', '甘孜县', '5133', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9561, '513329', '新龙县', '5133', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9562, '513330', '德格县', '5133', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9563, '513331', '白玉县', '5133', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9564, '513332', '石渠县', '5133', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9565, '513333', '色达县', '5133', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9566, '513334', '理塘县', '5133', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9567, '513335', '巴塘县', '5133', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9568, '513336', '乡城县', '5133', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9569, '513337', '稻城县', '5133', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9570, '513338', '得荣县', '5133', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9571, '5134', '凉山彝族自治州', '51', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9572, '513401', '西昌市', '5134', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9573, '513402', '会理市', '5134', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9574, '513422', '木里藏族自治县', '5134', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9575, '513423', '盐源县', '5134', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9576, '513424', '德昌县', '5134', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9577, '513426', '会东县', '5134', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9578, '513427', '宁南县', '5134', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9579, '513428', '普格县', '5134', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9580, '513429', '布拖县', '5134', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9581, '513430', '金阳县', '5134', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9582, '513431', '昭觉县', '5134', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9583, '513432', '喜德县', '5134', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9584, '513433', '冕宁县', '5134', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9585, '513434', '越西县', '5134', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9586, '513435', '甘洛县', '5134', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9587, '513436', '美姑县', '5134', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9588, '513437', '雷波县', '5134', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9589, '52', '贵州省', NULL, 1, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9590, '5201', '贵阳市', '52', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9591, '520102', '南明区', '5201', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9592, '520103', '云岩区', '5201', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9593, '520111', '花溪区', '5201', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9594, '520112', '乌当区', '5201', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9595, '520113', '白云区', '5201', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9596, '520115', '观山湖区', '5201', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9597, '520121', '开阳县', '5201', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9598, '520122', '息烽县', '5201', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9599, '520123', '修文县', '5201', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9600, '520181', '清镇市', '5201', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9601, '5202', '六盘水市', '52', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9602, '520201', '钟山区', '5202', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9603, '520203', '六枝特区', '5202', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9604, '520204', '水城区', '5202', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9605, '520281', '盘州市', '5202', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9606, '5203', '遵义市', '52', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9607, '520302', '红花岗区', '5203', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9608, '520303', '汇川区', '5203', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9609, '520304', '播州区', '5203', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9610, '520322', '桐梓县', '5203', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9611, '520323', '绥阳县', '5203', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9612, '520324', '正安县', '5203', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9613, '520325', '道真仡佬族苗族自治县', '5203', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9614, '520326', '务川仡佬族苗族自治县', '5203', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9615, '520327', '凤冈县', '5203', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9616, '520328', '湄潭县', '5203', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9617, '520329', '余庆县', '5203', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9618, '520330', '习水县', '5203', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9619, '520381', '赤水市', '5203', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9620, '520382', '仁怀市', '5203', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9621, '5204', '安顺市', '52', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9622, '520402', '西秀区', '5204', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9623, '520403', '平坝区', '5204', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9624, '520422', '普定县', '5204', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9625, '520423', '镇宁布依族苗族自治县', '5204', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9626, '520424', '关岭布依族苗族自治县', '5204', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9627, '520425', '紫云苗族布依族自治县', '5204', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9628, '5205', '毕节市', '52', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9629, '520502', '七星关区', '5205', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9630, '520521', '大方县', '5205', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9631, '520523', '金沙县', '5205', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9632, '520524', '织金县', '5205', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9633, '520525', '纳雍县', '5205', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9634, '520526', '威宁彝族回族苗族自治县', '5205', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9635, '520527', '赫章县', '5205', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9636, '520581', '黔西市', '5205', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9637, '5206', '铜仁市', '52', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9638, '520602', '碧江区', '5206', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9639, '520603', '万山区', '5206', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9640, '520621', '江口县', '5206', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9641, '520622', '玉屏侗族自治县', '5206', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9642, '520623', '石阡县', '5206', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9643, '520624', '思南县', '5206', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9644, '520625', '印江土家族苗族自治县', '5206', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9645, '520626', '德江县', '5206', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9646, '520627', '沿河土家族自治县', '5206', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9647, '520628', '松桃苗族自治县', '5206', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9648, '5223', '黔西南布依族苗族自治州', '52', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9649, '522301', '兴义市', '5223', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9650, '522302', '兴仁市', '5223', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9651, '522323', '普安县', '5223', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9652, '522324', '晴隆县', '5223', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9653, '522325', '贞丰县', '5223', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9654, '522326', '望谟县', '5223', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9655, '522327', '册亨县', '5223', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9656, '522328', '安龙县', '5223', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9657, '5226', '黔东南苗族侗族自治州', '52', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9658, '522601', '凯里市', '5226', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9659, '522622', '黄平县', '5226', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9660, '522623', '施秉县', '5226', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9661, '522624', '三穗县', '5226', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9662, '522625', '镇远县', '5226', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9663, '522626', '岑巩县', '5226', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9664, '522627', '天柱县', '5226', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9665, '522628', '锦屏县', '5226', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9666, '522629', '剑河县', '5226', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9667, '522630', '台江县', '5226', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9668, '522631', '黎平县', '5226', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9669, '522632', '榕江县', '5226', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9670, '522633', '从江县', '5226', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9671, '522634', '雷山县', '5226', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9672, '522635', '麻江县', '5226', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9673, '522636', '丹寨县', '5226', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9674, '5227', '黔南布依族苗族自治州', '52', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9675, '522701', '都匀市', '5227', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9676, '522702', '福泉市', '5227', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9677, '522722', '荔波县', '5227', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9678, '522723', '贵定县', '5227', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9679, '522725', '瓮安县', '5227', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9680, '522726', '独山县', '5227', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9681, '522727', '平塘县', '5227', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9682, '522728', '罗甸县', '5227', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9683, '522729', '长顺县', '5227', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9684, '522730', '龙里县', '5227', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9685, '522731', '惠水县', '5227', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9686, '522732', '三都水族自治县', '5227', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9687, '53', '云南省', NULL, 1, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9688, '5301', '昆明市', '53', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9689, '530102', '五华区', '5301', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9690, '530103', '盘龙区', '5301', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9691, '530111', '官渡区', '5301', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9692, '530112', '西山区', '5301', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9693, '530113', '东川区', '5301', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9694, '530114', '呈贡区', '5301', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9695, '530115', '晋宁区', '5301', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9696, '530124', '富民县', '5301', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9697, '530125', '宜良县', '5301', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9698, '530126', '石林彝族自治县', '5301', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9699, '530127', '嵩明县', '5301', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9700, '530128', '禄劝彝族苗族自治县', '5301', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9701, '530129', '寻甸回族彝族自治县', '5301', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9702, '530181', '安宁市', '5301', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9703, '5303', '曲靖市', '53', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9704, '530302', '麒麟区', '5303', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9705, '530303', '沾益区', '5303', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9706, '530304', '马龙区', '5303', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9707, '530322', '陆良县', '5303', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9708, '530323', '师宗县', '5303', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9709, '530324', '罗平县', '5303', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9710, '530325', '富源县', '5303', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9711, '530326', '会泽县', '5303', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9712, '530381', '宣威市', '5303', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9713, '5304', '玉溪市', '53', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9714, '530402', '红塔区', '5304', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9715, '530403', '江川区', '5304', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9716, '530423', '通海县', '5304', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9717, '530424', '华宁县', '5304', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9718, '530425', '易门县', '5304', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9719, '530426', '峨山彝族自治县', '5304', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9720, '530427', '新平彝族傣族自治县', '5304', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9721, '530428', '元江哈尼族彝族傣族自治县', '5304', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9722, '530481', '澄江市', '5304', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9723, '5305', '保山市', '53', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9724, '530502', '隆阳区', '5305', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9725, '530521', '施甸县', '5305', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9726, '530523', '龙陵县', '5305', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9727, '530524', '昌宁县', '5305', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9728, '530581', '腾冲市', '5305', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9729, '5306', '昭通市', '53', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9730, '530602', '昭阳区', '5306', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9731, '530621', '鲁甸县', '5306', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9732, '530622', '巧家县', '5306', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9733, '530623', '盐津县', '5306', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9734, '530624', '大关县', '5306', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9735, '530625', '永善县', '5306', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9736, '530626', '绥江县', '5306', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9737, '530627', '镇雄县', '5306', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9738, '530628', '彝良县', '5306', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9739, '530629', '威信县', '5306', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9740, '530681', '水富市', '5306', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9741, '5307', '丽江市', '53', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9742, '530702', '古城区', '5307', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9743, '530721', '玉龙纳西族自治县', '5307', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9744, '530722', '永胜县', '5307', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9745, '530723', '华坪县', '5307', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9746, '530724', '宁蒗彝族自治县', '5307', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9747, '5308', '普洱市', '53', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9748, '530802', '思茅区', '5308', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9749, '530821', '宁洱哈尼族彝族自治县', '5308', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9750, '530822', '墨江哈尼族自治县', '5308', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9751, '530823', '景东彝族自治县', '5308', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9752, '530824', '景谷傣族彝族自治县', '5308', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9753, '530825', '镇沅彝族哈尼族拉祜族自治县', '5308', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9754, '530826', '江城哈尼族彝族自治县', '5308', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9755, '530827', '孟连傣族拉祜族佤族自治县', '5308', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9756, '530828', '澜沧拉祜族自治县', '5308', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9757, '530829', '西盟佤族自治县', '5308', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9758, '5309', '临沧市', '53', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9759, '530902', '临翔区', '5309', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9760, '530921', '凤庆县', '5309', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9761, '530922', '云县', '5309', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9762, '530923', '永德县', '5309', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9763, '530924', '镇康县', '5309', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9764, '530925', '双江拉祜族佤族布朗族傣族自治县', '5309', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9765, '530926', '耿马傣族佤族自治县', '5309', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9766, '530927', '沧源佤族自治县', '5309', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9767, '5323', '楚雄彝族自治州', '53', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9768, '532301', '楚雄市', '5323', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9769, '532302', '禄丰市', '5323', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9770, '532322', '双柏县', '5323', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9771, '532323', '牟定县', '5323', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9772, '532324', '南华县', '5323', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9773, '532325', '姚安县', '5323', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9774, '532326', '大姚县', '5323', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9775, '532327', '永仁县', '5323', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9776, '532328', '元谋县', '5323', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9777, '532329', '武定县', '5323', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9778, '5325', '红河哈尼族彝族自治州', '53', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9779, '532501', '个旧市', '5325', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9780, '532502', '开远市', '5325', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9781, '532503', '蒙自市', '5325', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9782, '532504', '弥勒市', '5325', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9783, '532523', '屏边苗族自治县', '5325', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9784, '532524', '建水县', '5325', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9785, '532525', '石屏县', '5325', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9786, '532527', '泸西县', '5325', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9787, '532528', '元阳县', '5325', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9788, '532529', '红河县', '5325', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9789, '532530', '金平苗族瑶族傣族自治县', '5325', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9790, '532531', '绿春县', '5325', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9791, '532532', '河口瑶族自治县', '5325', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9792, '5326', '文山壮族苗族自治州', '53', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9793, '532601', '文山市', '5326', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9794, '532622', '砚山县', '5326', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9795, '532623', '西畴县', '5326', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9796, '532624', '麻栗坡县', '5326', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9797, '532625', '马关县', '5326', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9798, '532626', '丘北县', '5326', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9799, '532627', '广南县', '5326', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9800, '532628', '富宁县', '5326', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9801, '5328', '西双版纳傣族自治州', '53', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9802, '532801', '景洪市', '5328', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9803, '532822', '勐海县', '5328', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9804, '532823', '勐腊县', '5328', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9805, '5329', '大理白族自治州', '53', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9806, '532901', '大理市', '5329', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9807, '532922', '漾濞彝族自治县', '5329', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9808, '532923', '祥云县', '5329', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9809, '532924', '宾川县', '5329', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9810, '532925', '弥渡县', '5329', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9811, '532926', '南涧彝族自治县', '5329', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9812, '532927', '巍山彝族回族自治县', '5329', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9813, '532928', '永平县', '5329', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9814, '532929', '云龙县', '5329', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9815, '532930', '洱源县', '5329', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9816, '532931', '剑川县', '5329', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9817, '532932', '鹤庆县', '5329', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9818, '5331', '德宏傣族景颇族自治州', '53', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9819, '533102', '瑞丽市', '5331', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9820, '533103', '芒市', '5331', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9821, '533122', '梁河县', '5331', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9822, '533123', '盈江县', '5331', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9823, '533124', '陇川县', '5331', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9824, '5333', '怒江傈僳族自治州', '53', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9825, '533301', '泸水市', '5333', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9826, '533323', '福贡县', '5333', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9827, '533324', '贡山独龙族怒族自治县', '5333', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9828, '533325', '兰坪白族普米族自治县', '5333', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9829, '5334', '迪庆藏族自治州', '53', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9830, '533401', '香格里拉市', '5334', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9831, '533422', '德钦县', '5334', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9832, '533423', '维西傈僳族自治县', '5334', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9833, '54', '西藏自治区', NULL, 1, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9834, '5401', '拉萨市', '54', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9835, '540102', '城关区', '5401', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9836, '540103', '堆龙德庆区', '5401', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9837, '540104', '达孜区', '5401', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9838, '540121', '林周县', '5401', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9839, '540122', '当雄县', '5401', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9840, '540123', '尼木县', '5401', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9841, '540124', '曲水县', '5401', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9842, '540127', '墨竹工卡县', '5401', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9843, '540171', '格尔木藏青工业园区', '5401', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9844, '540172', '拉萨经济技术开发区', '5401', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9845, '540173', '西藏文化旅游创意园区', '5401', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9846, '540174', '达孜工业园区', '5401', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9847, '5402', '日喀则市', '54', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9848, '540202', '桑珠孜区', '5402', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9849, '540221', '南木林县', '5402', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9850, '540222', '江孜县', '5402', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9851, '540223', '定日县', '5402', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9852, '540224', '萨迦县', '5402', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9853, '540225', '拉孜县', '5402', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9854, '540226', '昂仁县', '5402', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9855, '540227', '谢通门县', '5402', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9856, '540228', '白朗县', '5402', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9857, '540229', '仁布县', '5402', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9858, '540230', '康马县', '5402', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9859, '540231', '定结县', '5402', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9860, '540232', '仲巴县', '5402', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9861, '540233', '亚东县', '5402', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9862, '540234', '吉隆县', '5402', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9863, '540235', '聂拉木县', '5402', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9864, '540236', '萨嘎县', '5402', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9865, '540237', '岗巴县', '5402', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9866, '5403', '昌都市', '54', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9867, '540302', '卡若区', '5403', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9868, '540321', '江达县', '5403', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9869, '540322', '贡觉县', '5403', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9870, '540323', '类乌齐县', '5403', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9871, '540324', '丁青县', '5403', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9872, '540325', '察雅县', '5403', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9873, '540326', '八宿县', '5403', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9874, '540327', '左贡县', '5403', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9875, '540328', '芒康县', '5403', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9876, '540329', '洛隆县', '5403', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9877, '540330', '边坝县', '5403', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9878, '5404', '林芝市', '54', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9879, '540402', '巴宜区', '5404', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9880, '540421', '工布江达县', '5404', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9881, '540423', '墨脱县', '5404', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9882, '540424', '波密县', '5404', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9883, '540425', '察隅县', '5404', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9884, '540426', '朗县', '5404', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9885, '540481', '米林市', '5404', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9886, '5405', '山南市', '54', 2, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9887, '540502', '乃东区', '5405', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9888, '540521', '扎囊县', '5405', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9889, '540522', '贡嘎县', '5405', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9890, '540523', '桑日县', '5405', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9891, '540524', '琼结县', '5405', 3, '2026-05-18 13:10:31', '2026-05-18 13:10:31');
+INSERT INTO `sys_district` VALUES (9892, '540525', '曲松县', '5405', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9893, '540526', '措美县', '5405', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9894, '540527', '洛扎县', '5405', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9895, '540528', '加查县', '5405', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9896, '540529', '隆子县', '5405', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9897, '540531', '浪卡子县', '5405', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9898, '540581', '错那市', '5405', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9899, '5406', '那曲市', '54', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9900, '540602', '色尼区', '5406', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9901, '540621', '嘉黎县', '5406', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9902, '540622', '比如县', '5406', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9903, '540623', '聂荣县', '5406', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9904, '540624', '安多县', '5406', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9905, '540625', '申扎县', '5406', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9906, '540626', '索县', '5406', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9907, '540627', '班戈县', '5406', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9908, '540628', '巴青县', '5406', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9909, '540629', '尼玛县', '5406', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9910, '540630', '双湖县', '5406', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9911, '5425', '阿里地区', '54', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9912, '542521', '普兰县', '5425', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9913, '542522', '札达县', '5425', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9914, '542523', '噶尔县', '5425', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9915, '542524', '日土县', '5425', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9916, '542525', '革吉县', '5425', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9917, '542526', '改则县', '5425', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9918, '542527', '措勤县', '5425', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9919, '61', '陕西省', NULL, 1, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9920, '6101', '西安市', '61', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9921, '610102', '新城区', '6101', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9922, '610103', '碑林区', '6101', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9923, '610104', '莲湖区', '6101', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9924, '610111', '灞桥区', '6101', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9925, '610112', '未央区', '6101', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9926, '610113', '雁塔区', '6101', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9927, '610114', '阎良区', '6101', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9928, '610115', '临潼区', '6101', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9929, '610116', '长安区', '6101', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9930, '610117', '高陵区', '6101', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9931, '610118', '鄠邑区', '6101', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9932, '610122', '蓝田县', '6101', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9933, '610124', '周至县', '6101', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9934, '6102', '铜川市', '61', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9935, '610202', '王益区', '6102', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9936, '610203', '印台区', '6102', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9937, '610204', '耀州区', '6102', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9938, '610222', '宜君县', '6102', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9939, '6103', '宝鸡市', '61', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9940, '610302', '渭滨区', '6103', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9941, '610303', '金台区', '6103', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9942, '610304', '陈仓区', '6103', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9943, '610305', '凤翔区', '6103', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9944, '610323', '岐山县', '6103', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9945, '610324', '扶风县', '6103', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9946, '610326', '眉县', '6103', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9947, '610327', '陇县', '6103', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9948, '610328', '千阳县', '6103', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9949, '610329', '麟游县', '6103', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9950, '610330', '凤县', '6103', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9951, '610331', '太白县', '6103', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9952, '6104', '咸阳市', '61', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9953, '610402', '秦都区', '6104', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9954, '610403', '杨陵区', '6104', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9955, '610404', '渭城区', '6104', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9956, '610422', '三原县', '6104', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9957, '610423', '泾阳县', '6104', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9958, '610424', '乾县', '6104', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9959, '610425', '礼泉县', '6104', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9960, '610426', '永寿县', '6104', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9961, '610428', '长武县', '6104', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9962, '610429', '旬邑县', '6104', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9963, '610430', '淳化县', '6104', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9964, '610431', '武功县', '6104', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9965, '610481', '兴平市', '6104', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9966, '610482', '彬州市', '6104', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9967, '6105', '渭南市', '61', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9968, '610502', '临渭区', '6105', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9969, '610503', '华州区', '6105', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9970, '610522', '潼关县', '6105', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9971, '610523', '大荔县', '6105', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9972, '610524', '合阳县', '6105', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9973, '610525', '澄城县', '6105', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9974, '610526', '蒲城县', '6105', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9975, '610527', '白水县', '6105', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9976, '610528', '富平县', '6105', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9977, '610581', '韩城市', '6105', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9978, '610582', '华阴市', '6105', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9979, '6106', '延安市', '61', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9980, '610602', '宝塔区', '6106', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9981, '610603', '安塞区', '6106', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9982, '610621', '延长县', '6106', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9983, '610622', '延川县', '6106', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9984, '610625', '志丹县', '6106', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9985, '610626', '吴起县', '6106', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9986, '610627', '甘泉县', '6106', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9987, '610628', '富县', '6106', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9988, '610629', '洛川县', '6106', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9989, '610630', '宜川县', '6106', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9990, '610631', '黄龙县', '6106', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9991, '610632', '黄陵县', '6106', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9992, '610681', '子长市', '6106', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9993, '6107', '汉中市', '61', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9994, '610702', '汉台区', '6107', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9995, '610703', '南郑区', '6107', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9996, '610722', '城固县', '6107', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9997, '610723', '洋县', '6107', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9998, '610724', '西乡县', '6107', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (9999, '610725', '勉县', '6107', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10000, '610726', '宁强县', '6107', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10001, '610727', '略阳县', '6107', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10002, '610728', '镇巴县', '6107', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10003, '610729', '留坝县', '6107', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10004, '610730', '佛坪县', '6107', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10005, '6108', '榆林市', '61', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10006, '610802', '榆阳区', '6108', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10007, '610803', '横山区', '6108', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10008, '610822', '府谷县', '6108', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10009, '610824', '靖边县', '6108', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10010, '610825', '定边县', '6108', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10011, '610826', '绥德县', '6108', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10012, '610827', '米脂县', '6108', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10013, '610828', '佳县', '6108', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10014, '610829', '吴堡县', '6108', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10015, '610830', '清涧县', '6108', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10016, '610831', '子洲县', '6108', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10017, '610881', '神木市', '6108', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10018, '6109', '安康市', '61', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10019, '610902', '汉滨区', '6109', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10020, '610921', '汉阴县', '6109', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10021, '610922', '石泉县', '6109', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10022, '610923', '宁陕县', '6109', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10023, '610924', '紫阳县', '6109', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10024, '610925', '岚皋县', '6109', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10025, '610926', '平利县', '6109', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10026, '610927', '镇坪县', '6109', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10027, '610929', '白河县', '6109', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10028, '610981', '旬阳市', '6109', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10029, '6110', '商洛市', '61', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10030, '611002', '商州区', '6110', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10031, '611021', '洛南县', '6110', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10032, '611022', '丹凤县', '6110', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10033, '611023', '商南县', '6110', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10034, '611024', '山阳县', '6110', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10035, '611025', '镇安县', '6110', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10036, '611026', '柞水县', '6110', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10037, '62', '甘肃省', NULL, 1, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10038, '6201', '兰州市', '62', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10039, '620102', '城关区', '6201', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10040, '620103', '七里河区', '6201', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10041, '620104', '西固区', '6201', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10042, '620105', '安宁区', '6201', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10043, '620111', '红古区', '6201', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10044, '620121', '永登县', '6201', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10045, '620122', '皋兰县', '6201', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10046, '620123', '榆中县', '6201', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10047, '620171', '兰州新区', '6201', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10048, '6202', '嘉峪关市', '62', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10049, '620201001', '雄关街道', '6202', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10050, '620201002', '钢城街道', '6202', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10051, '620201100', '新城镇', '6202', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10052, '620201101', '峪泉镇', '6202', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10053, '620201102', '文殊镇', '6202', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10054, '6203', '金昌市', '62', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10055, '620302', '金川区', '6203', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10056, '620321', '永昌县', '6203', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10057, '6204', '白银市', '62', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10058, '620402', '白银区', '6204', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10059, '620403', '平川区', '6204', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10060, '620421', '靖远县', '6204', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10061, '620422', '会宁县', '6204', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10062, '620423', '景泰县', '6204', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10063, '6205', '天水市', '62', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10064, '620502', '秦州区', '6205', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10065, '620503', '麦积区', '6205', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10066, '620521', '清水县', '6205', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10067, '620522', '秦安县', '6205', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10068, '620523', '甘谷县', '6205', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10069, '620524', '武山县', '6205', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10070, '620525', '张家川回族自治县', '6205', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10071, '6206', '武威市', '62', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10072, '620602', '凉州区', '6206', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10073, '620621', '民勤县', '6206', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10074, '620622', '古浪县', '6206', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10075, '620623', '天祝藏族自治县', '6206', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10076, '6207', '张掖市', '62', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10077, '620702', '甘州区', '6207', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10078, '620721', '肃南裕固族自治县', '6207', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10079, '620722', '民乐县', '6207', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10080, '620723', '临泽县', '6207', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10081, '620724', '高台县', '6207', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10082, '620725', '山丹县', '6207', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10083, '6208', '平凉市', '62', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10084, '620802', '崆峒区', '6208', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10085, '620821', '泾川县', '6208', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10086, '620822', '灵台县', '6208', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10087, '620823', '崇信县', '6208', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10088, '620825', '庄浪县', '6208', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10089, '620826', '静宁县', '6208', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10090, '620881', '华亭市', '6208', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10091, '6209', '酒泉市', '62', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10092, '620902', '肃州区', '6209', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10093, '620921', '金塔县', '6209', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10094, '620922', '瓜州县', '6209', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10095, '620923', '肃北蒙古族自治县', '6209', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10096, '620924', '阿克塞哈萨克族自治县', '6209', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10097, '620981', '玉门市', '6209', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10098, '620982', '敦煌市', '6209', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10099, '6210', '庆阳市', '62', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10100, '621002', '西峰区', '6210', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10101, '621021', '庆城县', '6210', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10102, '621022', '环县', '6210', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10103, '621023', '华池县', '6210', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10104, '621024', '合水县', '6210', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10105, '621025', '正宁县', '6210', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10106, '621026', '宁县', '6210', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10107, '621027', '镇原县', '6210', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10108, '6211', '定西市', '62', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10109, '621102', '安定区', '6211', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10110, '621121', '通渭县', '6211', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10111, '621122', '陇西县', '6211', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10112, '621123', '渭源县', '6211', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10113, '621124', '临洮县', '6211', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10114, '621125', '漳县', '6211', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10115, '621126', '岷县', '6211', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10116, '6212', '陇南市', '62', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10117, '621202', '武都区', '6212', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10118, '621221', '成县', '6212', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10119, '621222', '文县', '6212', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10120, '621223', '宕昌县', '6212', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10121, '621224', '康县', '6212', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10122, '621225', '西和县', '6212', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10123, '621226', '礼县', '6212', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10124, '621227', '徽县', '6212', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10125, '621228', '两当县', '6212', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10126, '6229', '临夏回族自治州', '62', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10127, '622901', '临夏市', '6229', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10128, '622921', '临夏县', '6229', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10129, '622922', '康乐县', '6229', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10130, '622923', '永靖县', '6229', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10131, '622924', '广河县', '6229', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10132, '622925', '和政县', '6229', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10133, '622926', '东乡族自治县', '6229', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10134, '622927', '积石山保安族东乡族撒拉族自治县', '6229', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10135, '6230', '甘南藏族自治州', '62', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10136, '623001', '合作市', '6230', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10137, '623021', '临潭县', '6230', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10138, '623022', '卓尼县', '6230', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10139, '623023', '舟曲县', '6230', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10140, '623024', '迭部县', '6230', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10141, '623025', '玛曲县', '6230', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10142, '623026', '碌曲县', '6230', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10143, '623027', '夏河县', '6230', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10144, '63', '青海省', NULL, 1, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10145, '6301', '西宁市', '63', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10146, '630102', '城东区', '6301', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10147, '630103', '城中区', '6301', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10148, '630104', '城西区', '6301', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10149, '630105', '城北区', '6301', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10150, '630106', '湟中区', '6301', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10151, '630121', '大通回族土族自治县', '6301', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10152, '630123', '湟源县', '6301', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10153, '6302', '海东市', '63', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10154, '630202', '乐都区', '6302', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10155, '630203', '平安区', '6302', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10156, '630222', '民和回族土族自治县', '6302', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10157, '630223', '互助土族自治县', '6302', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10158, '630224', '化隆回族自治县', '6302', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10159, '630225', '循化撒拉族自治县', '6302', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10160, '6322', '海北藏族自治州', '63', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10161, '632221', '门源回族自治县', '6322', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10162, '632222', '祁连县', '6322', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10163, '632223', '海晏县', '6322', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10164, '632224', '刚察县', '6322', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10165, '6323', '黄南藏族自治州', '63', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10166, '632301', '同仁市', '6323', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10167, '632322', '尖扎县', '6323', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10168, '632323', '泽库县', '6323', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10169, '632324', '河南蒙古族自治县', '6323', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10170, '6325', '海南藏族自治州', '63', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10171, '632521', '共和县', '6325', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10172, '632522', '同德县', '6325', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10173, '632523', '贵德县', '6325', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10174, '632524', '兴海县', '6325', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10175, '632525', '贵南县', '6325', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10176, '6326', '果洛藏族自治州', '63', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10177, '632621', '玛沁县', '6326', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10178, '632622', '班玛县', '6326', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10179, '632623', '甘德县', '6326', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10180, '632624', '达日县', '6326', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10181, '632625', '久治县', '6326', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10182, '632626', '玛多县', '6326', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10183, '6327', '玉树藏族自治州', '63', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10184, '632701', '玉树市', '6327', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10185, '632722', '杂多县', '6327', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10186, '632723', '称多县', '6327', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10187, '632724', '治多县', '6327', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10188, '632725', '囊谦县', '6327', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10189, '632726', '曲麻莱县', '6327', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10190, '6328', '海西蒙古族藏族自治州', '63', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10191, '632801', '格尔木市', '6328', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10192, '632802', '德令哈市', '6328', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10193, '632803', '茫崖市', '6328', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10194, '632821', '乌兰县', '6328', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10195, '632822', '都兰县', '6328', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10196, '632823', '天峻县', '6328', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10197, '632857', '大柴旦行政委员会', '6328', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10198, '64', '宁夏回族自治区', NULL, 1, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10199, '6401', '银川市', '64', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10200, '640104', '兴庆区', '6401', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10201, '640105', '西夏区', '6401', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10202, '640106', '金凤区', '6401', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10203, '640121', '永宁县', '6401', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10204, '640122', '贺兰县', '6401', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10205, '640181', '灵武市', '6401', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10206, '6402', '石嘴山市', '64', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10207, '640202', '大武口区', '6402', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10208, '640205', '惠农区', '6402', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10209, '640221', '平罗县', '6402', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10210, '6403', '吴忠市', '64', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10211, '640302', '利通区', '6403', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10212, '640303', '红寺堡区', '6403', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10213, '640323', '盐池县', '6403', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10214, '640324', '同心县', '6403', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10215, '640381', '青铜峡市', '6403', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10216, '6404', '固原市', '64', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10217, '640402', '原州区', '6404', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10218, '640422', '西吉县', '6404', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10219, '640423', '隆德县', '6404', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10220, '640424', '泾源县', '6404', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10221, '640425', '彭阳县', '6404', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10222, '6405', '中卫市', '64', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10223, '640502', '沙坡头区', '6405', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10224, '640521', '中宁县', '6405', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10225, '640522', '海原县', '6405', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10226, '65', '新疆维吾尔自治区', NULL, 1, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10227, '6501', '乌鲁木齐市', '65', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10228, '650102', '天山区', '6501', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10229, '650103', '沙依巴克区', '6501', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10230, '650104', '新市区', '6501', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10231, '650105', '水磨沟区', '6501', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10232, '650106', '头屯河区', '6501', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10233, '650107', '达坂城区', '6501', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10234, '650109', '米东区', '6501', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10235, '650121', '乌鲁木齐县', '6501', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10236, '6502', '克拉玛依市', '65', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10237, '650202', '独山子区', '6502', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10238, '650203', '克拉玛依区', '6502', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10239, '650204', '白碱滩区', '6502', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10240, '650205', '乌尔禾区', '6502', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10241, '6504', '吐鲁番市', '65', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10242, '650402', '高昌区', '6504', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10243, '650421', '鄯善县', '6504', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10244, '650422', '托克逊县', '6504', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10245, '6505', '哈密市', '65', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10246, '650502', '伊州区', '6505', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10247, '650521', '巴里坤哈萨克自治县', '6505', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10248, '650522', '伊吾县', '6505', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10249, '6523', '昌吉回族自治州', '65', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10250, '652301', '昌吉市', '6523', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10251, '652302', '阜康市', '6523', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10252, '652323', '呼图壁县', '6523', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10253, '652324', '玛纳斯县', '6523', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10254, '652325', '奇台县', '6523', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10255, '652327', '吉木萨尔县', '6523', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10256, '652328', '木垒哈萨克自治县', '6523', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10257, '6527', '博尔塔拉蒙古自治州', '65', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10258, '652701', '博乐市', '6527', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10259, '652702', '阿拉山口市', '6527', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10260, '652722', '精河县', '6527', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10261, '652723', '温泉县', '6527', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10262, '6528', '巴音郭楞蒙古自治州', '65', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10263, '652801', '库尔勒市', '6528', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10264, '652822', '轮台县', '6528', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10265, '652823', '尉犁县', '6528', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10266, '652824', '若羌县', '6528', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10267, '652825', '且末县', '6528', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10268, '652826', '焉耆回族自治县', '6528', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10269, '652827', '和静县', '6528', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10270, '652828', '和硕县', '6528', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10271, '652829', '博湖县', '6528', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10272, '6529', '阿克苏地区', '65', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10273, '652901', '阿克苏市', '6529', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10274, '652902', '库车市', '6529', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10275, '652922', '温宿县', '6529', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10276, '652924', '沙雅县', '6529', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10277, '652925', '新和县', '6529', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10278, '652926', '拜城县', '6529', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10279, '652927', '乌什县', '6529', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10280, '652928', '阿瓦提县', '6529', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10281, '652929', '柯坪县', '6529', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10282, '6530', '克孜勒苏柯尔克孜自治州', '65', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10283, '653001', '阿图什市', '6530', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10284, '653022', '阿克陶县', '6530', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10285, '653023', '阿合奇县', '6530', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10286, '653024', '乌恰县', '6530', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10287, '6531', '喀什地区', '65', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10288, '653101', '喀什市', '6531', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10289, '653121', '疏附县', '6531', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10290, '653122', '疏勒县', '6531', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10291, '653123', '英吉沙县', '6531', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10292, '653124', '泽普县', '6531', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10293, '653125', '莎车县', '6531', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10294, '653126', '叶城县', '6531', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10295, '653127', '麦盖提县', '6531', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10296, '653128', '岳普湖县', '6531', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10297, '653129', '伽师县', '6531', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10298, '653130', '巴楚县', '6531', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10299, '653131', '塔什库尔干塔吉克自治县', '6531', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10300, '6532', '和田地区', '65', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10301, '653201', '和田市', '6532', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10302, '653221', '和田县', '6532', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10303, '653222', '墨玉县', '6532', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10304, '653223', '皮山县', '6532', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10305, '653224', '洛浦县', '6532', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10306, '653225', '策勒县', '6532', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10307, '653226', '于田县', '6532', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10308, '653227', '民丰县', '6532', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10309, '6540', '伊犁哈萨克自治州', '65', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10310, '654002', '伊宁市', '6540', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10311, '654003', '奎屯市', '6540', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10312, '654004', '霍尔果斯市', '6540', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10313, '654021', '伊宁县', '6540', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10314, '654022', '察布查尔锡伯自治县', '6540', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10315, '654023', '霍城县', '6540', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10316, '654024', '巩留县', '6540', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10317, '654025', '新源县', '6540', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10318, '654026', '昭苏县', '6540', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10319, '654027', '特克斯县', '6540', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10320, '654028', '尼勒克县', '6540', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10321, '6542', '塔城地区', '65', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10322, '654201', '塔城市', '6542', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10323, '654202', '乌苏市', '6542', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10324, '654203', '沙湾市', '6542', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10325, '654221', '额敏县', '6542', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10326, '654224', '托里县', '6542', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10327, '654225', '裕民县', '6542', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10328, '654226', '和布克赛尔蒙古自治县', '6542', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10329, '6543', '阿勒泰地区', '65', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10330, '654301', '阿勒泰市', '6543', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10331, '654321', '布尔津县', '6543', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10332, '654322', '富蕴县', '6543', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10333, '654323', '福海县', '6543', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10334, '654324', '哈巴河县', '6543', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10335, '654325', '青河县', '6543', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10336, '654326', '吉木乃县', '6543', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10337, '6590', '自治区直辖县级行政区划', '65', 2, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10338, '659001', '石河子市', '6590', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10339, '659002', '阿拉尔市', '6590', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10340, '659003', '图木舒克市', '6590', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10341, '659004', '五家渠市', '6590', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10342, '659005', '北屯市', '6590', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10343, '659006', '铁门关市', '6590', 3, '2026-05-18 13:10:32', '2026-05-18 13:10:32');
+INSERT INTO `sys_district` VALUES (10344, '659007', '双河市', '6590', 3, '2026-05-18 13:10:33', '2026-05-18 13:10:33');
+INSERT INTO `sys_district` VALUES (10345, '659008', '可克达拉市', '6590', 3, '2026-05-18 13:10:33', '2026-05-18 13:10:33');
+INSERT INTO `sys_district` VALUES (10346, '659009', '昆玉市', '6590', 3, '2026-05-18 13:10:33', '2026-05-18 13:10:33');
+INSERT INTO `sys_district` VALUES (10347, '659010', '胡杨河市', '6590', 3, '2026-05-18 13:10:33', '2026-05-18 13:10:33');
+INSERT INTO `sys_district` VALUES (10348, '659011', '新星市', '6590', 3, '2026-05-18 13:10:33', '2026-05-18 13:10:33');
+INSERT INTO `sys_district` VALUES (10349, '659012', '白杨市', '6590', 3, '2026-05-18 13:10:33', '2026-05-18 13:10:33');
 
-CREATE TABLE `sys_oper_log` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT,
-  `api_name` VARCHAR(128) NOT NULL,
-  `business_type` VARCHAR(32) NOT NULL,
-  `method_name` VARCHAR(255) DEFAULT NULL,
-  `request_uri` VARCHAR(255) DEFAULT NULL,
-  `operator_id` BIGINT DEFAULT NULL,
-  `operator_name` VARCHAR(64) DEFAULT NULL,
-  `ip_address` VARCHAR(64) DEFAULT NULL,
-  `success` TINYINT NOT NULL DEFAULT 1,
-  `error_message` VARCHAR(500) DEFAULT NULL,
-  `after_data` LONGTEXT,
-  `operation_time` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY `idx_api_name_time` (`api_name`, `operation_time`),
-  KEY `idx_operator_time` (`operator_id`, `operation_time`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+-- ----------------------------
+-- Table structure for sys_job_task
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_job_task`;
+CREATE TABLE `sys_job_task`  (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `task_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '任务名称',
+  `task_group` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'DEFAULT' COMMENT '任务分组',
+  `cron_expression` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'Cron表达式',
+  `class_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '执行类名',
+  `method_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '执行方法名',
+  `method_param` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '方法参数',
+  `handler_key` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '处理器标识',
+  `handler_param` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '处理器参数',
+  `status` tinyint NOT NULL DEFAULT 1 COMMENT '状态 1启用 0暂停',
+  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
+  `create_time` datetime NOT NULL COMMENT '创建时间',
+  `update_time` datetime NOT NULL COMMENT '更新时间',
+  `create_user_id` bigint NULL DEFAULT NULL COMMENT '创建人ID',
+  `update_user_id` bigint NULL DEFAULT NULL COMMENT '更新人ID',
+  `deleted` tinyint NOT NULL DEFAULT 0 COMMENT '删除标识 0正常 1删除',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `uk_task_name_group`(`task_name` ASC, `task_group` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '定时任务表' ROW_FORMAT = Dynamic;
 
-INSERT INTO `sys_dept` (`id`, `parent_id`, `dept_name`, `dept_sort`, `leader`, `phone`, `email`, `deleted`) VALUES
-(1, 0, '总公司', 1, '管理员', '13800000000', 'admin@feng.com', 0),
-(2, 1, '研发部', 1, '研发经理', '13800000001', 'rd@feng.com', 0),
-(3, 1, '运营部', 2, '运营经理', '13800000002', 'ops@feng.com', 0);
+-- ----------------------------
+-- Records of sys_job_task
+-- ----------------------------
 
-INSERT INTO `sys_post` (`id`, `post_code`, `post_name`, `post_sort`, `remark`, `deleted`) VALUES
-(1, 'ceo', '总经理', 1, '负责公司整体管理', 0),
-(2, 'dev_mgr', '研发经理', 2, '负责研发团队管理', 0),
-(3, 'operator', '运营专员', 3, '负责日常运营工作', 0);
+-- ----------------------------
+-- Table structure for sys_job_task_log
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_job_task_log`;
+CREATE TABLE `sys_job_task_log`  (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `task_id` bigint NOT NULL COMMENT '任务ID',
+  `task_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '任务名称',
+  `task_group` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '任务分组',
+  `class_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '执行类名',
+  `method_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '执行方法名',
+  `method_param` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '方法参数',
+  `execute_status` tinyint NOT NULL COMMENT '执行状态 1成功 0失败',
+  `execute_result` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '执行结果',
+  `error_message` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '异常信息',
+  `start_time` datetime NOT NULL COMMENT '开始时间',
+  `end_time` datetime NOT NULL COMMENT '结束时间',
+  `duration_ms` bigint NOT NULL DEFAULT 0 COMMENT '耗时毫秒',
+  `create_time` datetime NOT NULL COMMENT '创建时间',
+  `update_time` datetime NOT NULL COMMENT '更新时间',
+  `create_user_id` bigint NULL DEFAULT NULL COMMENT '创建人ID',
+  `update_user_id` bigint NULL DEFAULT NULL COMMENT '更新人ID',
+  `deleted` tinyint NOT NULL DEFAULT 0 COMMENT '删除标识 0正常 1删除',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_task_status_time`(`task_id` ASC, `execute_status` ASC, `create_time` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '定时任务日志表' ROW_FORMAT = Dynamic;
 
-INSERT INTO `sys_role` (`id`, `role_name`, `role_key`, `role_sort`, `remark`, `deleted`) VALUES
-(1, '超级管理员', 'admin', 1, '拥有系统全部权限', 0),
-(2, '运营人员', 'operator', 2, '面向日常运营使用', 0);
+-- ----------------------------
+-- Records of sys_job_task_log
+-- ----------------------------
 
-INSERT INTO `sys_user` (`id`, `username`, `password`, `nickname`, `phone`, `email`, `dept_id`, `post_id`, `status`, `deleted`) VALUES
-(1, 'admin', '{noop}admin123', '管理员', '13800000000', 'admin@feng.com', 1, 1, 1, 0),
-(2, 'operator', '{noop}admin123', '运营同学', '13800000003', 'operator@feng.com', 3, 3, 1, 0);
+-- ----------------------------
+-- Table structure for sys_menu
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_menu`;
+CREATE TABLE `sys_menu`  (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `parent_id` bigint NOT NULL DEFAULT 0 COMMENT '父菜单ID',
+  `menu_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '菜单名称',
+  `menu_type` tinyint NOT NULL COMMENT '菜单类型 0目录 1菜单 2按钮',
+  `path` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '路由地址',
+  `component` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '组件路径',
+  `permission` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '权限标识',
+  `icon` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '图标',
+  `menu_sort` int NOT NULL DEFAULT 0 COMMENT '排序',
+  `visible` tinyint NOT NULL DEFAULT 1 COMMENT '显示状态 1显示 0隐藏',
+  `create_time` datetime NULL DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
+  `create_user_id` bigint NULL DEFAULT NULL COMMENT '创建人ID',
+  `update_user_id` bigint NULL DEFAULT NULL COMMENT '更新人ID',
+  `deleted` tinyint NOT NULL DEFAULT 0 COMMENT '删除标识 0正常 1删除',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 103 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '菜单权限表' ROW_FORMAT = Dynamic;
 
-INSERT INTO `sys_menu` (`id`, `parent_id`, `menu_name`, `menu_type`, `path`, `component`, `permission`, `icon`, `menu_sort`, `visible`, `deleted`) VALUES
-(1, 0, '系统管理', 0, 'system', 'Layout', '', 'setting', 1, 1, 0),
-(2, 0, '工具管理', 0, 'tool', 'Layout', '', 'tools', 2, 1, 0),
-(10, 1, '用户管理', 1, 'system/user', 'views/system/UserView.vue', 'system:user:list', 'user', 1, 1, 0),
-(11, 10, '用户查询', 2, '', '', 'system:user:query', '', 1, 1, 0),
-(12, 10, '用户新增', 2, '', '', 'system:user:add', '', 2, 1, 0),
-(13, 10, '用户编辑', 2, '', '', 'system:user:edit', '', 3, 1, 0),
-(14, 10, '用户删除', 2, '', '', 'system:user:remove', '', 4, 1, 0),
-(20, 1, '角色管理', 1, 'system/role', 'views/system/RoleView.vue', 'system:role:list', 'peoples', 2, 1, 0),
-(21, 20, '角色查询', 2, '', '', 'system:role:query', '', 1, 1, 0),
-(22, 20, '角色新增', 2, '', '', 'system:role:add', '', 2, 1, 0),
-(23, 20, '角色编辑', 2, '', '', 'system:role:edit', '', 3, 1, 0),
-(24, 20, '角色删除', 2, '', '', 'system:role:remove', '', 4, 1, 0),
-(30, 1, '岗位管理', 1, 'system/post', 'views/system/PostView.vue', 'system:post:list', 'postcard', 3, 1, 0),
-(31, 30, '岗位新增', 2, '', '', 'system:post:add', '', 1, 1, 0),
-(32, 30, '岗位编辑', 2, '', '', 'system:post:edit', '', 2, 1, 0),
-(33, 30, '岗位删除', 2, '', '', 'system:post:remove', '', 3, 1, 0),
-(40, 1, '部门管理', 1, 'system/dept', 'views/system/DeptView.vue', 'system:dept:list', 'office-building', 4, 1, 0),
-(41, 40, '部门新增', 2, '', '', 'system:dept:add', '', 1, 1, 0),
-(42, 40, '部门编辑', 2, '', '', 'system:dept:edit', '', 2, 1, 0),
-(43, 40, '部门删除', 2, '', '', 'system:dept:remove', '', 3, 1, 0),
-(50, 1, '菜单管理', 1, 'system/menu', 'views/system/MenuView.vue', 'system:menu:list', 'menu', 5, 1, 0),
-(51, 50, '菜单新增', 2, '', '', 'system:menu:add', '', 1, 1, 0),
-(52, 50, '菜单编辑', 2, '', '', 'system:menu:edit', '', 2, 1, 0),
-(53, 50, '菜单删除', 2, '', '', 'system:menu:remove', '', 3, 1, 0),
-(60, 1, '操作日志', 1, 'system/log', 'views/system/OperLogView.vue', 'system:log:list', 'document', 6, 1, 0),
-(70, 2, '接口文档', 1, 'tool/doc', 'views/tool/ApiDocView.vue', 'tool:doc:view', 'document', 1, 1, 0);
+-- ----------------------------
+-- Records of sys_menu
+-- ----------------------------
+INSERT INTO `sys_menu` VALUES (1, 0, '系统管理', 0, 'system', 'Layout', '', 'svg:system', 1, 1, '2026-03-19 03:13:04', '2026-03-27 07:09:14', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (2, 0, '工具管理', 0, 'tool', 'Layout', '', 'svg:tool', 2, 1, '2026-03-19 13:52:49', '2026-03-27 07:09:14', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (10, 1, '用户管理', 1, 'system/user', 'views/system/UserView.vue', '', 'svg:user', 1, 1, '2026-03-19 03:13:04', '2026-03-27 07:09:14', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (11, 10, '用户查询', 2, '', '', 'system:user:query', 'svg:search', 1, 1, '2026-03-19 03:13:04', '2026-03-27 07:09:14', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (12, 10, '用户新增', 2, '', '', 'system:user:add', 'svg:add', 2, 1, '2026-03-19 03:13:04', '2026-03-27 07:09:14', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (13, 10, '用户编辑', 2, '', '', 'system:user:edit', 'svg:edit', 3, 1, '2026-03-19 03:13:04', '2026-03-27 07:09:14', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (14, 10, '用户删除', 2, '', '', 'system:user:remove', 'svg:delete', 4, 1, '2026-03-19 03:13:04', '2026-03-27 07:09:14', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (20, 1, '角色管理', 1, 'system/role', 'views/system/RoleView.vue', '', 'svg:role', 2, 1, '2026-03-19 03:13:04', '2026-03-27 07:09:14', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (21, 20, '角色查询', 2, '', '', 'system:role:query', 'svg:search', 1, 1, '2026-03-19 03:13:04', '2026-03-27 07:09:14', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (22, 20, '角色新增', 2, '', '', 'system:role:add', 'svg:add', 2, 1, '2026-03-19 03:13:04', '2026-03-27 07:09:14', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (23, 20, '角色编辑', 2, '', '', 'system:role:edit', 'svg:edit', 3, 1, '2026-03-19 03:13:04', '2026-03-27 07:09:14', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (24, 20, '角色删除', 2, '', '', 'system:role:remove', 'svg:delete', 4, 1, '2026-03-19 03:13:04', '2026-03-27 07:09:14', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (30, 1, '岗位管理', 1, 'system/post', 'views/system/PostView.vue', '', 'svg:post', 3, 1, '2026-03-19 03:13:04', '2026-03-27 07:09:14', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (31, 30, '岗位新增', 2, '', '', 'system:post:add', 'svg:add', 1, 1, '2026-03-19 03:13:04', '2026-03-27 07:09:14', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (32, 30, '岗位编辑', 2, '', '', 'system:post:edit', 'svg:edit', 2, 1, '2026-03-19 03:13:04', '2026-03-27 07:09:14', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (33, 30, '岗位删除', 2, '', '', 'system:post:remove', 'svg:delete', 3, 1, '2026-03-19 03:13:04', '2026-03-27 07:09:14', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (40, 1, '部门管理', 1, 'system/dept', 'views/system/DeptView.vue', '', 'svg:dept', 4, 1, '2026-03-19 03:13:04', '2026-03-27 07:09:14', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (41, 40, '部门新增', 2, '', '', 'system:dept:add', 'svg:add', 1, 1, '2026-03-19 03:13:04', '2026-03-27 07:09:14', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (42, 40, '部门编辑', 2, '', '', 'system:dept:edit', 'svg:edit', 2, 1, '2026-03-19 03:13:04', '2026-03-27 07:09:14', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (43, 40, '部门删除', 2, '', '', 'system:dept:remove', 'svg:delete', 3, 1, '2026-03-19 03:13:04', '2026-03-27 07:09:14', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (50, 1, '菜单管理', 1, 'system/menu', 'views/system/MenuView.vue', '', 'svg:menu', 5, 1, '2026-03-19 03:13:04', '2026-03-27 07:09:14', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (51, 50, '菜单新增', 2, '', '', 'system:menu:add', 'svg:add', 1, 1, '2026-03-19 03:13:04', '2026-03-27 07:09:14', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (52, 50, '菜单编辑', 2, '', '', 'system:menu:edit', 'svg:edit', 2, 1, '2026-03-19 03:13:04', '2026-03-27 07:09:14', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (53, 50, '菜单删除', 2, '', '', 'system:menu:remove', 'svg:delete', 3, 1, '2026-03-19 03:13:04', '2026-03-27 07:09:14', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (60, 1, '日志管理', 1, 'system/log', 'views/system/OperLogView.vue', '', 'svg:log', 6, 1, '2026-03-19 10:54:31', '2026-03-27 07:09:14', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (61, 1, '文件管理', 1, 'system/upload', 'views/system/UploadView.vue', '', 'svg:upload', 7, 1, '2026-03-20 07:15:13', '2026-03-27 07:09:14', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (62, 61, '上传文件', 2, '', '', 'system:upload:add', 'svg:upload', 1, 1, '2026-03-20 07:15:13', '2026-03-27 07:09:14', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (63, 1, '系统配置', 1, 'system/config', 'views/system/SystemConfigView.vue', '', 'svg:config', 7, 1, '2026-03-20 07:29:04', '2026-03-27 07:09:15', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (64, 63, '系统配置编辑', 2, '', '', 'system:config:edit', 'svg:edit', 1, 1, '2026-03-20 07:29:04', '2026-03-27 07:09:15', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (70, 2, '接口文档', 1, 'tool/doc', 'views/tool/ApiDocView.vue', 'tool:doc:view', 'svg:doc', 1, 1, '2026-03-19 13:52:49', '2026-03-27 07:09:15', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (71, 2, '定时任务管理', 1, 'tool/job', 'views/tool/JobTaskView.vue', '', 'svg:job', 2, 1, '2026-03-20 08:57:19', '2026-03-27 07:09:15', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (72, 71, '定时任务新增', 2, '', '', 'tool:job:add', 'svg:add', 1, 1, '2026-03-20 08:57:19', '2026-03-27 07:09:15', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (73, 71, '定时任务编辑', 2, '', '', 'tool:job:edit', 'svg:edit', 2, 1, '2026-03-20 08:57:19', '2026-03-27 07:09:15', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (74, 71, '定时任务删除', 2, '', '', 'tool:job:remove', 'svg:delete', 3, 1, '2026-03-20 08:57:19', '2026-03-27 07:09:15', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (75, 71, '定时任务暂停', 2, '', '', 'tool:job:pause', 'svg:pause', 4, 1, '2026-03-20 08:57:19', '2026-03-27 07:09:15', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (76, 71, '定时任务执行', 2, '', '', 'tool:job:run', 'svg:run', 5, 1, '2026-03-20 08:57:20', '2026-03-27 07:09:15', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (77, 10, '列表', 2, '', '', 'system:user:list', 'svg:list', 0, 1, '2026-03-23 15:34:02', '2026-03-27 07:09:15', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (78, 20, '列表', 2, '', '', 'system:role:list', 'svg:list', 0, 1, '2026-03-23 15:34:02', '2026-03-27 07:09:15', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (79, 30, '列表', 2, '', '', 'system:post:list', 'svg:list', 0, 1, '2026-03-23 15:34:02', '2026-03-27 07:09:15', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (80, 40, '列表', 2, '', '', 'system:dept:list', 'svg:list', 0, 1, '2026-03-23 15:34:02', '2026-03-27 07:09:15', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (81, 50, '列表', 2, '', '', 'system:menu:list', 'svg:list', 0, 1, '2026-03-23 15:34:02', '2026-03-27 07:09:15', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (82, 60, '列表', 2, '', '', 'system:log:list', 'svg:list', 0, 1, '2026-03-23 15:34:02', '2026-03-27 07:09:15', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (83, 63, '列表', 2, '', '', 'system:config:list', 'svg:list', 0, 1, '2026-03-23 15:34:02', '2026-03-27 07:09:15', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (84, 61, '列表', 2, '', '', 'system:upload:list', 'svg:list', 0, 1, '2026-03-23 15:34:02', '2026-03-27 07:09:15', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (85, 71, '列表', 2, '', '', 'tool:job:list', 'svg:list', 0, 1, '2026-03-23 15:34:02', '2026-03-27 07:09:15', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (91, 1, '字典管理', 1, 'system/dict', 'views/system/DictView.vue', 'system:dict:list', 'svg:dict', 5, 1, '2026-03-24 03:02:10', '2026-03-27 07:09:15', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (92, 91, '字典新增', 2, '', '', 'system:dict:add', 'svg:add', 1, 1, '2026-03-24 03:02:10', '2026-03-27 07:09:15', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (93, 91, '字典编辑', 2, '', '', 'system:dict:edit', 'svg:edit', 2, 1, '2026-03-24 03:02:10', '2026-03-27 07:09:15', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (94, 91, '字典删除', 2, '', '', 'system:dict:remove', 'svg:delete', 3, 1, '2026-03-24 03:02:10', '2026-03-27 07:09:15', 1, 1, 0);
+INSERT INTO `sys_menu` VALUES (95, 10, '用户据的', 1, 's', 's', 's', 'el:ArrowLeftBold', 1, 1, '2026-03-27 14:10:13', '2026-03-27 07:07:28', 1, 1, 1);
+INSERT INTO `sys_menu` VALUES (96, 1, '111', 1, '21', '13', '123', '', 1, 1, '2026-03-27 14:11:23', '2026-03-27 06:11:47', 1, 1, 1);
+INSERT INTO `sys_menu` VALUES (97, 95, 'asdas', 1, 'system/user', 'system/user', 'asd', '', 1, 1, '2026-03-27 15:05:20', '2026-03-27 07:07:26', 1, 1, 1);
+INSERT INTO `sys_menu` VALUES (100, 1, '行政区管理', 1, 'system/district', 'views/system/DistrictView.vue', 'system:district:list', 'location', 8, 1, NULL, NULL, NULL, NULL, 0);
+INSERT INTO `sys_menu` VALUES (101, 100, '行政区同步', 2, '', '', 'system:district:sync', '', 1, 1, NULL, NULL, NULL, NULL, 0);
+INSERT INTO `sys_menu` VALUES (102, 100, '行政区查看', 2, '', '', 'system:district:query', '', 2, 1, NULL, NULL, NULL, NULL, 0);
 
-INSERT INTO `sys_user_role` (`user_id`, `role_id`) VALUES
-(1, 1),
-(2, 2);
+-- ----------------------------
+-- Table structure for sys_oper_log
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_oper_log`;
+CREATE TABLE `sys_oper_log`  (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `api_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '接口名称',
+  `business_type` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '操作类型',
+  `method_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '方法名',
+  `request_uri` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '请求地址',
+  `operator_id` bigint NULL DEFAULT NULL COMMENT '操作人ID',
+  `operator_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '操作人账号',
+  `ip_address` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'IP地址',
+  `success` tinyint NOT NULL DEFAULT 1 COMMENT '是否成功 1成功 0失败',
+  `error_message` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '异常信息',
+  `after_data` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '操作后数据',
+  `operation_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '操作时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_operator_time`(`operator_id` ASC, `operation_time` ASC) USING BTREE,
+  INDEX `idx_api_name_time`(`api_name` ASC, `operation_time` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 64 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '操作日志表' ROW_FORMAT = Dynamic;
 
-INSERT INTO `sys_role_menu` (`role_id`, `menu_id`) VALUES
-(1, 1),(1, 10),(1, 11),(1, 12),(1, 13),(1, 14),
-(1, 20),(1, 21),(1, 22),(1, 23),(1, 24),
-(1, 30),(1, 31),(1, 32),(1, 33),
-(1, 40),(1, 41),(1, 42),(1, 43),
-(1, 50),(1, 51),(1, 52),(1, 53),
-(1, 60),
-(1, 2),(1, 70),
-(2, 1),(2, 30),(2, 40);
+-- ----------------------------
+-- Records of sys_oper_log
+-- ----------------------------
+INSERT INTO `sys_oper_log` VALUES (1, 'post', 'UPDATE', 'PostController.update(..)', '/api/system/posts/1', 1, 'admin', '127.0.0.1', 1, NULL, '{\"createTime\":\"2026-03-19T03:13:04\",\"updateTime\":\"2026-03-19T18:46:46\",\"deleted\":0,\"id\":1,\"postCode\":\"ceo1\",\"postName\":\"总经理\",\"postSort\":1,\"status\":1,\"remark\":\"系统初始化岗位\"}', '2026-03-19 18:46:46');
+INSERT INTO `sys_oper_log` VALUES (2, 'role', 'UPDATE', 'RoleController.update(..)', '/api/system/roles/1', 1, 'admin', '127.0.0.1', 1, NULL, '{\"createTime\":\"2026-03-19T03:13:04\",\"updateTime\":\"2026-03-19T18:54:50\",\"deleted\":0,\"id\":1,\"roleName\":\"超级管理员\",\"roleKey\":\"admin\",\"roleSort\":1,\"status\":1,\"remark\":\"拥有所有菜单和按钮权限\",\"menuIds\":[1,10,11,12,13,14,20,21,22,23,24,30,31,32,33,40,41,42,43,50,51,52,53,60]}', '2026-03-19 18:54:50');
+INSERT INTO `sys_oper_log` VALUES (3, 'dept', 'UPDATE', 'DeptController.update(..)', '/api/system/depts/2', 1, 'admin', '127.0.0.1', 1, NULL, '{\"createTime\":\"2026-03-19 03:13:04\",\"updateTime\":\"2026-03-19 22:30:50\",\"deleted\":0,\"id\":2,\"parentId\":1,\"deptName\":\"研发中心1\",\"deptSort\":1,\"status\":1,\"leader\":\"\",\"phone\":\"\",\"email\":\"\"}', '2026-03-19 22:30:50');
+INSERT INTO `sys_oper_log` VALUES (4, 'dept', 'UPDATE', 'DeptController.update(..)', '/api/system/depts/2', 1, 'admin', '127.0.0.1', 1, NULL, '{\"createTime\":\"2026-03-19 03:13:04\",\"updateTime\":\"2026-03-19 22:42:29\",\"deleted\":0,\"id\":2,\"parentId\":1,\"deptName\":\"研发中心\",\"deptSort\":1,\"status\":1,\"leader\":\"冯帅\",\"phone\":\"15612509687\",\"email\":\"15612509687@163.com\"}', '2026-03-19 22:42:29');
+INSERT INTO `sys_oper_log` VALUES (5, 'user', 'UPDATE', 'UserController.update(..)', '/api/system/users/2', 1, 'admin', '127.0.0.1', 1, NULL, '{\"createTime\":\"2026-03-19 03:13:04\",\"updateTime\":\"2026-03-19 03:13:04\",\"deleted\":0,\"id\":2,\"username\":\"operator\",\"nickname\":\"运营演示账号\",\"phone\":\"15612509687\",\"email\":\"15612509687@163.com\",\"deptId\":3,\"postId\":3,\"status\":1,\"roleIds\":[2]}', '2026-03-19 22:43:02');
+INSERT INTO `sys_oper_log` VALUES (6, 'system-config', 'UPDATE', 'SystemConfigController.save(..)', '/api/system/configs', 1, 'admin', '0:0:0:0:0:0:0:1', 1, NULL, NULL, '2026-03-20 15:53:57');
+INSERT INTO `sys_oper_log` VALUES (7, 'upload', 'INSERT', 'UploadFileController.upload(..)', '/api/system/upload-files', 1, 'admin', '0:0:0:0:0:0:0:1', 1, NULL, NULL, '2026-03-20 15:55:40');
+INSERT INTO `sys_oper_log` VALUES (8, 'upload', 'INSERT', 'UploadFileController.upload(..)', '/api/system/upload-files', 1, 'admin', '0:0:0:0:0:0:0:1', 1, NULL, NULL, '2026-03-20 15:55:49');
+INSERT INTO `sys_oper_log` VALUES (9, 'upload', 'INSERT', 'UploadFileController.upload(..)', '/api/system/upload-files', 1, 'admin', '0:0:0:0:0:0:0:1', 1, NULL, NULL, '2026-03-20 16:16:33');
+INSERT INTO `sys_oper_log` VALUES (10, 'system-config', 'UPDATE', 'SystemConfigController.save(..)', '/api/system/configs', 1, 'admin', '0:0:0:0:0:0:0:1', 1, NULL, NULL, '2026-03-20 16:25:32');
+INSERT INTO `sys_oper_log` VALUES (11, 'upload', 'INSERT', 'UploadFileController.upload(..)', '/api/system/upload-files', 1, 'admin', '0:0:0:0:0:0:0:1', 1, NULL, NULL, '2026-03-20 16:25:38');
+INSERT INTO `sys_oper_log` VALUES (12, 'upload', 'INSERT', 'UploadFileController.upload(..)', '/api/system/upload-files', 1, 'admin', '0:0:0:0:0:0:0:1', 1, NULL, NULL, '2026-03-20 16:28:21');
+INSERT INTO `sys_oper_log` VALUES (13, 'upload', 'INSERT', 'UploadFileController.upload(..)', '/api/system/upload-files', 1, 'admin', '0:0:0:0:0:0:0:1', 1, NULL, NULL, '2026-03-20 16:28:37');
+INSERT INTO `sys_oper_log` VALUES (14, 'system-config', 'UPDATE', 'SystemConfigController.save(..)', '/api/system/configs', 1, 'admin', '0:0:0:0:0:0:0:1', 1, NULL, NULL, '2026-03-20 16:28:54');
+INSERT INTO `sys_oper_log` VALUES (15, 'system-config', 'UPDATE', 'SystemConfigController.save(..)', '/api/system/configs', 1, 'admin', '0:0:0:0:0:0:0:1', 1, NULL, NULL, '2026-03-20 16:29:44');
+INSERT INTO `sys_oper_log` VALUES (16, 'upload', 'INSERT', 'UploadFileController.upload(..)', '/api/system/upload-files', 1, 'admin', '0:0:0:0:0:0:0:1', 1, NULL, NULL, '2026-03-20 16:30:01');
+INSERT INTO `sys_oper_log` VALUES (17, 'system-config', 'UPDATE', 'SystemConfigController.save(..)', '/api/system/configs', 1, 'admin', '0:0:0:0:0:0:0:1', 1, NULL, NULL, '2026-03-20 16:31:41');
+INSERT INTO `sys_oper_log` VALUES (18, 'upload', 'INSERT', 'UploadFileController.upload(..)', '/api/system/upload-files', 1, 'admin', '0:0:0:0:0:0:0:1', 1, NULL, NULL, '2026-03-20 16:31:53');
+INSERT INTO `sys_oper_log` VALUES (19, 'upload', 'INSERT', 'UploadFileController.upload(..)', '/api/system/upload-files', 1, 'admin', '0:0:0:0:0:0:0:1', 1, NULL, NULL, '2026-03-20 16:51:16');
+INSERT INTO `sys_oper_log` VALUES (20, 'system-config', 'UPDATE', 'SystemConfigController.save(..)', '/api/system/configs', 1, 'admin', '0:0:0:0:0:0:0:1', 1, NULL, NULL, '2026-03-20 17:14:28');
+INSERT INTO `sys_oper_log` VALUES (21, 'system-config', 'UPDATE', 'SystemConfigController.save(..)', '/api/system/configs', 1, 'admin', '0:0:0:0:0:0:0:1', 1, NULL, NULL, '2026-03-20 17:14:32');
+INSERT INTO `sys_oper_log` VALUES (22, 'role', 'UPDATE', 'RoleController.update(..)', '/api/system/roles/1', 1, 'admin', '0:0:0:0:0:0:0:1', 1, NULL, '{\"createTime\":\"2026-03-19 03:13:04\",\"updateTime\":\"2026-03-23 15:13:43\",\"deleted\":0,\"id\":1,\"roleName\":\"超级管理员\",\"roleKey\":\"admin\",\"roleSort\":1,\"status\":1,\"remark\":\"拥有所有菜单和按钮权限\",\"menuIds\":[11,12,13,14,21,22,23,24,31,32,33,41,42,43,51,52,53,60,62,64,70,72,73,74,75,76]}', '2026-03-23 15:13:43');
+INSERT INTO `sys_oper_log` VALUES (23, 'role', 'UPDATE', 'RoleController.update(..)', '/api/system/roles/1', 1, 'admin', '0:0:0:0:0:0:0:1', 1, NULL, '{\"createTime\":\"2026-03-19 03:13:04\",\"updateTime\":\"2026-03-23 15:35:14\",\"deleted\":0,\"id\":1,\"roleName\":\"超级管理员\",\"roleKey\":\"admin\",\"roleSort\":1,\"status\":1,\"remark\":\"拥有所有菜单和按钮权限\",\"menuIds\":[11,12,13,14,21,22,23,24,31,32,33,41,42,43,51,52,53,60,62,64,70,72,73,74,75,76,77,78,79,80,81,82,83,84,85]}', '2026-03-23 15:35:14');
+INSERT INTO `sys_oper_log` VALUES (24, 'user', 'UPDATE', 'UserController.update(..)', '/api/system/users/2', 1, 'admin', '0:0:0:0:0:0:0:1', 1, NULL, '{\"createTime\":\"2026-03-19 03:13:04\",\"updateTime\":\"2026-03-19 03:13:04\",\"deleted\":0,\"id\":2,\"username\":\"operator\",\"nickname\":\"运营演示账号\",\"phone\":\"15612509688\",\"email\":\"15612509687@163.com\",\"deptId\":3,\"postId\":3,\"status\":1,\"roleIds\":[2]}', '2026-03-23 15:52:40');
+INSERT INTO `sys_oper_log` VALUES (25, 'user', 'UPDATE', 'UserController.update(..)', '/api/system/users/1', 1, 'admin', '0:0:0:0:0:0:0:1', 1, NULL, '{\"createTime\":\"2026-03-19 03:13:04\",\"updateTime\":\"2026-03-19 03:13:04\",\"deleted\":0,\"id\":1,\"username\":\"admin\",\"nickname\":\"系统管理员\",\"phone\":\"13800000000\",\"email\":\"admin@feng.com\",\"deptId\":1,\"postId\":1,\"status\":0,\"roleIds\":[1]}', '2026-03-23 17:28:26');
+INSERT INTO `sys_oper_log` VALUES (26, 'user', 'UPDATE', 'UserController.update(..)', '/api/system/users/2', 1, 'admin', '0:0:0:0:0:0:0:1', 1, NULL, '{\"createTime\":\"2026-03-19 03:13:04\",\"updateTime\":\"2026-03-19 03:13:04\",\"deleted\":0,\"id\":2,\"username\":\"operator\",\"nickname\":\"运营演示账号\",\"phone\":\"15612509688\",\"email\":\"15612509687@163.com\",\"deptId\":3,\"postId\":3,\"status\":0,\"roleIds\":[2]}', '2026-03-23 17:41:59');
+INSERT INTO `sys_oper_log` VALUES (27, 'user', 'UPDATE', 'UserController.update(..)', '/api/system/users/2', 1, 'admin', '0:0:0:0:0:0:0:1', 1, NULL, '{\"createTime\":\"2026-03-19 03:13:04\",\"updateTime\":\"2026-03-19 03:13:04\",\"deleted\":0,\"id\":2,\"username\":\"operator\",\"nickname\":\"运营演示账号\",\"phone\":\"15612509688\",\"email\":\"15612509687@163.com\",\"deptId\":3,\"postId\":3,\"status\":1,\"roleIds\":[2]}', '2026-03-23 17:42:17');
+INSERT INTO `sys_oper_log` VALUES (28, 'user', 'UPDATE', 'UserController.update(..)', '/api/system/users/2', 1, 'admin', '0:0:0:0:0:0:0:1', 1, NULL, '{\"createTime\":\"2026-03-19 03:13:04\",\"updateTime\":\"2026-03-19 03:13:04\",\"deleted\":0,\"id\":2,\"username\":\"operator\",\"nickname\":\"运营演示账号\",\"phone\":\"15612509688\",\"email\":\"15612509687@163.com\",\"deptId\":3,\"postId\":3,\"status\":0,\"roleIds\":[2]}', '2026-03-23 17:42:22');
+INSERT INTO `sys_oper_log` VALUES (29, 'user', 'UPDATE', 'UserController.update(..)', '/api/system/users/2', 1, 'admin', '0:0:0:0:0:0:0:1', 1, NULL, '{\"createTime\":\"2026-03-19 03:13:04\",\"updateTime\":\"2026-03-19 03:13:04\",\"deleted\":0,\"id\":2,\"username\":\"operator\",\"nickname\":\"运营演示账号\",\"phone\":\"15612509688\",\"email\":\"15612509687@163.com\",\"deptId\":3,\"postId\":3,\"status\":1,\"roleIds\":[2]}', '2026-03-23 17:43:06');
+INSERT INTO `sys_oper_log` VALUES (30, 'user', 'UPDATE', 'UserController.resetPassword(..)', '/api/system/users/1/reset-password', 1, 'admin', '0:0:0:0:0:0:0:1', 1, NULL, '{\"createTime\":\"2026-03-19 03:13:04\",\"updateTime\":\"2026-03-23 09:41:36\",\"deleted\":0,\"id\":1,\"username\":\"admin\",\"nickname\":\"系统管理员\",\"phone\":\"13800000000\",\"email\":\"admin@feng.com\",\"deptId\":1,\"postId\":1,\"status\":1,\"roleIds\":[1]}', '2026-03-23 17:43:18');
+INSERT INTO `sys_oper_log` VALUES (31, 'user', 'UPDATE', 'UserController.update(..)', '/api/system/users/2', 1, 'admin', '0:0:0:0:0:0:0:1', 1, NULL, '{\"createTime\":\"2026-03-19 03:13:04\",\"updateTime\":\"2026-03-19 03:13:04\",\"deleted\":0,\"id\":2,\"username\":\"operator\",\"nickname\":\"运营演示账号\",\"phone\":\"15612509688\",\"email\":\"15612509687@163.com\",\"deptId\":3,\"postId\":3,\"status\":1,\"roleIds\":[1,2]}', '2026-03-23 17:43:24');
+INSERT INTO `sys_oper_log` VALUES (32, 'user', 'UPDATE', 'UserController.update(..)', '/api/system/users/2', 1, 'admin', '0:0:0:0:0:0:0:1', 1, NULL, '{\"createTime\":\"2026-03-19 03:13:04\",\"updateTime\":\"2026-03-19 03:13:04\",\"deleted\":0,\"id\":2,\"username\":\"operator\",\"nickname\":\"运营演示账号\",\"phone\":\"13800000000\",\"email\":\"15612509687@163.com\",\"deptId\":3,\"postId\":3,\"status\":1,\"roleIds\":[1,2]}', '2026-03-23 17:44:56');
+INSERT INTO `sys_oper_log` VALUES (33, 'user', 'UPDATE', 'UserController.update(..)', '/api/system/users/2', 1, 'admin', '0:0:0:0:0:0:0:1', 0, '手机号已存在', NULL, '2026-03-23 17:48:59');
+INSERT INTO `sys_oper_log` VALUES (34, 'user', 'INSERT', 'UserController.save(..)', '/api/system/users', 1, 'admin', '0:0:0:0:0:0:0:1', 1, NULL, '{\"createTime\":\"2026-03-23 17:49:40\",\"updateTime\":\"2026-03-23 17:49:40\",\"deleted\":0,\"id\":3,\"username\":\"dev\",\"nickname\":\"用户\",\"phone\":\"15612509687\",\"email\":\"15612509687@163.com\",\"deptId\":1,\"postId\":2,\"status\":1,\"roleIds\":[2]}', '2026-03-23 17:49:40');
+INSERT INTO `sys_oper_log` VALUES (35, 'user', 'DELETE', 'UserController.delete(..)', '/api/system/users/3', 1, 'admin', '0:0:0:0:0:0:0:1', 1, NULL, NULL, '2026-03-23 17:49:59');
+INSERT INTO `sys_oper_log` VALUES (36, 'role', 'UPDATE', 'RoleController.update(..)', '/api/system/roles/2', 1, 'admin', '0:0:0:0:0:0:0:1', 1, NULL, '{\"createTime\":\"2026-03-19 03:13:04\",\"updateTime\":\"2026-03-23 17:50:22\",\"deleted\":0,\"id\":2,\"roleName\":\"运营角色\",\"roleKey\":\"operator\",\"roleSort\":2,\"status\":1,\"remark\":\"示例业务角色\",\"menuIds\":[11,12,13,14,21,22,23,24,77,78]}', '2026-03-23 17:50:22');
+INSERT INTO `sys_oper_log` VALUES (37, 'user', 'UPDATE', 'UserController.update(..)', '/api/system/users/2', 1, 'admin', '0:0:0:0:0:0:0:1', 1, NULL, '{\"createTime\":\"2026-03-19 03:13:04\",\"updateTime\":\"2026-03-19 03:13:04\",\"deleted\":0,\"id\":2,\"username\":\"operator\",\"nickname\":\"运营演示账号\",\"phone\":\"13800000001\",\"email\":\"15612509687@163.com\",\"deptId\":3,\"postId\":3,\"status\":1,\"roleIds\":[2]}', '2026-03-23 17:50:39');
+INSERT INTO `sys_oper_log` VALUES (38, 'role', 'UPDATE', 'RoleController.update(..)', '/api/system/roles/2', 1, 'admin', '0:0:0:0:0:0:0:1', 1, NULL, '{\"createTime\":\"2026-03-19 03:13:04\",\"updateTime\":\"2026-03-23 17:54:19\",\"deleted\":0,\"id\":2,\"roleName\":\"运营角色\",\"roleKey\":\"operator\",\"roleSort\":2,\"status\":1,\"remark\":\"示例业务角色\",\"menuIds\":[11,12,13,14,21,22,23,24,77,78,79,80]}', '2026-03-23 17:54:19');
+INSERT INTO `sys_oper_log` VALUES (39, 'role', 'INSERT', 'RoleController.save(..)', '/api/system/roles', 1, 'admin', '0:0:0:0:0:0:0:1', 1, NULL, '{\"createTime\":\"2026-03-24 09:54:42\",\"updateTime\":\"2026-03-24 09:54:42\",\"deleted\":0,\"id\":3,\"roleName\":\"研发\",\"roleKey\":\"dev\",\"roleSort\":1,\"status\":1,\"remark\":\"\",\"menuIds\":[1,10,11,12,13,14,20,21,22,23,24,30,31,32,33,40,41,42,43,50,51,52,53,60,61,62,63,64,77,78,79,80,81,82,83,84]}', '2026-03-24 09:54:42');
+INSERT INTO `sys_oper_log` VALUES (40, 'user', 'INSERT', 'UserController.save(..)', '/api/system/users', 1, 'admin', '0:0:0:0:0:0:0:1', 1, NULL, '{\"createTime\":\"2026-03-24 09:55:02\",\"updateTime\":\"2026-03-24 09:55:02\",\"deleted\":0,\"id\":4,\"username\":\"15612509687\",\"nickname\":\"研发\",\"phone\":\"15612509687\",\"email\":\"\",\"deptId\":1,\"postId\":1,\"status\":1,\"roleIds\":[3]}', '2026-03-24 09:55:02');
+INSERT INTO `sys_oper_log` VALUES (41, 'role', 'DELETE', 'RoleController.delete(..)', '/api/system/roles/3', 1, 'admin', '0:0:0:0:0:0:0:1', 1, NULL, NULL, '2026-03-24 09:55:09');
+INSERT INTO `sys_oper_log` VALUES (42, 'role', 'INSERT', 'RoleController.save(..)', '/api/system/roles', 1, 'admin', '0:0:0:0:0:0:0:1', 1, NULL, '{\"createTime\":\"2026-03-24 10:03:17\",\"updateTime\":\"2026-03-24 10:03:17\",\"deleted\":0,\"id\":4,\"roleName\":\"111\",\"roleKey\":\"111\",\"roleSort\":1,\"status\":1,\"remark\":\"\",\"menuIds\":[]}', '2026-03-24 10:03:17');
+INSERT INTO `sys_oper_log` VALUES (43, 'user', 'UPDATE', 'UserController.update(..)', '/api/system/users/4', 1, 'admin', '0:0:0:0:0:0:0:1', 1, NULL, '{\"createTime\":\"2026-03-24 09:55:02\",\"updateTime\":\"2026-03-24 09:55:02\",\"deleted\":0,\"id\":4,\"username\":\"15612509687\",\"nickname\":\"研发\",\"phone\":\"15612509687\",\"email\":\"\",\"deptId\":1,\"postId\":1,\"status\":1,\"roleIds\":[4]}', '2026-03-24 10:03:23');
+INSERT INTO `sys_oper_log` VALUES (44, 'role', 'DELETE', 'RoleController.delete(..)', '/api/system/roles/4', 1, 'admin', '0:0:0:0:0:0:0:1', 0, '该角色已被用户使用，不能删除', NULL, '2026-03-24 10:03:27');
+INSERT INTO `sys_oper_log` VALUES (45, 'post', 'DELETE', 'PostController.delete(..)', '/api/system/posts/1', 1, 'admin', '0:0:0:0:0:0:0:1', 0, '该岗位已被用户使用，不能删除', NULL, '2026-03-24 10:03:37');
+INSERT INTO `sys_oper_log` VALUES (46, 'dept', 'DELETE', 'DeptController.delete(..)', '/api/system/depts/1', 1, 'admin', '0:0:0:0:0:0:0:1', 0, '该部门存在下级部门，不能删除', NULL, '2026-03-24 10:03:44');
+INSERT INTO `sys_oper_log` VALUES (47, 'dept', 'DELETE', 'DeptController.delete(..)', '/api/system/depts/3', 1, 'admin', '0:0:0:0:0:0:0:1', 0, '该部门已被用户使用，不能删除', NULL, '2026-03-24 10:03:47');
+INSERT INTO `sys_oper_log` VALUES (48, 'role', 'UPDATE', 'RoleController.update(..)', '/api/system/roles/1', 1, 'admin', '0:0:0:0:0:0:0:1', 1, NULL, '{\"createTime\":\"2026-03-19 03:13:04\",\"updateTime\":\"2026-03-24 10:38:21\",\"deleted\":0,\"id\":1,\"roleName\":\"超级管理员\",\"roleKey\":\"admin\",\"roleSort\":1,\"remark\":\"拥有所有菜单和按钮权限\",\"menuIds\":[1,2,10,11,12,13,14,20,21,22,23,24,30,31,32,33,40,41,42,43,50,51,52,53,60,61,62,63,64,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85]}', '2026-03-24 10:38:21');
+INSERT INTO `sys_oper_log` VALUES (49, 'upload', 'INSERT', 'UploadFileController.upload(..)', '/api/system/upload-files', 1, 'admin', '0:0:0:0:0:0:0:1', 1, NULL, NULL, '2026-03-24 11:56:54');
+INSERT INTO `sys_oper_log` VALUES (50, 'upload', 'INSERT', 'UploadFileController.upload(..)', '/api/system/upload-files', 1, 'admin', '0:0:0:0:0:0:0:1', 1, NULL, NULL, '2026-03-24 12:02:25');
+INSERT INTO `sys_oper_log` VALUES (51, 'post', 'UPDATE', 'PostController.update(..)', '/api/system/posts/1', 1, 'admin', '0:0:0:0:0:0:0:1', 1, NULL, '{\"createTime\":\"2026-03-19 03:13:04\",\"updateTime\":\"2026-03-24 13:36:34\",\"deleted\":0,\"id\":1,\"postCode\":\"ceo1\",\"postName\":\"总经理\",\"postSort\":1,\"status\":1,\"remark\":\"系统初始化岗位\"}', '2026-03-24 13:36:34');
+INSERT INTO `sys_oper_log` VALUES (52, '编辑部门', 'UPDATE', 'DeptController.update(..)', '/api/system/depts/2', 1, 'admin', '127.0.0.1', 1, NULL, '{\"id\":2,\"parentId\":1,\"deptName\":\"研发中心2\",\"deptSort\":1,\"leader\":\"冯帅\",\"phone\":\"15612509687\",\"email\":\"15612509687@163.com\"}', '2026-03-27 09:27:17');
+INSERT INTO `sys_oper_log` VALUES (53, '新增字典数据', 'INSERT', 'DictController.saveData(..)', '/api/system/dicts/data', 1, 'admin', '127.0.0.1', 1, NULL, '{\"id\":5,\"typeId\":2,\"dictLabel\":\"未知\",\"dictValue\":\"0\",\"dictSort\":0,\"tagType\":\"info\",\"cssClass\":\"\",\"remark\":\"\"}', '2026-03-27 13:24:43');
+INSERT INTO `sys_oper_log` VALUES (54, '新增菜单', 'INSERT', 'MenuController.save(..)', '/api/system/menus', 1, 'admin', '127.0.0.1', 1, NULL, '{\"id\":95,\"parentId\":10,\"menuName\":\"用户据的\",\"menuType\":1,\"path\":\"s\",\"component\":\"s\",\"permission\":\"s\",\"icon\":\"el:ArrowLeftBold\",\"menuSort\":1,\"visible\":1}', '2026-03-27 14:10:13');
+INSERT INTO `sys_oper_log` VALUES (55, '新增菜单', 'INSERT', 'MenuController.save(..)', '/api/system/menus', 1, 'admin', '127.0.0.1', 1, NULL, '{\"id\":96,\"parentId\":1,\"menuName\":\"111\",\"menuType\":1,\"path\":\"21\",\"component\":\"13\",\"permission\":\"123\",\"icon\":\"\",\"menuSort\":1,\"visible\":1}', '2026-03-27 14:11:23');
+INSERT INTO `sys_oper_log` VALUES (56, '删除角色', 'DELETE', 'RoleController.delete(..)', '/api/system/roles/4', 1, 'admin', '127.0.0.1', 0, '该角色已被用户使用，不能删除', NULL, '2026-03-27 14:11:42');
+INSERT INTO `sys_oper_log` VALUES (57, '删除菜单', 'DELETE', 'MenuController.delete(..)', '/api/system/menus/96', 1, 'admin', '127.0.0.1', 1, NULL, NULL, '2026-03-27 14:11:47');
+INSERT INTO `sys_oper_log` VALUES (58, '新增菜单', 'INSERT', 'MenuController.save(..)', '/api/system/menus', 1, 'admin', '127.0.0.1', 1, NULL, '{\"id\":97,\"parentId\":95,\"menuName\":\"asdas\",\"menuType\":1,\"path\":\"asdas\",\"component\":\"dasd\",\"permission\":\"asd\",\"icon\":\"\",\"menuSort\":1,\"visible\":1}', '2026-03-27 15:05:20');
+INSERT INTO `sys_oper_log` VALUES (59, '编辑菜单', 'UPDATE', 'MenuController.update(..)', '/api/system/menus/97', 1, 'admin', '127.0.0.1', 1, NULL, '{\"id\":97,\"parentId\":95,\"menuName\":\"asdas\",\"menuType\":1,\"path\":\"/system/user\",\"component\":\"/system/user\",\"permission\":\"asd\",\"icon\":\"\",\"menuSort\":1,\"visible\":1}', '2026-03-27 15:06:27');
+INSERT INTO `sys_oper_log` VALUES (60, '编辑菜单', 'UPDATE', 'MenuController.update(..)', '/api/system/menus/97', 1, 'admin', '127.0.0.1', 1, NULL, '{\"id\":97,\"parentId\":95,\"menuName\":\"asdas\",\"menuType\":1,\"path\":\"system/user\",\"component\":\"system/user\",\"permission\":\"asd\",\"icon\":\"\",\"menuSort\":1,\"visible\":1}', '2026-03-27 15:07:03');
+INSERT INTO `sys_oper_log` VALUES (61, '删除菜单', 'DELETE', 'MenuController.delete(..)', '/api/system/menus/97', 1, 'admin', '127.0.0.1', 1, NULL, NULL, '2026-03-27 15:07:26');
+INSERT INTO `sys_oper_log` VALUES (62, '删除菜单', 'DELETE', 'MenuController.delete(..)', '/api/system/menus/95', 1, 'admin', '127.0.0.1', 1, NULL, NULL, '2026-03-27 15:07:28');
+INSERT INTO `sys_oper_log` VALUES (63, '编辑角色', 'UPDATE', 'RoleController.update(..)', '/api/system/roles/4', 1, 'admin', '127.0.0.1', 1, NULL, '{\"id\":4,\"roleName\":\"111\",\"roleKey\":\"111\",\"roleSort\":3,\"remark\":\"\",\"menuIds\":[]}', '2026-03-27 15:10:00');
+
+-- ----------------------------
+-- Table structure for sys_post
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_post`;
+CREATE TABLE `sys_post`  (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `post_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '岗位编码',
+  `post_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '岗位名称',
+  `post_sort` int NOT NULL DEFAULT 0 COMMENT '排序',
+  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
+  `create_time` datetime NOT NULL COMMENT '创建时间',
+  `update_time` datetime NOT NULL COMMENT '更新时间',
+  `create_user_id` bigint NULL DEFAULT NULL COMMENT '创建人ID',
+  `update_user_id` bigint NULL DEFAULT NULL COMMENT '更新人ID',
+  `deleted` tinyint NOT NULL DEFAULT 0 COMMENT '删除标识 0正常 1删除',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '岗位表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_post
+-- ----------------------------
+INSERT INTO `sys_post` VALUES (1, 'ceo1', '总经理', 1, '系统初始化岗位', '2026-03-19 03:13:04', '2026-03-24 13:36:34', NULL, NULL, 0);
+INSERT INTO `sys_post` VALUES (2, 'dev_mgr', '研发经理', 2, '系统初始化岗位', '2026-03-19 03:13:04', '2026-03-19 03:13:04', NULL, NULL, 0);
+INSERT INTO `sys_post` VALUES (3, 'operator', '运营专员', 3, '系统初始化岗位', '2026-03-19 03:13:04', '2026-03-19 03:13:04', NULL, NULL, 0);
+
+-- ----------------------------
+-- Table structure for sys_role
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_role`;
+CREATE TABLE `sys_role`  (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `role_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '角色名称',
+  `role_key` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '角色权限标识',
+  `role_sort` int NOT NULL DEFAULT 0 COMMENT '排序',
+  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
+  `create_time` datetime NOT NULL COMMENT '创建时间',
+  `update_time` datetime NOT NULL COMMENT '更新时间',
+  `create_user_id` bigint NULL DEFAULT NULL COMMENT '创建人ID',
+  `update_user_id` bigint NULL DEFAULT NULL COMMENT '更新人ID',
+  `deleted` tinyint NOT NULL DEFAULT 0 COMMENT '删除标识 0正常 1删除',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `uk_role_key`(`role_key` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '角色表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_role
+-- ----------------------------
+INSERT INTO `sys_role` VALUES (1, '超级管理员', 'admin', 1, '拥有所有菜单和按钮权限', '2026-03-19 03:13:04', '2026-03-24 10:38:21', NULL, NULL, 0);
+INSERT INTO `sys_role` VALUES (2, '运营角色', 'operator', 2, '示例业务角色', '2026-03-19 03:13:04', '2026-03-23 17:54:19', NULL, NULL, 0);
+INSERT INTO `sys_role` VALUES (3, '研发', 'dev', 1, '', '2026-03-24 09:54:42', '2026-03-24 01:55:09', NULL, NULL, 1);
+INSERT INTO `sys_role` VALUES (4, '111', '111', 3, '', '2026-03-24 10:03:17', '2026-03-27 15:10:00', NULL, 1, 0);
+
+-- ----------------------------
+-- Table structure for sys_role_menu
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_role_menu`;
+CREATE TABLE `sys_role_menu`  (
+  `role_id` bigint NOT NULL COMMENT '角色ID',
+  `menu_id` bigint NOT NULL COMMENT '菜单ID',
+  PRIMARY KEY (`role_id`, `menu_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '角色菜单关联表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_role_menu
+-- ----------------------------
+INSERT INTO `sys_role_menu` VALUES (1, 1);
+INSERT INTO `sys_role_menu` VALUES (1, 2);
+INSERT INTO `sys_role_menu` VALUES (1, 10);
+INSERT INTO `sys_role_menu` VALUES (1, 11);
+INSERT INTO `sys_role_menu` VALUES (1, 12);
+INSERT INTO `sys_role_menu` VALUES (1, 13);
+INSERT INTO `sys_role_menu` VALUES (1, 14);
+INSERT INTO `sys_role_menu` VALUES (1, 20);
+INSERT INTO `sys_role_menu` VALUES (1, 21);
+INSERT INTO `sys_role_menu` VALUES (1, 22);
+INSERT INTO `sys_role_menu` VALUES (1, 23);
+INSERT INTO `sys_role_menu` VALUES (1, 24);
+INSERT INTO `sys_role_menu` VALUES (1, 30);
+INSERT INTO `sys_role_menu` VALUES (1, 31);
+INSERT INTO `sys_role_menu` VALUES (1, 32);
+INSERT INTO `sys_role_menu` VALUES (1, 33);
+INSERT INTO `sys_role_menu` VALUES (1, 40);
+INSERT INTO `sys_role_menu` VALUES (1, 41);
+INSERT INTO `sys_role_menu` VALUES (1, 42);
+INSERT INTO `sys_role_menu` VALUES (1, 43);
+INSERT INTO `sys_role_menu` VALUES (1, 50);
+INSERT INTO `sys_role_menu` VALUES (1, 51);
+INSERT INTO `sys_role_menu` VALUES (1, 52);
+INSERT INTO `sys_role_menu` VALUES (1, 53);
+INSERT INTO `sys_role_menu` VALUES (1, 60);
+INSERT INTO `sys_role_menu` VALUES (1, 61);
+INSERT INTO `sys_role_menu` VALUES (1, 62);
+INSERT INTO `sys_role_menu` VALUES (1, 63);
+INSERT INTO `sys_role_menu` VALUES (1, 64);
+INSERT INTO `sys_role_menu` VALUES (1, 70);
+INSERT INTO `sys_role_menu` VALUES (1, 71);
+INSERT INTO `sys_role_menu` VALUES (1, 72);
+INSERT INTO `sys_role_menu` VALUES (1, 73);
+INSERT INTO `sys_role_menu` VALUES (1, 74);
+INSERT INTO `sys_role_menu` VALUES (1, 75);
+INSERT INTO `sys_role_menu` VALUES (1, 76);
+INSERT INTO `sys_role_menu` VALUES (1, 77);
+INSERT INTO `sys_role_menu` VALUES (1, 78);
+INSERT INTO `sys_role_menu` VALUES (1, 79);
+INSERT INTO `sys_role_menu` VALUES (1, 80);
+INSERT INTO `sys_role_menu` VALUES (1, 81);
+INSERT INTO `sys_role_menu` VALUES (1, 82);
+INSERT INTO `sys_role_menu` VALUES (1, 83);
+INSERT INTO `sys_role_menu` VALUES (1, 84);
+INSERT INTO `sys_role_menu` VALUES (1, 85);
+INSERT INTO `sys_role_menu` VALUES (1, 91);
+INSERT INTO `sys_role_menu` VALUES (1, 92);
+INSERT INTO `sys_role_menu` VALUES (1, 93);
+INSERT INTO `sys_role_menu` VALUES (1, 94);
+INSERT INTO `sys_role_menu` VALUES (1, 100);
+INSERT INTO `sys_role_menu` VALUES (1, 101);
+INSERT INTO `sys_role_menu` VALUES (1, 102);
+INSERT INTO `sys_role_menu` VALUES (2, 11);
+INSERT INTO `sys_role_menu` VALUES (2, 12);
+INSERT INTO `sys_role_menu` VALUES (2, 13);
+INSERT INTO `sys_role_menu` VALUES (2, 14);
+INSERT INTO `sys_role_menu` VALUES (2, 21);
+INSERT INTO `sys_role_menu` VALUES (2, 22);
+INSERT INTO `sys_role_menu` VALUES (2, 23);
+INSERT INTO `sys_role_menu` VALUES (2, 24);
+INSERT INTO `sys_role_menu` VALUES (2, 77);
+INSERT INTO `sys_role_menu` VALUES (2, 78);
+INSERT INTO `sys_role_menu` VALUES (2, 79);
+INSERT INTO `sys_role_menu` VALUES (2, 80);
+
+-- ----------------------------
+-- Table structure for sys_upload_file
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_upload_file`;
+CREATE TABLE `sys_upload_file`  (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `original_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '原始文件名',
+  `current_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '存储文件名',
+  `file_size` bigint NOT NULL DEFAULT 0 COMMENT '文件大小',
+  `file_type` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '文件类型',
+  `md5_value` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '文件MD5',
+  `file_path` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '文件路径',
+  `create_time` datetime NOT NULL COMMENT '创建时间',
+  `update_time` datetime NOT NULL COMMENT '更新时间',
+  `create_user_id` bigint NULL DEFAULT NULL COMMENT '创建人ID',
+  `update_user_id` bigint NULL DEFAULT NULL COMMENT '更新人ID',
+  `deleted` tinyint NOT NULL DEFAULT 0 COMMENT '删除标识 0正常 1删除',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_md5_value`(`md5_value` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '上传文件表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_upload_file
+-- ----------------------------
+INSERT INTO `sys_upload_file` VALUES (1, 'e6a61b36b1f432a07e176e71e84c32e3.png', 'dd9ebb88559940a0bf6320e023841b08.png', 624058, 'image/png', '0eda9b1a81bff47ff53be65ca52cff4b', 'E:\\feng\\feng-code\\backend\\uploads\\dd9ebb88559940a0bf6320e023841b08.png', '2026-03-20 15:55:40', '2026-03-20 15:55:40', NULL, NULL, 0);
+INSERT INTO `sys_upload_file` VALUES (2, 'e6a61b36b1f432a07e176e71e84c32e3.png', '8d960179878e45ba9430a18199d91fac.png', 624058, 'image/png', '0eda9b1a81bff47ff53be65ca52cff4b', 'E:\\feng\\feng-code\\backend\\uploads\\8d960179878e45ba9430a18199d91fac.png', '2026-03-20 15:55:49', '2026-03-20 15:55:49', NULL, NULL, 0);
+INSERT INTO `sys_upload_file` VALUES (3, '3月月报1季度总结.docx', '47614b36b8a6495f8b08dd6fb16105f0.docx', 15423, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', '10b1f77b288d13daedfe281e6bc89bcc', 'E:\\feng\\feng-code\\backend\\uploads\\47614b36b8a6495f8b08dd6fb16105f0.docx', '2026-03-20 16:16:33', '2026-03-20 16:16:33', NULL, NULL, 0);
+INSERT INTO `sys_upload_file` VALUES (4, '3月月报1季度总结.docx', 'bde0e21aa67f40f8a9db2ba7f273a372.docx', 15423, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', '10b1f77b288d13daedfe281e6bc89bcc', 'E:\\feng\\feng-code\\backend\\uploads\\bde0e21aa67f40f8a9db2ba7f273a372.docx', '2026-03-20 16:25:38', '2026-03-20 16:25:38', NULL, NULL, 0);
+INSERT INTO `sys_upload_file` VALUES (5, 'e6a61b36b1f432a07e176e71e84c32e3.png', 'b8309495e5b04832969e7f4937ddd118.png', 624058, 'image/png', '0eda9b1a81bff47ff53be65ca52cff4b', 'E:\\feng\\feng-code\\backend\\uploads\\b8309495e5b04832969e7f4937ddd118.png', '2026-03-20 16:28:21', '2026-03-20 16:28:21', NULL, NULL, 0);
+INSERT INTO `sys_upload_file` VALUES (6, 'e6a61b36b1f432a07e176e71e84c32e3.png', 'ada23c4e517f4d129a97dbdf9687b8bc.png', 624058, 'image/png', '0eda9b1a81bff47ff53be65ca52cff4b', 'E:\\feng\\feng-code\\backend\\uploads\\ada23c4e517f4d129a97dbdf9687b8bc.png', '2026-03-20 16:28:37', '2026-03-20 16:28:37', NULL, NULL, 0);
+INSERT INTO `sys_upload_file` VALUES (7, 'e6a61b36b1f432a07e176e71e84c32e3.png', '2b70175b64ea474197035ce1ffc1811d.png', 624058, 'image/png', '0eda9b1a81bff47ff53be65ca52cff4b', 'http://39.106.158.88:9000/2026/3/20/2b70175b64ea474197035ce1ffc1811d.png', '2026-03-20 16:30:01', '2026-03-20 16:30:01', NULL, NULL, 0);
+INSERT INTO `sys_upload_file` VALUES (8, 'e6a61b36b1f432a07e176e71e84c32e3.png', 'c0360db3f8bb4a46a3bd1a1e0e82ae48.png', 624058, 'image/png', '0eda9b1a81bff47ff53be65ca52cff4b', 'http://39.106.158.88:9000/ai-admin/2026/3/20/c0360db3f8bb4a46a3bd1a1e0e82ae48.png', '2026-03-20 16:31:53', '2026-03-20 16:31:53', NULL, NULL, 0);
+INSERT INTO `sys_upload_file` VALUES (9, '3月月报1季度总结.docx', 'dce7790f2f7a4d94be4c09e7425329fe.docx', 15423, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', '10b1f77b288d13daedfe281e6bc89bcc', 'http://39.106.158.88:9000/ai-admin/2026/3/20/dce7790f2f7a4d94be4c09e7425329fe.docx', '2026-03-20 16:51:16', '2026-03-20 16:51:16', NULL, NULL, 0);
+INSERT INTO `sys_upload_file` VALUES (10, '66efcb0365b25755d036e193617042ad.jpg', 'ddde2bfe007b406594f5b740e89fb185.jpg', 298023, 'jpg', '078d530a30acba44639f130d70d4d511', 'http://39.106.158.88:9000/ai-admin/2026/3/24/ddde2bfe007b406594f5b740e89fb185.jpg', '2026-03-24 11:56:54', '2026-03-24 11:56:54', NULL, NULL, 0);
+INSERT INTO `sys_upload_file` VALUES (11, 'AI对研发人员的技术变革.pptx', '5750820803c14f24b8e7e8b20d963e51.pptx', 2225211, 'pptx', 'a199c6d69f93206b7ffbc0d1eb452704', 'http://39.106.158.88:9000/ai-admin/2026/3/24/5750820803c14f24b8e7e8b20d963e51.pptx', '2026-03-24 12:02:25', '2026-03-24 12:02:25', NULL, NULL, 0);
+
+-- ----------------------------
+-- Table structure for sys_user
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_user`;
+CREATE TABLE `sys_user`  (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `username` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '登录账号',
+  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '密码',
+  `nickname` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '用户昵称',
+  `phone` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '手机号',
+  `email` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '邮箱',
+  `dept_id` bigint NOT NULL COMMENT '部门ID',
+  `post_id` bigint NOT NULL COMMENT '岗位ID',
+  `status` tinyint NOT NULL DEFAULT 1 COMMENT '状态 1启用 0停用',
+  `create_time` datetime NOT NULL COMMENT '创建时间',
+  `update_time` datetime NOT NULL COMMENT '更新时间',
+  `create_user_id` bigint NULL DEFAULT NULL COMMENT '创建人ID',
+  `update_user_id` bigint NULL DEFAULT NULL COMMENT '更新人ID',
+  `deleted` tinyint NOT NULL DEFAULT 0 COMMENT '删除标识 0正常 1删除',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `uk_username`(`username` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_user
+-- ----------------------------
+INSERT INTO `sys_user` VALUES (1, 'admin', '{bcrypt}$2a$10$L6naSW7iAXeRVoZgNX/D/OBzzJcTGQ8ieYquzQnY2j.ikGiTZcD8G', '系统管理员', '13800000000', 'admin@feng.com', 1, 1, 1, '2026-03-19 03:13:04', '2026-03-23 09:41:36', NULL, 1, 0);
+INSERT INTO `sys_user` VALUES (2, 'operator', '{noop}admin123', '运营演示账号', '13800000001', '15612509687@163.com', 3, 3, 1, '2026-03-19 03:13:04', '2026-03-19 03:13:04', NULL, NULL, 0);
+INSERT INTO `sys_user` VALUES (3, 'dev', '{bcrypt}$2a$10$f1bjO07SB6GpyiSaDPjUguTBYXGOfiopPSFP9GEofbxTJnP.fQ7sG', '用户', '15612509687', '15612509687@163.com', 1, 2, 1, '2026-03-23 17:49:40', '2026-03-23 09:49:58', NULL, NULL, 1);
+INSERT INTO `sys_user` VALUES (4, '15612509687', '{bcrypt}$2a$10$Y7nkPAk6mMNvQDR5grD45eiMjVMxSxB/AexhwOXiWtKs0g.RRufXW', '研发', '15612509687', '', 1, 1, 1, '2026-03-24 09:55:02', '2026-03-24 09:55:02', NULL, NULL, 0);
+
+-- ----------------------------
+-- Table structure for sys_user_role
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_user_role`;
+CREATE TABLE `sys_user_role`  (
+  `user_id` bigint NOT NULL COMMENT '用户ID',
+  `role_id` bigint NOT NULL COMMENT '角色ID',
+  PRIMARY KEY (`user_id`, `role_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '用户角色关联表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sys_user_role
+-- ----------------------------
+INSERT INTO `sys_user_role` VALUES (1, 1);
+INSERT INTO `sys_user_role` VALUES (2, 2);
+INSERT INTO `sys_user_role` VALUES (4, 4);
+
+SET FOREIGN_KEY_CHECKS = 1;

@@ -27,7 +27,15 @@ dist/
 Thumbs.db
 
 # Playwright MCP cache
-.playwright-mmp/
+.playwright-mcp/
+
+# Images (screenshots)
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+*.mp4
 
 # Misc
 *.log
