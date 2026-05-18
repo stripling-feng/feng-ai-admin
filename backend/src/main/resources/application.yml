@@ -1,0 +1,56 @@
+server:
+  port: 10101
+  tomcat:
+    threads:
+      max: 500
+      min-spare: 50
+    max-connections: 20000
+    accept-count: 200
+
+spring:
+  profiles:
+    default: dev
+  output:
+    ansi:
+      enabled: ALWAYS
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 100MB
+  application:
+    name: feng-admin
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Shanghai
+
+mybatis-plus:
+  global-config:
+    db-config:
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+jwt:
+  expire-hours: 12
+
+cors:
+  allowed-origins:
+
+xss:
+  exclude-urls:
+    - /api/system/upload-files/content/**
+
+springdoc:
+  api-docs:
+    enabled: ${SPRINGDOC_ENABLED:true}
+  swagger-ui:
+    enabled: ${SPRINGDOC_SWAGGER_ENABLED:true}
+
+knife4j:
+  enable: ${KNIFE4J_ENABLED:true}
+  setting:
+    language: zh_cn
+
+logging:
+  file:
+    path: ./logs

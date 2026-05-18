@@ -1,0 +1,38 @@
+# Java / Spring Boot
+**/target/
+*.class
+*.jar
+*.war
+*.iml
+.idea/
+logs/
+**/logs/
+
+# Node / Frontend
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Playwright MCP cache
+.playwright-mmp/
+
+# Misc
+*.log
+*.log.*
+uploads/
+
+# Claude
+.claude/
