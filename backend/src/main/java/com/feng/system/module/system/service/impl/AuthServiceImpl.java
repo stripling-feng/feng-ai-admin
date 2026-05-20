@@ -16,7 +16,7 @@ import com.feng.system.module.system.service.SystemConfigService;
 import com.feng.system.module.system.vo.LoginVO;
 import com.feng.system.module.system.vo.UserInfoVO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,7 +29,6 @@ public class AuthServiceImpl implements AuthService {
     private final MenuService menuService;
     private final LoginAttemptService loginAttemptService;
     private final SystemConfigService systemConfigService;
-    private final PasswordEncoder passwordEncoder;
 
     @Override
     public LoginVO login(LoginDTO dto) {
@@ -38,7 +37,7 @@ public class AuthServiceImpl implements AuthService {
                 new LambdaQueryWrapper<SysUser>()
                         .eq(SysUser::getUsername, dto.getUsername())
                         .eq(SysUser::getDeleted, 0));
-        if (user == null || !passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+        if (user == null || !BCrypt.checkpw(dto.getPassword(), user.getPassword())) {
             loginAttemptService.recordLoginFailure(dto.getUsername());
             throw new BusinessException("账号或密码错误");
         }
@@ -69,10 +68,10 @@ public class AuthServiceImpl implements AuthService {
         if (user == null) {
             throw new BusinessException("当前用户不存在");
         }
-        if (!passwordEncoder.matches(dto.getOldPassword(), user.getPassword())) {
+        if (!BCrypt.checkpw(dto.getOldPassword(), user.getPassword())) {
             throw new BusinessException("旧密码错误");
         }
-        user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+        user.setPassword(BCrypt.hashpw(dto.getNewPassword(), BCrypt.gensalt()));
         userMapper.updateById(user);
     }
 
