@@ -161,7 +161,19 @@ async function openEdit(row) {
   visible.value = true
   await nextTick()
   formRef.value?.clearValidate()
-  menuTreeRef.value?.setCheckedKeys(form.menuIds)
+  const leafIds = getLeafIds(menuTree.value, new Set(form.menuIds))
+  menuTreeRef.value?.setCheckedKeys([...leafIds])
+}
+
+function getLeafIds(nodes, idSet, result = new Set()) {
+  for (const node of nodes) {
+    if (!node.children?.length) {
+      if (idSet.has(node.id)) result.add(node.id)
+    } else {
+      getLeafIds(node.children, idSet, result)
+    }
+  }
+  return result
 }
 
 async function handleSubmit() {

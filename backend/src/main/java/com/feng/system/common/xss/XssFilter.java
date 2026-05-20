@@ -45,7 +45,7 @@ public class XssFilter extends OncePerRequestFilter {
             } catch (Exception ignored) {
             }
             return Boolean.FALSE;
-        }) == Boolean.TRUE;
+        });
     }
 
     @Override

@@ -6,8 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.feng.system.common.log.OperLog;
 import com.feng.system.common.log.entity.SysOperLog;
 import com.feng.system.common.log.service.OperationLogAsyncService;
-import com.feng.system.module.system.entity.SysUser;
-import com.feng.system.module.system.mapper.SysUserMapper;
+import com.feng.system.module.system.vo.UserInfoVO;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +29,6 @@ public class OperLogAspect {
     private final OperationLogAsyncService asyncService;
     private final ObjectMapper objectMapper;
     private final HttpServletRequest request;
-    private final SysUserMapper userMapper;
 
     @Around("@annotation(operLog)")
     public Object around(ProceedingJoinPoint joinPoint, OperLog operLog) throws Throwable {
@@ -53,9 +51,9 @@ public class OperLogAspect {
         log.setRequestUri(request.getRequestURI());
         Long userId = currentUserId();
         if (userId != null) {
-            SysUser user = userMapper.selectById(userId);
             log.setOperatorId(userId);
-            log.setOperatorName(user == null ? "unknown" : user.getUsername());
+            UserInfoVO userInfo = getFromSession(userId);
+            log.setOperatorName(userInfo == null ? "unknown" : userInfo.getUsername());
         } else {
             log.setOperatorName("anonymous");
         }
@@ -114,6 +112,14 @@ public class OperLogAspect {
     private Long currentUserId() {
         try {
             return StpUtil.getLoginIdAsLong();
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private UserInfoVO getFromSession(Long userId) {
+        try {
+            return StpUtil.getSessionByLoginId(userId).getModel("userInfo", UserInfoVO.class);
         } catch (Exception e) {
             return null;
         }

@@ -1,5 +1,6 @@
 package com.feng.system.module.system.service.impl;
 
+import cn.dev33.satoken.secure.SaSecureUtil;
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.feng.system.common.exception.BusinessException;
@@ -14,10 +15,12 @@ import com.feng.system.module.system.service.LoginAttemptService;
 import com.feng.system.module.system.service.MenuService;
 import com.feng.system.module.system.service.SystemConfigService;
 import com.feng.system.module.system.vo.LoginVO;
+import com.feng.system.module.system.vo.MenuTreeVO;
 import com.feng.system.module.system.vo.UserInfoVO;
 import lombok.RequiredArgsConstructor;
-import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -37,7 +40,7 @@ public class AuthServiceImpl implements AuthService {
                 new LambdaQueryWrapper<SysUser>()
                         .eq(SysUser::getUsername, dto.getUsername())
                         .eq(SysUser::getDeleted, 0));
-        if (user == null || !BCrypt.checkpw(dto.getPassword(), user.getPassword())) {
+        if (user == null || !SaSecureUtil.sha256(dto.getUsername() + "#" + dto.getPassword()).equals(user.getPassword())) {
             loginAttemptService.recordLoginFailure(dto.getUsername());
             throw new BusinessException("账号或密码错误");
         }
@@ -54,13 +57,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public LoginVO current() {
         long userId = StpUtil.getLoginIdAsLong();
-        LoginVO cached = getCachedUserSession(userId);
-        if (cached != null) {
-            return cached;
-        }
-        LoginVO loginVO = buildLoginVO(userId, null);
-        cacheUserSession(userId, loginVO);
-        return loginVO;
+        return buildLoginVO(userId, null);
     }
 
     @Override
@@ -76,10 +73,10 @@ public class AuthServiceImpl implements AuthService {
         if (user == null) {
             throw new BusinessException("当前用户不存在");
         }
-        if (!BCrypt.checkpw(dto.getOldPassword(), user.getPassword())) {
+        if (!SaSecureUtil.sha256(user.getUsername() + "#" + dto.getOldPassword()).equals(user.getPassword())) {
             throw new BusinessException("旧密码错误");
         }
-        user.setPassword(BCrypt.hashpw(dto.getNewPassword(), BCrypt.gensalt()));
+        user.setPassword(SaSecureUtil.sha256(user.getUsername() + "#" + dto.getNewPassword()));
         userMapper.updateById(user);
     }
 
@@ -124,7 +121,7 @@ public class AuthServiceImpl implements AuthService {
         return LoginVO.builder()
                 .userInfo(userInfo)
                 .permissions(permissions)
-                .menuTree(menuTree)
+                .menuTree((List<MenuTreeVO>) menuTree)
                 .siteConfig(systemConfigService.getPublicConfig())
                 .build();
     }

@@ -57,7 +57,7 @@ public class RateLimitAspect {
                 String.valueOf(windowMs),
                 String.valueOf(rateLimit.maxRequests()));
 
-        if (result != null && result == 1) {
+        if (result == 1) {
             writeRateLimitResponse(rateLimit.message());
             return null;
         }

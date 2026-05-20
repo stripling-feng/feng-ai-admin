@@ -2,6 +2,7 @@ package com.feng.system.common.exception;
 
 import cn.dev33.satoken.exception.NotLoginException;
 import com.feng.system.common.api.ApiResponse;
+import com.feng.system.common.submit.DuplicateSubmitException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -30,6 +31,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ConstraintViolationException.class)
     public ApiResponse<Void> handleConstraint(ConstraintViolationException ex) {
         log.warn("约束校验异常: {}", ex.getMessage());
+        return ApiResponse.fail(ex.getMessage());
+    }
+
+    @ExceptionHandler(DuplicateSubmitException.class)
+    public ApiResponse<Void> handleDuplicateSubmit(DuplicateSubmitException ex) {
+        log.warn("重复提交: {}", ex.getMessage());
         return ApiResponse.fail(ex.getMessage());
     }
 

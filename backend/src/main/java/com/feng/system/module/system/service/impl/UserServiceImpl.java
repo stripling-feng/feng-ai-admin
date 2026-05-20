@@ -1,7 +1,6 @@
 package com.feng.system.module.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.feng.system.common.api.PageResult;
 import com.feng.system.common.exception.BusinessException;
@@ -15,8 +14,8 @@ import com.feng.system.module.system.service.AuthService;
 import com.feng.system.module.system.service.SystemConfigService;
 import com.feng.system.module.system.service.UserService;
 import com.feng.system.module.system.vo.UserInfoVO;
+import cn.dev33.satoken.secure.SaSecureUtil;
 import lombok.RequiredArgsConstructor;
-import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -83,7 +82,7 @@ public class UserServiceImpl implements UserService {
         validatePhoneUnique(dto.getPhone(), null);
         SysUser user = new SysUser();
         BeanUtils.copyProperties(dto, user, "password");
-        user.setPassword(BCrypt.hashpw(systemConfigService.getDefaultPassword(), BCrypt.gensalt()));
+        user.setPassword(SaSecureUtil.sha256(dto.getUsername() + "#" + systemConfigService.getDefaultPassword()));
         userMapper.insert(user);
         dto.setId(user.getId());
         saveRoles(user.getId(), dto.getRoleIds());
@@ -115,7 +114,7 @@ public class UserServiceImpl implements UserService {
             throw new BusinessException("用户不存在");
         }
         String finalPassword = (password != null && !password.isEmpty()) ? password : systemConfigService.getDefaultPassword();
-        user.setPassword(BCrypt.hashpw(finalPassword, BCrypt.gensalt()));
+        user.setPassword(SaSecureUtil.sha256(user.getUsername() + "#" + finalPassword));
         userMapper.updateById(user);
         evictAuthCache(id);
     }
@@ -126,14 +125,12 @@ public class UserServiceImpl implements UserService {
         if (ids == null || ids.isEmpty()) {
             throw new BusinessException("请选择需要重置密码的用户");
         }
-        String finalPassword = BCrypt.hashpw(
-                (password != null && !password.isEmpty()) ? password : systemConfigService.getDefaultPassword(),
-                BCrypt.gensalt());
-        userMapper.update(null, new LambdaUpdateWrapper<SysUser>()
-                .in(SysUser::getId, ids)
-                .set(SysUser::getPassword, finalPassword));
-        for (Long id : ids) {
-            evictAuthCache(id);
+        String rawPassword = (password != null && !password.isEmpty()) ? password : systemConfigService.getDefaultPassword();
+        List<SysUser> users = userMapper.selectBatchIds(ids);
+        for (SysUser user : users) {
+            user.setPassword(SaSecureUtil.sha256(user.getUsername() + "#" + rawPassword));
+            userMapper.updateById(user);
+            evictAuthCache(user.getId());
         }
     }
 

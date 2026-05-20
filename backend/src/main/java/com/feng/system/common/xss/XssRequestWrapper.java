@@ -65,7 +65,9 @@ public class XssRequestWrapper extends HttpServletRequestWrapper {
             objectNode.fields().forEachRemaining(entry -> objectNode.set(entry.getKey(), sanitizeNode(entry.getValue())));
         }
         if (node.isArray()) {
-            node.forEach(item -> sanitizeNode(item));
+            for (int i = 0; i < node.size(); i++) {
+                ((com.fasterxml.jackson.databind.node.ArrayNode) node).set(i, sanitizeNode(node.get(i)));
+            }
         }
         return node;
     }

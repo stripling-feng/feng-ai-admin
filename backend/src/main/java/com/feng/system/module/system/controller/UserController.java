@@ -87,7 +87,7 @@ public class UserController {
     @SaCheckPermission("system:user:edit")
     @OperLog(name = "强制踢人", type = BusinessOperationType.UPDATE)
     public ApiResponse<Void> kickout(@PathVariable Long id) {
-        StpUtil.replaced(id);
+        StpUtil.replaced(id, null);
         return ApiResponse.success("踢下线成功", null);
     }
 }
