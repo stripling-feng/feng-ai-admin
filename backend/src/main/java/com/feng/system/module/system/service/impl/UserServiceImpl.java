@@ -16,8 +16,8 @@ import com.feng.system.module.system.service.SystemConfigService;
 import com.feng.system.module.system.service.UserService;
 import com.feng.system.module.system.vo.UserInfoVO;
 import lombok.RequiredArgsConstructor;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.BeanUtils;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -33,7 +33,6 @@ public class UserServiceImpl implements UserService {
 
     private final SysUserMapper userMapper;
     private final SysUserRoleMapper userRoleMapper;
-    private final PasswordEncoder passwordEncoder;
     private final SystemConfigService systemConfigService;
 
     @Override
@@ -83,7 +82,7 @@ public class UserServiceImpl implements UserService {
         validatePhoneUnique(dto.getPhone(), null);
         SysUser user = new SysUser();
         BeanUtils.copyProperties(dto, user, "password");
-        user.setPassword(passwordEncoder.encode(systemConfigService.getDefaultPassword()));
+        user.setPassword(BCrypt.hashpw(systemConfigService.getDefaultPassword(), BCrypt.gensalt()));
         userMapper.insert(user);
         dto.setId(user.getId());
         saveRoles(user.getId(), dto.getRoleIds());
@@ -115,7 +114,7 @@ public class UserServiceImpl implements UserService {
             throw new BusinessException("用户不存在");
         }
         String finalPassword = (password != null && !password.isEmpty()) ? password : systemConfigService.getDefaultPassword();
-        user.setPassword(passwordEncoder.encode(finalPassword));
+        user.setPassword(BCrypt.hashpw(finalPassword, BCrypt.gensalt()));
         userMapper.updateById(user);
         evictAuthCache(id);
     }
@@ -126,8 +125,9 @@ public class UserServiceImpl implements UserService {
         if (ids == null || ids.isEmpty()) {
             throw new BusinessException("请选择需要重置密码的用户");
         }
-        String finalPassword = passwordEncoder.encode(
-                (password != null && !password.isEmpty()) ? password : systemConfigService.getDefaultPassword());
+        String finalPassword = BCrypt.hashpw(
+                (password != null && !password.isEmpty()) ? password : systemConfigService.getDefaultPassword(),
+                BCrypt.gensalt());
         userMapper.update(null, new LambdaUpdateWrapper<SysUser>()
                 .in(SysUser::getId, ids)
                 .set(SysUser::getPassword, finalPassword));
