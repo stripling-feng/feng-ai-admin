@@ -1,9 +1,12 @@
 package com.feng.system.module.system.service.impl;
 
+import cn.dev33.satoken.stp.StpUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.feng.system.common.exception.BusinessException;
 import com.feng.system.module.system.dto.ChangePasswordDTO;
 import com.feng.system.module.system.dto.LoginDTO;
 import com.feng.system.module.system.entity.SysUser;
+import com.feng.system.module.system.mapper.SysMenuMapper;
 import com.feng.system.module.system.mapper.SysUserMapper;
 import com.feng.system.module.system.mapper.SysUserRoleMapper;
 import com.feng.system.module.system.service.AuthService;
@@ -12,16 +15,7 @@ import com.feng.system.module.system.service.MenuService;
 import com.feng.system.module.system.service.SystemConfigService;
 import com.feng.system.module.system.vo.LoginVO;
 import com.feng.system.module.system.vo.UserInfoVO;
-import com.feng.system.security.JwtTokenUtil;
-import com.feng.system.security.LoginUser;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -29,37 +23,37 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    private final AuthenticationManager authenticationManager;
-    private final JwtTokenUtil jwtTokenUtil;
-    private final SysUserRoleMapper userRoleMapper;
     private final SysUserMapper userMapper;
+    private final SysUserRoleMapper userRoleMapper;
+    private final SysMenuMapper menuMapper;
     private final MenuService menuService;
     private final LoginAttemptService loginAttemptService;
     private final SystemConfigService systemConfigService;
     private final PasswordEncoder passwordEncoder;
-    private final StringRedisTemplate stringRedisTemplate;
 
     @Override
     public LoginVO login(LoginDTO dto) {
         loginAttemptService.checkLoginAllowed(dto.getUsername());
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(dto.getUsername(), dto.getPassword());
-        try {
-            LoginUser loginUser = (LoginUser) authenticationManager.authenticate(authenticationToken).getPrincipal();
-            loginAttemptService.recordLoginSuccess(dto.getUsername());
-            return buildLoginVO(loginUser, jwtTokenUtil.generateToken(loginUser.getUser().getId(), loginUser.getUsername()));
-        } catch (DisabledException ex) {
-            throw new BusinessException("账号已停用，无法登录");
-        } catch (BadCredentialsException ex) {
+        SysUser user = userMapper.selectOne(
+                new LambdaQueryWrapper<SysUser>()
+                        .eq(SysUser::getUsername, dto.getUsername())
+                        .eq(SysUser::getDeleted, 0));
+        if (user == null || !passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
             loginAttemptService.recordLoginFailure(dto.getUsername());
             throw new BusinessException("账号或密码错误");
         }
+        if (user.getStatus() == null || user.getStatus() != 1) {
+            throw new BusinessException("账号已停用，无法登录");
+        }
+        loginAttemptService.recordLoginSuccess(dto.getUsername());
+        StpUtil.login(user.getId());
+        return buildLoginVO(user.getId(), StpUtil.getTokenValue());
     }
 
     @Override
     public LoginVO current() {
-        LoginUser loginUser = getLoginUser();
-        return buildLoginVO(loginUser, null);
+        long userId = StpUtil.getLoginIdAsLong();
+        return buildLoginVO(userId, null);
     }
 
     @Override
@@ -70,8 +64,8 @@ public class AuthServiceImpl implements AuthService {
         if (dto.getNewPassword().trim().length() < 6) {
             throw new BusinessException("新密码长度不能少于6位");
         }
-        LoginUser loginUser = getLoginUser();
-        SysUser user = userMapper.selectById(loginUser.getUser().getId());
+        long userId = StpUtil.getLoginIdAsLong();
+        SysUser user = userMapper.selectById(userId);
         if (user == null) {
             throw new BusinessException("当前用户不存在");
         }
@@ -80,15 +74,10 @@ public class AuthServiceImpl implements AuthService {
         }
         user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
         userMapper.updateById(user);
-        evictAuthCache(user.getId());
     }
 
-    private void evictAuthCache(Long userId) {
-        stringRedisTemplate.delete("auth:login:" + userId);
-    }
-
-    private LoginVO buildLoginVO(LoginUser loginUser, String token) {
-        SysUser user = userMapper.selectById(loginUser.getUser().getId());
+    private LoginVO buildLoginVO(Long userId, String token) {
+        SysUser user = userMapper.selectById(userId);
         UserInfoVO userInfo = new UserInfoVO();
         userInfo.setId(user.getId());
         userInfo.setUsername(user.getUsername());
@@ -103,14 +92,9 @@ public class AuthServiceImpl implements AuthService {
         return LoginVO.builder()
                 .token(token)
                 .userInfo(userInfo)
-                .permissions(loginUser.getPermissions())
-                .menuTree(menuService.userMenuTree(user.getId()))
+                .permissions(menuMapper.selectPermissionsByUserId(userId))
+                .menuTree(menuService.userMenuTree(userId))
                 .siteConfig(systemConfigService.getPublicConfig())
                 .build();
-    }
-
-    private LoginUser getLoginUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return (LoginUser) authentication.getPrincipal();
     }
 }

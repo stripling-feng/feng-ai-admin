@@ -1,5 +1,6 @@
 package com.feng.system.module.system.service.impl;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -16,7 +17,6 @@ import com.feng.system.module.system.service.UserService;
 import com.feng.system.module.system.vo.UserInfoVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +35,6 @@ public class UserServiceImpl implements UserService {
     private final SysUserRoleMapper userRoleMapper;
     private final PasswordEncoder passwordEncoder;
     private final SystemConfigService systemConfigService;
-    private final StringRedisTemplate stringRedisTemplate;
 
     @Override
     public PageResult<UserInfoVO> page(UserQueryDTO queryDTO) {
@@ -187,7 +186,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private void evictAuthCache(Long userId) {
-        stringRedisTemplate.delete("auth:login:" + userId);
+        StpUtil.logout(userId);
     }
 
     private UserInfoVO toVOBase(SysUser user) {

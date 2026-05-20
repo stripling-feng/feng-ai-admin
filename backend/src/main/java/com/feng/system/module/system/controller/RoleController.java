@@ -11,7 +11,7 @@ import com.feng.system.module.system.entity.SysRole;
 import com.feng.system.module.system.service.RoleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,19 +22,19 @@ public class RoleController {
     private final RoleService roleService;
 
     @GetMapping
-    @PreAuthorize("hasAuthority('system:role:list')")
+    @SaCheckPermission("system:role:list")
     public ApiResponse<PageResult<SysRole>> list(RoleQueryDTO queryDTO) {
         return ApiResponse.success(roleService.page(queryDTO));
     }
 
     @GetMapping("/{id}/menu-ids")
-    @PreAuthorize("hasAuthority('system:role:query')")
+    @SaCheckPermission("system:role:query")
     public ApiResponse<java.util.List<Long>> menuIds(@PathVariable Long id) {
         return ApiResponse.success(roleService.menuIds(id));
     }
 
     @PostMapping
-    @PreAuthorize("hasAuthority('system:role:add')")
+    @SaCheckPermission("system:role:add")
     @PreventDuplicateSubmit
     @OperLog(name = "新增角色", type = BusinessOperationType.INSERT)
     public ApiResponse<Void> save(@Valid @RequestBody RoleDTO dto) {
@@ -43,7 +43,7 @@ public class RoleController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('system:role:edit')")
+    @SaCheckPermission("system:role:edit")
     @PreventDuplicateSubmit
     @OperLog(name = "编辑角色", type = BusinessOperationType.UPDATE)
     public ApiResponse<Void> update(@PathVariable Long id, @Valid @RequestBody RoleDTO dto) {
@@ -53,7 +53,7 @@ public class RoleController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('system:role:remove')")
+    @SaCheckPermission("system:role:remove")
     @PreventDuplicateSubmit
     @OperLog(name = "删除角色", type = BusinessOperationType.DELETE)
     public ApiResponse<Void> delete(@PathVariable Long id) {

@@ -15,6 +15,13 @@ export function currentApi() {
   })
 }
 
+export function logoutApi() {
+  return request({
+    url: '/api/auth/logout',
+    method: 'post',
+  })
+}
+
 export function changePasswordApi(data) {
   return request({
     url: '/api/auth/change-password',

@@ -9,7 +9,7 @@ import com.feng.system.module.system.service.SystemConfigService;
 import com.feng.system.module.system.vo.SystemConfigVO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,13 +20,13 @@ public class SystemConfigController {
     private final SystemConfigService systemConfigService;
 
     @GetMapping
-    @PreAuthorize("hasAuthority('system:config:list')")
+    @SaCheckPermission("system:config:list")
     public ApiResponse<SystemConfigVO> detail() {
         return ApiResponse.success(systemConfigService.getManageConfig());
     }
 
     @PutMapping
-    @PreAuthorize("hasAuthority('system:config:edit')")
+    @SaCheckPermission("system:config:edit")
     @PreventDuplicateSubmit
     @OperLog(name = "保存系统配置", type = BusinessOperationType.UPDATE)
     public ApiResponse<Void> save(@Valid @RequestBody SystemConfigDTO dto) {

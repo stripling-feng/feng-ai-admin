@@ -52,7 +52,7 @@ router.beforeEach(async (to, from, next) => {
     try {
       await authStore.bootstrap()
     } catch (error) {
-      authStore.logout()
+      await authStore.logout()
       next('/login')
       return
     }

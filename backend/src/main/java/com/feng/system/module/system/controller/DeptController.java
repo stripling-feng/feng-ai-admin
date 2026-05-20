@@ -8,7 +8,7 @@ import com.feng.system.module.system.dto.DeptDTO;
 import com.feng.system.module.system.service.DeptService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,7 +19,7 @@ public class DeptController {
     private final DeptService deptService;
 
     @PostMapping
-    @PreAuthorize("hasAuthority('system:dept:add')")
+    @SaCheckPermission("system:dept:add")
     @PreventDuplicateSubmit
     @OperLog(name = "新增部门", type = BusinessOperationType.INSERT)
     public ApiResponse<Void> save(@Valid @RequestBody DeptDTO dto) {
@@ -28,7 +28,7 @@ public class DeptController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('system:dept:edit')")
+    @SaCheckPermission("system:dept:edit")
     @PreventDuplicateSubmit
     @OperLog(name = "编辑部门", type = BusinessOperationType.UPDATE)
     public ApiResponse<Void> update(@PathVariable Long id, @Valid @RequestBody DeptDTO dto) {
@@ -38,7 +38,7 @@ public class DeptController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('system:dept:remove')")
+    @SaCheckPermission("system:dept:remove")
     @PreventDuplicateSubmit
     @OperLog(name = "删除部门", type = BusinessOperationType.DELETE)
     public ApiResponse<Void> delete(@PathVariable Long id) {

@@ -9,7 +9,7 @@ import com.feng.system.module.system.service.MenuService;
 import com.feng.system.module.system.vo.MenuTreeVO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,7 +27,7 @@ public class MenuController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAuthority('system:menu:add')")
+    @SaCheckPermission("system:menu:add")
     @PreventDuplicateSubmit
     @OperLog(name = "新增菜单", type = BusinessOperationType.INSERT)
     public ApiResponse<Void> save(@Valid @RequestBody MenuDTO dto) {
@@ -36,7 +36,7 @@ public class MenuController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('system:menu:edit')")
+    @SaCheckPermission("system:menu:edit")
     @PreventDuplicateSubmit
     @OperLog(name = "编辑菜单", type = BusinessOperationType.UPDATE)
     public ApiResponse<Void> update(@PathVariable Long id, @Valid @RequestBody MenuDTO dto) {
@@ -46,7 +46,7 @@ public class MenuController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('system:menu:remove')")
+    @SaCheckPermission("system:menu:remove")
     @PreventDuplicateSubmit
     @OperLog(name = "删除菜单", type = BusinessOperationType.DELETE)
     public ApiResponse<Void> delete(@PathVariable Long id) {

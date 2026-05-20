@@ -11,7 +11,7 @@ import com.feng.system.module.system.vo.UploadFileVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,13 +28,13 @@ public class UploadFileController {
     private final UploadFileService uploadFileService;
 
     @GetMapping
-    @PreAuthorize("hasAuthority('system:upload:list')")
+    @SaCheckPermission("system:upload:list")
     public ApiResponse<PageResult<UploadFileVO>> list(UploadFileQueryDTO queryDTO) {
         return ApiResponse.success(uploadFileService.page(queryDTO));
     }
 
     @PostMapping
-    @PreAuthorize("hasAuthority('system:upload:add')")
+    @SaCheckPermission("system:upload:add")
     @RateLimit(maxRequests = 10, windowSeconds = 60, limitType = RateLimit.LimitType.PER_USER, message = "上传请求过于频繁，请稍后再试")
     @OperLog(name = "上传文件", type = BusinessOperationType.INSERT)
     public ApiResponse<UploadFileVO> upload(@RequestParam("file") MultipartFile file) {
@@ -42,7 +42,7 @@ public class UploadFileController {
     }
 
     @GetMapping("/{id}/content")
-    @PreAuthorize("hasAuthority('system:upload:list')")
+    @SaCheckPermission("system:upload:list")
     public ResponseEntity<Resource> content(@PathVariable Long id,
                                             @RequestParam(defaultValue = "false") boolean download) {
         return uploadFileService.getContent(id, download);

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { getToken, setToken, removeToken } from '../utils/auth'
-import { currentApi, loginApi } from '../api/auth'
+import { currentApi, loginApi, logoutApi } from '../api/auth'
 import { useTabsStore } from './tabs'
 
 export const useAuthStore = defineStore('auth', {
@@ -42,7 +42,8 @@ export const useAuthStore = defineStore('auth', {
       const data = await currentApi()
       this.applySession(data)
     },
-    logout() {
+    async logout() {
+      try { await logoutApi() } catch (e) { /* ignore */ }
       const tabsStore = useTabsStore()
       this.token = ''
       this.userInfo = null

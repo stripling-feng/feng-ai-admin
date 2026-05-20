@@ -11,7 +11,7 @@ import com.feng.system.module.tool.service.JobTaskService;
 import com.feng.system.module.tool.vo.JobTaskVO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,13 +22,13 @@ public class JobTaskController {
     private final JobTaskService jobTaskService;
 
     @GetMapping
-    @PreAuthorize("hasAuthority('tool:job:list')")
+    @SaCheckPermission("tool:job:list")
     public ApiResponse<PageResult<JobTaskVO>> list(JobTaskQueryDTO queryDTO) {
         return ApiResponse.success(jobTaskService.page(queryDTO));
     }
 
     @PostMapping
-    @PreAuthorize("hasAuthority('tool:job:add')")
+    @SaCheckPermission("tool:job:add")
     @PreventDuplicateSubmit
     @OperLog(name = "新增定时任务", type = BusinessOperationType.INSERT)
     public ApiResponse<Void> save(@Valid @RequestBody JobTaskDTO dto) {
@@ -37,7 +37,7 @@ public class JobTaskController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('tool:job:edit')")
+    @SaCheckPermission("tool:job:edit")
     @PreventDuplicateSubmit
     @OperLog(name = "编辑定时任务", type = BusinessOperationType.UPDATE)
     public ApiResponse<Void> update(@PathVariable Long id, @Valid @RequestBody JobTaskDTO dto) {
@@ -47,7 +47,7 @@ public class JobTaskController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('tool:job:remove')")
+    @SaCheckPermission("tool:job:remove")
     @PreventDuplicateSubmit
     @OperLog(name = "删除定时任务", type = BusinessOperationType.DELETE)
     public ApiResponse<Void> delete(@PathVariable Long id) {
@@ -56,7 +56,7 @@ public class JobTaskController {
     }
 
     @PutMapping("/{id}/pause")
-    @PreAuthorize("hasAuthority('tool:job:pause')")
+    @SaCheckPermission("tool:job:pause")
     @PreventDuplicateSubmit
     public ApiResponse<Void> pause(@PathVariable Long id) {
         jobTaskService.pause(id);
@@ -64,7 +64,7 @@ public class JobTaskController {
     }
 
     @PutMapping("/{id}/resume")
-    @PreAuthorize("hasAnyAuthority('tool:job:pause','tool:job:edit')")
+    @SaCheckPermission(value = {"tool:job:pause", "tool:job:edit"}, orMode = true)
     @PreventDuplicateSubmit
     public ApiResponse<Void> resume(@PathVariable Long id) {
         jobTaskService.resume(id);
@@ -72,7 +72,7 @@ public class JobTaskController {
     }
 
     @PutMapping("/{id}/run")
-    @PreAuthorize("hasAuthority('tool:job:run')")
+    @SaCheckPermission("tool:job:run")
     @PreventDuplicateSubmit
     public ApiResponse<Void> run(@PathVariable Long id) {
         jobTaskService.runOnce(id);

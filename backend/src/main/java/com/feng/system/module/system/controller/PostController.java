@@ -11,7 +11,7 @@ import com.feng.system.module.system.entity.SysPost;
 import com.feng.system.module.system.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,13 +22,13 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping
-    @PreAuthorize("hasAuthority('system:post:list')")
+    @SaCheckPermission("system:post:list")
     public ApiResponse<PageResult<SysPost>> list(PostQueryDTO queryDTO) {
         return ApiResponse.success(postService.page(queryDTO));
     }
 
     @PostMapping
-    @PreAuthorize("hasAuthority('system:post:add')")
+    @SaCheckPermission("system:post:add")
     @PreventDuplicateSubmit
     @OperLog(name = "新增岗位", type = BusinessOperationType.INSERT)
     public ApiResponse<Void> save(@Valid @RequestBody PostDTO dto) {
@@ -37,7 +37,7 @@ public class PostController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('system:post:edit')")
+    @SaCheckPermission("system:post:edit")
     @PreventDuplicateSubmit
     @OperLog(name = "编辑岗位", type = BusinessOperationType.UPDATE)
     public ApiResponse<Void> update(@PathVariable Long id, @Valid @RequestBody PostDTO dto) {
@@ -47,7 +47,7 @@ public class PostController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('system:post:remove')")
+    @SaCheckPermission("system:post:remove")
     @PreventDuplicateSubmit
     @OperLog(name = "删除岗位", type = BusinessOperationType.DELETE)
     public ApiResponse<Void> delete(@PathVariable Long id) {

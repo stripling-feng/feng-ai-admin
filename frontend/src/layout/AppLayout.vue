@@ -206,7 +206,7 @@ async function logout() {
     return
   }
   resetDynamicMenuRoutes()
-  authStore.logout()
+  await authStore.logout()
   router.push('/login')
 }
 
@@ -351,7 +351,7 @@ async function handleChangePassword() {
   ElMessage.success('密码修改成功，请重新登录')
   passwordDialogVisible.value = false
   resetDynamicMenuRoutes()
-  authStore.logout()
+  await authStore.logout()
   router.push('/login')
 }
 

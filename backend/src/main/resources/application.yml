@@ -30,8 +30,16 @@ mybatis-plus:
       logic-delete-value: 1
       logic-not-delete-value: 0
 
-jwt:
-  expire-hours: 12
+sa-token:
+  token-name: Authorization
+  token-prefix: Bearer
+  timeout: 86400
+  active-timeout: 1800
+  is-concurrent: true
+  is-share: true
+  is-read-cookie: false
+  is-read-header: true
+  is-log: false
 
 cors:
   allowed-origins:
