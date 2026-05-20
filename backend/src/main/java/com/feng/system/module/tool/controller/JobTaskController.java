@@ -12,6 +12,7 @@ import com.feng.system.module.tool.vo.JobTaskVO;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaMode;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -64,7 +65,7 @@ public class JobTaskController {
     }
 
     @PutMapping("/{id}/resume")
-    @SaCheckPermission(value = {"tool:job:pause", "tool:job:edit"}, orMode = true)
+    @SaCheckPermission(value = {"tool:job:pause", "tool:job:edit"}, mode = SaMode.OR)
     @PreventDuplicateSubmit
     public ApiResponse<Void> resume(@PathVariable Long id) {
         jobTaskService.resume(id);
