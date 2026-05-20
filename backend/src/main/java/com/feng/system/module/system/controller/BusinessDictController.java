@@ -1,5 +1,6 @@
 package com.feng.system.module.system.controller;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.feng.system.common.api.ApiResponse;
 import com.feng.system.module.system.entity.SysPost;
 import com.feng.system.module.system.entity.SysRole;
@@ -12,10 +13,7 @@ import com.feng.system.module.system.service.SystemConfigService;
 import com.feng.system.module.system.vo.DictOptionVO;
 import com.feng.system.module.system.vo.MenuTreeVO;
 import com.feng.system.module.system.vo.PublicSystemConfigVO;
-import com.feng.system.security.LoginUser;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -57,9 +55,8 @@ public class BusinessDictController {
 
     @GetMapping("/menus/current")
     public ApiResponse<List<MenuTreeVO>> currentMenus() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        LoginUser loginUser = (LoginUser) authentication.getPrincipal();
-        return ApiResponse.success(menuService.userMenuTree(loginUser.getUser().getId()));
+        long userId = StpUtil.getLoginIdAsLong();
+        return ApiResponse.success(menuService.userMenuTree(userId));
     }
 
     @GetMapping("/menus/tree")

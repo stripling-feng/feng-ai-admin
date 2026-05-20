@@ -6,7 +6,7 @@ import com.feng.system.common.log.dto.OperLogQueryDTO;
 import com.feng.system.common.log.entity.SysOperLog;
 import com.feng.system.common.log.service.OperLogService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,7 +19,7 @@ public class OperLogController {
     private final OperLogService operLogService;
 
     @GetMapping
-    @PreAuthorize("hasAuthority('system:log:list')")
+    @SaCheckPermission("system:log:list")
     public ApiResponse<PageResult<SysOperLog>> page(OperLogQueryDTO queryDTO) {
         return ApiResponse.success(operLogService.page(queryDTO));
     }

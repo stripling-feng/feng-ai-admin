@@ -1,5 +1,6 @@
 package com.feng.system.module.system.controller;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.feng.system.common.api.ApiResponse;
 import com.feng.system.common.ratelimit.RateLimit;
 import com.feng.system.module.system.dto.ChangePasswordDTO;
@@ -30,6 +31,12 @@ public class AuthController {
     @GetMapping("/current")
     public ApiResponse<LoginVO> current() {
         return ApiResponse.success(authService.current());
+    }
+
+    @PostMapping("/logout")
+    public ApiResponse<Void> logout() {
+        StpUtil.logout();
+        return ApiResponse.success("退出成功", null);
     }
 
     @PostMapping("/change-password")

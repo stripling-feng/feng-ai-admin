@@ -6,7 +6,7 @@ import com.feng.system.module.tool.dto.JobTaskLogQueryDTO;
 import com.feng.system.module.tool.entity.SysJobTaskLog;
 import com.feng.system.module.tool.service.JobTaskLogService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,7 +19,7 @@ public class JobTaskLogController {
     private final JobTaskLogService jobTaskLogService;
 
     @GetMapping
-    @PreAuthorize("hasAuthority('tool:job:list')")
+    @SaCheckPermission("tool:job:list")
     public ApiResponse<PageResult<SysJobTaskLog>> list(JobTaskLogQueryDTO queryDTO) {
         return ApiResponse.success(jobTaskLogService.page(queryDTO));
     }

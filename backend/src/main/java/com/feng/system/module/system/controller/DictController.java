@@ -14,7 +14,7 @@ import com.feng.system.module.system.entity.SysDictType;
 import com.feng.system.module.system.service.DictService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -25,13 +25,13 @@ public class DictController {
     private final DictService dictService;
 
     @GetMapping("/types")
-    @PreAuthorize("hasAuthority('system:dict:list')")
+    @SaCheckPermission("system:dict:list")
     public ApiResponse<PageResult<SysDictType>> typePage(DictTypeQueryDTO queryDTO) {
         return ApiResponse.success(dictService.typePage(queryDTO));
     }
 
     @PostMapping("/types")
-    @PreAuthorize("hasAuthority('system:dict:add')")
+    @SaCheckPermission("system:dict:add")
     @PreventDuplicateSubmit
     @OperLog(name = "新增字典类型", type = BusinessOperationType.INSERT)
     public ApiResponse<Void> saveType(@Valid @RequestBody DictTypeDTO dto) {
@@ -40,7 +40,7 @@ public class DictController {
     }
 
     @PutMapping("/types/{id}")
-    @PreAuthorize("hasAuthority('system:dict:edit')")
+    @SaCheckPermission("system:dict:edit")
     @PreventDuplicateSubmit
     @OperLog(name = "编辑字典类型", type = BusinessOperationType.UPDATE)
     public ApiResponse<Void> updateType(@PathVariable Long id, @Valid @RequestBody DictTypeDTO dto) {
@@ -50,7 +50,7 @@ public class DictController {
     }
 
     @DeleteMapping("/types/{id}")
-    @PreAuthorize("hasAuthority('system:dict:remove')")
+    @SaCheckPermission("system:dict:remove")
     @PreventDuplicateSubmit
     @OperLog(name = "删除字典类型", type = BusinessOperationType.DELETE)
     public ApiResponse<Void> deleteType(@PathVariable Long id) {
@@ -59,13 +59,13 @@ public class DictController {
     }
 
     @GetMapping("/data")
-    @PreAuthorize("hasAuthority('system:dict:list')")
+    @SaCheckPermission("system:dict:list")
     public ApiResponse<PageResult<SysDictData>> dataPage(DictDataQueryDTO queryDTO) {
         return ApiResponse.success(dictService.dataPage(queryDTO));
     }
 
     @PostMapping("/data")
-    @PreAuthorize("hasAuthority('system:dict:add')")
+    @SaCheckPermission("system:dict:add")
     @PreventDuplicateSubmit
     @OperLog(name = "新增字典数据", type = BusinessOperationType.INSERT)
     public ApiResponse<Void> saveData(@Valid @RequestBody DictDataDTO dto) {
@@ -74,7 +74,7 @@ public class DictController {
     }
 
     @PutMapping("/data/{id}")
-    @PreAuthorize("hasAuthority('system:dict:edit')")
+    @SaCheckPermission("system:dict:edit")
     @PreventDuplicateSubmit
     @OperLog(name = "编辑字典数据", type = BusinessOperationType.UPDATE)
     public ApiResponse<Void> updateData(@PathVariable Long id, @Valid @RequestBody DictDataDTO dto) {
@@ -84,7 +84,7 @@ public class DictController {
     }
 
     @DeleteMapping("/data/{id}")
-    @PreAuthorize("hasAuthority('system:dict:remove')")
+    @SaCheckPermission("system:dict:remove")
     @PreventDuplicateSubmit
     @OperLog(name = "删除字典数据", type = BusinessOperationType.DELETE)
     public ApiResponse<Void> deleteData(@PathVariable Long id) {

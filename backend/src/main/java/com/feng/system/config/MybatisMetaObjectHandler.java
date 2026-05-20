@@ -1,10 +1,8 @@
 package com.feng.system.config;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
-import com.feng.system.security.LoginUser;
 import org.apache.ibatis.reflection.MetaObject;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -52,10 +50,10 @@ public class MybatisMetaObjectHandler implements MetaObjectHandler {
     }
 
     private Long currentUserId() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !(authentication.getPrincipal() instanceof LoginUser loginUser)) {
+        try {
+            return StpUtil.getLoginIdAsLong();
+        } catch (Exception e) {
             return null;
         }
-        return loginUser.getUser().getId();
     }
 }

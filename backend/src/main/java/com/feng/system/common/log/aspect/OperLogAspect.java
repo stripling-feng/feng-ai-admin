@@ -1,19 +1,19 @@
 package com.feng.system.common.log.aspect;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.feng.system.common.log.OperLog;
 import com.feng.system.common.log.entity.SysOperLog;
 import com.feng.system.common.log.service.OperationLogAsyncService;
-import com.feng.system.security.LoginUser;
+import com.feng.system.module.system.entity.SysUser;
+import com.feng.system.module.system.mapper.SysUserMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,6 +30,7 @@ public class OperLogAspect {
     private final OperationLogAsyncService asyncService;
     private final ObjectMapper objectMapper;
     private final HttpServletRequest request;
+    private final SysUserMapper userMapper;
 
     @Around("@annotation(operLog)")
     public Object around(ProceedingJoinPoint joinPoint, OperLog operLog) throws Throwable {
@@ -45,14 +46,19 @@ public class OperLogAspect {
 
     private void saveLog(ProceedingJoinPoint joinPoint, OperLog operLogMeta, String changeData,
                          boolean success, String errorMessage) {
-        LoginUser loginUser = getLoginUser();
         SysOperLog log = new SysOperLog();
         log.setApiName(operLogMeta.name());
         log.setBusinessType(operLogMeta.type().name());
         log.setMethodName(joinPoint.getSignature().toShortString());
         log.setRequestUri(request.getRequestURI());
-        log.setOperatorId(loginUser == null ? null : loginUser.getUser().getId());
-        log.setOperatorName(loginUser == null ? "anonymous" : loginUser.getUsername());
+        Long userId = currentUserId();
+        if (userId != null) {
+            SysUser user = userMapper.selectById(userId);
+            log.setOperatorId(userId);
+            log.setOperatorName(user == null ? "unknown" : user.getUsername());
+        } else {
+            log.setOperatorName("anonymous");
+        }
         log.setIpAddress(resolveIp());
         log.setSuccess(success ? 1 : 0);
         log.setErrorMessage(errorMessage);
@@ -86,8 +92,7 @@ public class OperLogAspect {
         }
         if (arg instanceof HttpServletRequest
                 || arg instanceof HttpServletResponse
-                || arg instanceof BindingResult
-                || arg instanceof LoginUser) {
+                || arg instanceof BindingResult) {
             return null;
         }
         if (arg instanceof MultipartFile file) {
@@ -106,12 +111,12 @@ public class OperLogAspect {
         return arg;
     }
 
-    private LoginUser getLoginUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !(authentication.getPrincipal() instanceof LoginUser loginUser)) {
+    private Long currentUserId() {
+        try {
+            return StpUtil.getLoginIdAsLong();
+        } catch (Exception e) {
             return null;
         }
-        return loginUser;
     }
 
     private String resolveIp() {
