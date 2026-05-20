@@ -11,7 +11,10 @@ public class SaTokenConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new SaInterceptor(handle -> StpUtil.checkLogin()))
+        registry.addInterceptor(new SaInterceptor(handle -> {
+            StpUtil.checkLogin();
+            StpUtil.renewTimeout(3600);
+        }))
                 .addPathPatterns("/api/**")
                 .excludePathPatterns(
                         "/api/auth/login",

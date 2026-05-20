@@ -46,13 +46,21 @@ public class AuthServiceImpl implements AuthService {
         }
         loginAttemptService.recordLoginSuccess(dto.getUsername());
         StpUtil.login(user.getId());
-        return buildLoginVO(user.getId(), StpUtil.getTokenValue());
+        LoginVO loginVO = buildLoginVO(user.getId(), StpUtil.getTokenValue());
+        cacheUserSession(user.getId(), loginVO);
+        return loginVO;
     }
 
     @Override
     public LoginVO current() {
         long userId = StpUtil.getLoginIdAsLong();
-        return buildLoginVO(userId, null);
+        LoginVO cached = getCachedUserSession(userId);
+        if (cached != null) {
+            return cached;
+        }
+        LoginVO loginVO = buildLoginVO(userId, null);
+        cacheUserSession(userId, loginVO);
+        return loginVO;
     }
 
     @Override
@@ -95,5 +103,35 @@ public class AuthServiceImpl implements AuthService {
                 .menuTree(menuService.userMenuTree(userId))
                 .siteConfig(systemConfigService.getPublicConfig())
                 .build();
+    }
+
+    private void cacheUserSession(Long userId, LoginVO loginVO) {
+        StpUtil.getSessionByLoginId(userId)
+                .set("userInfo", loginVO.getUserInfo())
+                .set("permissions", loginVO.getPermissions())
+                .set("menuTree", loginVO.getMenuTree());
+    }
+
+    private LoginVO getCachedUserSession(Long userId) {
+        var session = StpUtil.getSessionByLoginId(userId);
+        UserInfoVO userInfo = session.getModel("userInfo", UserInfoVO.class);
+        if (userInfo == null) {
+            return null;
+        }
+        @SuppressWarnings("unchecked")
+        var permissions = (java.util.List<String>) session.get("permissions");
+        var menuTree = session.get("menuTree");
+        return LoginVO.builder()
+                .userInfo(userInfo)
+                .permissions(permissions)
+                .menuTree(menuTree)
+                .siteConfig(systemConfigService.getPublicConfig())
+                .build();
+    }
+
+    @Override
+    public void refreshUserSession(Long userId) {
+        LoginVO loginVO = buildLoginVO(userId, null);
+        cacheUserSession(userId, loginVO);
     }
 }
