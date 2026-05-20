@@ -8,4 +8,5 @@ public interface AuthService {
     LoginVO login(LoginDTO dto);
     LoginVO current();
     void changePassword(ChangePasswordDTO dto);
+    void refreshUserSession(Long userId);
 }

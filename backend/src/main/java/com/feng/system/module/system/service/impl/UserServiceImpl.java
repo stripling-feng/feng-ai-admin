@@ -1,6 +1,5 @@
 package com.feng.system.module.system.service.impl;
 
-import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -12,6 +11,7 @@ import com.feng.system.module.system.entity.SysUser;
 import com.feng.system.module.system.entity.SysUserRole;
 import com.feng.system.module.system.mapper.SysUserMapper;
 import com.feng.system.module.system.mapper.SysUserRoleMapper;
+import com.feng.system.module.system.service.AuthService;
 import com.feng.system.module.system.service.SystemConfigService;
 import com.feng.system.module.system.service.UserService;
 import com.feng.system.module.system.vo.UserInfoVO;
@@ -34,6 +34,7 @@ public class UserServiceImpl implements UserService {
     private final SysUserMapper userMapper;
     private final SysUserRoleMapper userRoleMapper;
     private final SystemConfigService systemConfigService;
+    private final AuthService authService;
 
     @Override
     public PageResult<UserInfoVO> page(UserQueryDTO queryDTO) {
@@ -186,7 +187,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private void evictAuthCache(Long userId) {
-        StpUtil.logout(userId);
+        authService.refreshUserSession(userId);
     }
 
     private UserInfoVO toVOBase(SysUser user) {

@@ -1,5 +1,6 @@
 package com.feng.system.common.exception;
 
+import cn.dev33.satoken.exception.NotLoginException;
 import com.feng.system.common.api.ApiResponse;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,24 @@ public class GlobalExceptionHandler {
     public ApiResponse<Void> handleConstraint(ConstraintViolationException ex) {
         log.warn("约束校验异常: {}", ex.getMessage());
         return ApiResponse.fail(ex.getMessage());
+    }
+
+    @ExceptionHandler(NotLoginException.class)
+    public ApiResponse<Void> handleNotLogin(NotLoginException ex) {
+        String message;
+        int code;
+        if (ex.getType().equals(NotLoginException.BE_REPLACED)) {
+            message = "您的账号已在其他设备登录";
+            code = 401001;
+        } else if (ex.getType().equals(NotLoginException.KICK_OUT)) {
+            message = "您已被踢下线";
+            code = 401002;
+        } else {
+            message = "未登录或登录已过期";
+            code = 401;
+        }
+        log.warn("未登录: type={}, message={}", ex.getType(), message);
+        return new ApiResponse<>(code, message, null);
     }
 
     @ExceptionHandler(Exception.class)

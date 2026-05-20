@@ -1,5 +1,6 @@
 package com.feng.system.module.system.controller;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.feng.system.common.api.ApiResponse;
 import com.feng.system.common.api.PageResult;
 import com.feng.system.common.log.BusinessOperationType;
@@ -80,5 +81,13 @@ public class UserController {
     public ApiResponse<Void> delete(@PathVariable Long id) {
         userService.delete(id);
         return ApiResponse.success("删除成功", null);
+    }
+
+    @PutMapping("/{id}/kickout")
+    @SaCheckPermission("system:user:edit")
+    @OperLog(name = "强制踢人", type = BusinessOperationType.UPDATE)
+    public ApiResponse<Void> kickout(@PathVariable Long id) {
+        StpUtil.replaced(id);
+        return ApiResponse.success("踢下线成功", null);
     }
 }

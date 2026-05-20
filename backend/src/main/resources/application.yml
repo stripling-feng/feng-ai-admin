@@ -24,6 +24,8 @@ spring:
     time-zone: Asia/Shanghai
 
 mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
   global-config:
     db-config:
       logic-delete-field: deleted
@@ -33,8 +35,8 @@ mybatis-plus:
 sa-token:
   token-name: Authorization
   token-prefix: Bearer
-  timeout: 86400
-  active-timeout: 1800
+  timeout: 3600
+  active-timeout: -1
   is-concurrent: true
   is-share: true
   is-read-cookie: false
